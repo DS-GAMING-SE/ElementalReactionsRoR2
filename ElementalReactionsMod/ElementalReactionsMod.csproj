@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<LangVersion>preview</LangVersion>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BepInEx.Analyzers" Version="1.0.*">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+
+		<PackageReference Include="BepInEx.Core" Version="5.4.21" />
+
+		<PackageReference Include="R2API.DamageType" Version="1.1.7" />
+
+		<PackageReference Include="R2API.Prefab" Version="1.1.1" />
+
+		<PackageReference Include="UnityEngine.Modules" Version="2021.3.33" IncludeAssets="compile" />
+		<PackageReference Include="RiskOfRain2.GameLibs" Version="1.4.1-r.0" />
+		<PackageReference Include="MMHOOK.RoR2" Version="2025.12.9" NoWarn="NU1701" />
+		<PackageReference Include="RoR2BepInExPack" Version="*" />
+		<PackageReference Include="R2API.Items" Version="1.0.*" />
+		<PackageReference Include="R2API.Language" Version="1.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="LookingGlass">
+	    <HintPath>..\lib\LookingGlass.dll</HintPath>
+	  </Reference>
+	  <Reference Include="RiskOfOptions">
+	    <HintPath>..\lib\RiskOfOptions.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Items\" />
+	</ItemGroup>
+
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+	  <Exec Command="REM follow the Building Your Mod page on the henrytutorial wiki for more information on this&#xD;&#xA;REM change this to your username (or add yours if you're working in a team or somethin)&#xD;&#xA;if &quot;$(Username)&quot; == &quot;dylan&quot; set build=true&#xD;&#xA;&#xD;&#xA;if defined build (&#xD;&#xA;&#xD;&#xA;REM copy the built mod to our Build folder&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\Thunderstore/ElementalReactionsLatest&quot;&#xD;&#xA;&#xD;&#xA;REM copy the whole Build\plugins folder into your r2modman profile. This mimics how r2modman will install your mod&#xD;&#xA;Xcopy /E /I /Y &quot;$(ProjectDir)..\Thunderstore\ElementalReactionsLatest&quot; &quot;C:\Users\dylan\AppData\Roaming\Thunderstore Mod Manager\DataFolder\RiskOfRain2\profiles\Sonic DEV\BepInEx\plugins\ElementalReactions&quot;&#xD;&#xA;)" />
+	</Target>
+
+</Project>
