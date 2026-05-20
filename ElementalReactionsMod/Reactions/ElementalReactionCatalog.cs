@@ -57,15 +57,24 @@ namespace ElementalReactionsMod.Reactions
                 {
                     elementalReactionGrid[(int)reaction.baseElement.index, (int)element.index] = reaction.index;
                     elementalReactionGrid[(int)element.index, (int)reaction.baseElement.index] = reaction.index;
-                    reaction.baseElement.reactsWithBuilder.Add(element);
-                    element.reactsWithBuilder.Add(reaction.baseElement);
+                    reaction.baseElement.reactsWith[(int)element.index] = true;
+                    element.reactsWith[(int)reaction.baseElement.index] = true;
                 }
             }
-            foreach (var element in ElementCatalog.elementCatalog)
+        }
+        public static ElementDef GetFirstReactableElement(ElementDef element, CharacterBody characterBody)
+        {
+            if (characterBody)
             {
-                element.reactsWith = element.reactsWithBuilder.ToArray();
-                element.reactsWithBuilder = null;
+                foreach (var item in ElementCatalog.elementCatalog)
+                {
+                    if (characterBody.HasBuff(item.buff) && element.reactsWith[(int)item.index])
+                    {
+                        return item;
+                    }
+                }
             }
+            return null;
         }
         public static ElementIndex GetFirstReactableElement(ElementDef element, ElementIndex[] elements)
         {

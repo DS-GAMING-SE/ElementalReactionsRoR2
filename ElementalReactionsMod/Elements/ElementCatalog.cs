@@ -23,7 +23,7 @@ namespace ElementalReactionsMod.Elements
         [SystemInitializer]
         private static void SystemInit()
         {
-            CreateDamageTypeBits();
+            BakeElements();
             Log.Message("ElementCatalog initialized");
             availability.MakeAvailable();
         }
@@ -52,12 +52,17 @@ namespace ElementalReactionsMod.Elements
             return ArrayUtils.GetSafe(elementCatalog, (int)index);
         }
 
-        internal static void CreateDamageTypeBits()
+        internal static void BakeElements()
         {
-            elementIndexDamageTypeBits = new DamageAPI.ModdedDamageType[Mathf.FloorToInt(Mathf.Log(elementCatalog.Length, 2))];
+            elementIndexDamageTypeBits = new DamageAPI.ModdedDamageType[Mathf.CeilToInt(Mathf.Log(elementCatalog.Length, 2))];
             for (int i = 0;i < elementIndexDamageTypeBits.Length; i++)
             {
                 elementIndexDamageTypeBits[i] = DamageAPI.ReserveDamageType();
+            }
+
+            foreach (var element in elementCatalog)
+            {
+                element.reactsWith = new bool[elementCatalog.Length];
             }
         }
     }

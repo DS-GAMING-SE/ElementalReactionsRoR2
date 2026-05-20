@@ -22,7 +22,6 @@ namespace ElementalReactionsMod.Elements
 
         public bool canPersist;
 
-        internal List<bool> reactsWithBuilder = new();
         internal bool[] reactsWith;
 
         [Tooltip("Set at runtime, do not set manually")]
@@ -30,7 +29,6 @@ namespace ElementalReactionsMod.Elements
         {
             get
             {
-                if (!ElementCatalog.availability.available) { Log.Warning("Can't get ElementIndex before catalog is initialized"); return ElementIndex.None; }
                 return (ElementIndex)Array.IndexOf(ElementCatalog.elementCatalog, this);
             }
         }
@@ -44,27 +42,11 @@ namespace ElementalReactionsMod.Elements
             ElementDef elementDef = ScriptableObject.CreateInstance<ElementDef>();
             elementDef.cachedName = internalName;
             elementDef.nameToken = nameToken;
-            elementDef.buff = AddNewBuff($"bd{internalName}", icon, Color.white, false, true, false);
+            elementDef.buff = Util.AddNewBuff($"bd{internalName}", icon, Color.white, false, true);
             elementDef.skillIcon = skillIcon;
             elementDef.iconVFX = null;
             elementDef.canPersist = canPersist;
             return elementDef;
-        }
-
-        internal static BuffDef AddNewBuff(string buffName, Sprite buffIcon, Color buffColor, bool canStack, bool isDebuff, bool hidden = false)
-        {
-            BuffDef buffDef = ScriptableObject.CreateInstance<BuffDef>();
-            buffDef.name = buffName;
-            buffDef.buffColor = buffColor;
-            buffDef.canStack = canStack;
-            buffDef.isDebuff = isDebuff;
-            buffDef.eliteDef = null;
-            buffDef.iconSprite = buffIcon;
-            buffDef.isHidden = hidden;
-
-            Content.AddBuffDef(buffDef);
-
-            return buffDef;
         }
     }
 
@@ -94,7 +76,7 @@ namespace ElementalReactionsMod.Elements
                 null,
                 true);
             electroElement = ElementDef.CreateElementDef("ElectroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ELECTRO",
-                Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Items_ShockDamageAura.texShockDamageAuraIcon_png).WaitForCompletion(),
+                Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2.texBuffDisableAllSkillsIcon_png).WaitForCompletion(),
                 null,
                 true);
             cryoElement = ElementDef.CreateElementDef("CryoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_CRYO",
@@ -126,14 +108,8 @@ namespace ElementalReactionsMod.Elements
         {
             if (Language.languagesByName.TryGetValue("en", out Language en))
             {
-                RegisterLookingGlassBuff(en, pyroElement.buff, "Pyro Element", $"May react to other elements.");
+                Util.RegisterLookingGlassBuff(en, pyroElement.buff, "Pyro Element", $"May react to other elements.");
             }
-        }
-
-        private static void RegisterLookingGlassBuff(Language lang, BuffDef buff, string name, string description)
-        {
-            LookingGlassLanguageAPI.SetupToken(lang, $"NAME_{buff.name}", name);
-            LookingGlassLanguageAPI.SetupToken(lang, $"DESCRIPTION_{buff.name}", description);
         }
     }
 }
