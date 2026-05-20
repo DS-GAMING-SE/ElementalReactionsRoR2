@@ -55,6 +55,11 @@ namespace ElementalReactionsMod.Reactions
             {
                 foreach (var element in reaction.reactingElements)
                 {
+                    if (reaction.baseElement.reactsWith[(int)element.index])
+                    {
+                        Log.Warning($"Reaction {reaction.ToString()} is trying to be added two elements that already react. This reaction will need to be triggered manually to work");
+                        continue;
+                    }
                     elementalReactionGrid[(int)reaction.baseElement.index, (int)element.index] = reaction.index;
                     elementalReactionGrid[(int)element.index, (int)reaction.baseElement.index] = reaction.index;
                     reaction.baseElement.reactsWith[(int)element.index] = true;

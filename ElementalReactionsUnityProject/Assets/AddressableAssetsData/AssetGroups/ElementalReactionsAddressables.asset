@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: ElementalReactionsAddressables
+  m_EditorClassIdentifier: 
+  m_GroupName: ElementalReactionsAddressables
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 83523c56f1bf79e4fbf74788822360e1
+  m_SerializeEntries:
+  - m_GUID: 7e274e591617cd94f851984046f5c921
+    m_Address: Assets/ElementalReactionsAssets/Icons/Buff Icons/texHydroBuffIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 87b63bb49e9e2fa4f9d2a66665ee07a7
+    m_Address: Assets/ElementalReactionsAssets/Icons/Buff Icons/texDendroBuffIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 61c6caa41fc7e8c4abf6534fadeb89b0
+    m_Address: Assets/ElementalReactionsAssets/Icons/Buff Icons/texGeoBuffIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a416b58f4ed2331488afcf4e6eba114f
+    m_Address: Assets/ElementalReactionsAssets/Icons/Buff Icons/texElectroBuffIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 5fc2055e4d7c33348889a483e5a0df1b
+    m_Address: Assets/ElementalReactionsAssets/Icons/Buff Icons/texSuperconductBuffIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 0daee0d7c66cf3349a5c729e74a12925
+    m_Address: Assets/ElementalReactionsAssets/Icons/Buff Icons/texPyroBuffIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e38221f0cc59ebd4f96bfcc5034fde14
+    m_Address: Assets/ElementalReactionsAssets/Icons/Buff Icons/texCryoBuffIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 2e957546a6b4ecf4088b8cb9a754aaaf
+    m_Address: Assets/ElementalReactionsAssets/Icons/Buff Icons/texAnemoBuffIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: fd1a80b8adab48644bde7e4c5d73fd13
+    m_Address: Assets/ElementalReactionsAssets/Icons/Buff Icons/texQuickenBuffIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 64c84609674948a4d80e1fc588a1d8a9
+    m_Address: Assets/ElementalReactionsAssets/Icons/texElementalReactionExpansionIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 3b837d8b8bfd86842a5d9fbab5154c5c, type: 2}
+    - {fileID: 11400000, guid: 1fa892445c4cd304c89f9cee6cde08a0, type: 2}

@@ -37,12 +37,12 @@ namespace ElementalReactionsMod.Elements
             return Language.GetString(this.nameToken, Language.currentLanguageName);
         }
 
-        public static ElementDef CreateElementDef(string internalName, string nameToken, Sprite icon, Sprite skillIcon, bool canPersist)
+        public static ElementDef CreateElementDef(string internalName, string nameToken, Color color, Sprite icon, Sprite skillIcon, bool canPersist)
         {
             ElementDef elementDef = ScriptableObject.CreateInstance<ElementDef>();
             elementDef.cachedName = internalName;
             elementDef.nameToken = nameToken;
-            elementDef.buff = Util.AddNewBuff($"bd{internalName}", icon, Color.white, false, true);
+            elementDef.buff = Util.AddNewBuff($"bdElementalReactions{internalName}", icon, color, false, true);
             elementDef.skillIcon = skillIcon;
             elementDef.iconVFX = null;
             elementDef.canPersist = canPersist;
@@ -67,32 +67,32 @@ namespace ElementalReactionsMod.Elements
 
         public static void Initialize()
         {
-            pyroElement = ElementDef.CreateElementDef("PyroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_PYRO", 
-                Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.texBuffOnFireIcon_tif).WaitForCompletion(), 
+            pyroElement = ElementDef.CreateElementDef("PyroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_PYRO", new Color(0.9f, 0.51f, 0.384f),
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.pyroBuffIcon).WaitForCompletion(), 
                 null, 
                 true);
-            hydroElement = ElementDef.CreateElementDef("HydroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_HYDRO",
-                Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.texBuffBleedingIcon_tif).WaitForCompletion(),
+            hydroElement = ElementDef.CreateElementDef("HydroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_HYDRO", ColorCatalog.GetColor(ColorCatalog.ColorIndex.LunarItem),
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.hydroBuffIcon).WaitForCompletion(),
                 null,
                 true);
-            electroElement = ElementDef.CreateElementDef("ElectroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ELECTRO",
-                Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2.texBuffDisableAllSkillsIcon_png).WaitForCompletion(),
+            electroElement = ElementDef.CreateElementDef("ElectroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ELECTRO", ColorCatalog.GetColor(ColorCatalog.ColorIndex.Utility),
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.electroBuffIcon).WaitForCompletion(),
                 null,
                 true);
-            cryoElement = ElementDef.CreateElementDef("CryoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_CRYO",
-                Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.texChefFrostDebuffIcon_png).WaitForCompletion(),
+            cryoElement = ElementDef.CreateElementDef("CryoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_CRYO", new Color(0.584f, 0.8f, 0.9f),
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.cryoBuffIcon).WaitForCompletion(),
                 null,
                 true);
-            anemoElement = ElementDef.CreateElementDef("AnemoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ANEMO",
-                Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Items_SpeedBoostPickup.texElusiveAntlersSpeedBuff_png).WaitForCompletion(),
+            anemoElement = ElementDef.CreateElementDef("AnemoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ANEMO", new Color(0.5f, 0.9f, 0.8f),
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.anemoBuffIcon).WaitForCompletion(),
                 null,
                 false);
-            geoElement = ElementDef.CreateElementDef("GeoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_GEO",
-                Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSon.texEnergizedCoreBuffIcon_png).WaitForCompletion(),
+            geoElement = ElementDef.CreateElementDef("GeoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_GEO", new Color(0.9f, 0.788f, 0.384f),
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.geoBuffIcon).WaitForCompletion(),
                 null,
                 false);
-            dendroElement = ElementDef.CreateElementDef("DendroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_DENDRO",
-                Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Treebot.texBuffEntangleIcon_tif).WaitForCompletion(),
+            dendroElement = ElementDef.CreateElementDef("DendroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_DENDRO", new Color(0.612f, 0.9f, 0.384f),
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.dendroBuffIcon).WaitForCompletion(),
                 null,
                 true);
 

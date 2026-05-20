@@ -34,6 +34,8 @@ namespace ElementalReactionsMod
             instance = this;
             Log.Init(Logger);
 
+            new ContentPacks().Initialize();
+
             Tokens.Initialize();
 
             Assets.Initialize();
@@ -41,6 +43,10 @@ namespace ElementalReactionsMod
             DefaultElementDefs.Initialize();
 
             DefaultElementalReactions.Initialize();
+
+            DamageTypes.Initialize();
+
+            Buffs.Initialize();
 
             Hooks.Initialize();
 

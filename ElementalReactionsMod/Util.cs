@@ -49,7 +49,7 @@ namespace ElementalReactionsMod
 
         public static bool IsElementalReactionDamage(this DamageTypeCombo damageTypeCombo)
         {
-            return damageTypeCombo.HasModdedDamageType(ElementalReactionDef.elementalReactionDamageType);
+            return damageTypeCombo.HasModdedDamageType(DamageTypes.elementalReactionDamageType);
         }
 
         public static int GetDamageTypeIndex(DamageTypeCombo damageTypeCombo, DamageAPI.ModdedDamageType[] damageTypes)
@@ -80,7 +80,7 @@ namespace ElementalReactionsMod
             buffDef.iconSprite = buffIcon;
             buffDef.isHidden = hidden;
 
-            ContentAddition.AddBuffDef(buffDef);
+            Content.AddBuffDef(buffDef);
 
             return buffDef;
         }
@@ -90,7 +90,18 @@ namespace ElementalReactionsMod
             LookingGlassLanguageAPI.SetupToken(lang, $"NAME_{buff.name}", name);
             LookingGlassLanguageAPI.SetupToken(lang, $"DESCRIPTION_{buff.name}", description);
         }
-
+        public static BlastAttack CreateBlastAttack(DamageInfo damageInfo, float damage, float radius, float proc, ElementIndex element, bool isReaction, float force)
+        {
+            CharacterBody characterBody = damageInfo.attacker ? damageInfo.attacker.GetComponent<CharacterBody>() : null;
+            DamageTypeCombo damageType = default;
+            damageType.SetElement(element);
+            if (isReaction)
+            {
+                damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
+                damageType |= DamageType.AOE;
+            }
+            return CreateBlastAttack(characterBody ? characterBody : null, characterBody ? characterBody.damage * damage : damage, false, radius, BlastAttack.FalloffModel.None, proc, damageType, damageInfo.position, force);
+        }
         public static BlastAttack CreateBlastAttack(DamageInfo damageInfo, float damage, float radius, float proc, DamageTypeCombo damageType, float force)
         {
             CharacterBody characterBody = damageInfo.attacker ? damageInfo.attacker.GetComponent<CharacterBody>() : null;

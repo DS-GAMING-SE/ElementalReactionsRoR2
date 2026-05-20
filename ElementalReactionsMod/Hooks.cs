@@ -3,6 +3,7 @@ using ElementalReactionsMod.Reactions;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.Utils;
+using R2API;
 using RoR2;
 using System;
 using System.Collections.Generic;
@@ -31,21 +32,37 @@ namespace ElementalReactionsMod
                         ElementDef element = ElementCatalog.GetElementDef(damage.damageType.GetElement());
                         if (element)
                         {
+                            bool reactionTriggered = false;
                             ElementDef reacting = ElementalReactionCatalog.GetFirstReactableElement(element, self.body);
                             if (reacting)
                             {
                                 ElementalReactionDef reaction = ElementalReactionCatalog.GetElementalReaction(element, reacting);
                                 if (reaction)
                                 {
-                                    self.body.ClearTimedBuffs(element.buff.buffIndex);
+                                    self.body.ClearTimedBuffs(reacting.buff.buffIndex);
                                     reaction.TriggerReaction(element, reacting, self, ref damage);
-                                    return;
+                                    reactionTriggered = true;
                                 }
                             }
-                            if (element.canPersist)
+                            if (element.canPersist && !reactionTriggered)
                             {
                                 self.body.AddTimedBuff(element.buff, 10, 1);
                             }
+                        }
+
+                        if (self.body.HasBuff(Buffs.superconductBuff) && !element)
+                        {
+                            damage.damage *= StaticValues.superconductDamageMultiplier;
+                        }
+
+                        if (self.body.HasBuff(Buffs.quickenBuff) && element == DefaultElementDefs.dendroElement || element == DefaultElementDefs.electroElement)
+                        {
+                            damage.damage += StaticValues.quickenDamageAddCoefficient * damage.procCoefficient;
+                        }
+
+                        if (damage.damageType.HasModdedDamageType(DamageTypes.superconductDamageType))
+                        {
+                            self.body.AddTimedBuff(Buffs.superconductBuff, 5, 1);
                         }
                     }
                 });

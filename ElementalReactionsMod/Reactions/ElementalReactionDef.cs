@@ -7,13 +7,12 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using static ElementalReactionsMod.Elements.DefaultElementDefs;
+using static ElementalReactionsMod.StaticValues;
 
 namespace ElementalReactionsMod.Reactions
 {
     public class ElementalReactionDef : ScriptableObject
     {
-        public static DamageAPI.ModdedDamageType elementalReactionDamageType;
-        
         public string cachedName { get { return _cachedName; } set { name = value; _cachedName = value; } }
         private string _cachedName;
         public string nameToken;
@@ -60,14 +59,11 @@ namespace ElementalReactionsMod.Reactions
     public static class DefaultElementalReactions
     {
         public static ElementalReactionDef vaporize;
-        public const float vaporizeMultiplierPyroTrigger = 2f;
-        public const float vaporizeMultiplierHydroTrigger = 1.5f;
         public static ElementalReactionDef overload;
-        public const float overloadDamageCoefficient = 2f;
         public static ElementalReactionDef melt;
         public static ElementalReactionDef electroCharge;
         public static ElementalReactionDef frozen;
-        public static ElementalReactionDef superConduct;
+        public static ElementalReactionDef superconduct;
         public static ElementalReactionDef swirl;
         public static ElementalReactionDef crystallize;
         public static ElementalReactionDef burning;
@@ -77,8 +73,6 @@ namespace ElementalReactionsMod.Reactions
 
         public static void Initialize()
         {
-            ElementalReactionDef.elementalReactionDamageType = DamageAPI.ReserveDamageType();
-            
             vaporize = ElementalReactionDef.CreateElementalReactionDef("Vaporize", $"{ElementalReactionsPlugin.PREFIX}REACTION_VAPORIZE", pyroElement, hydroElement);
             vaporize.onElementalReactionTriggered += (element1, element2, victim, ref damage) => 
             { 
@@ -90,11 +84,7 @@ namespace ElementalReactionsMod.Reactions
             overload.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
             {
                 EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.ExplosionVFX_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
-                DamageTypeCombo overloadDamageType = default;
-                //overloadDamageType.SetElement(pyroElement.index);
-                overloadDamageType.AddModdedDamageType(ElementalReactionDef.elementalReactionDamageType);
-                overloadDamageType |= DamageType.AOE;
-                Util.CreateBlastAttack(damage, overloadDamageCoefficient, 5f, 0f, overloadDamageType, 1000f).Fire();
+                Util.CreateBlastAttack(damage, overloadDamageCoefficient, genericReactionExplosionRadius, 0f, ElementIndex.None, true, 1000f).Fire();
             };
 
             melt = ElementalReactionDef.CreateElementalReactionDef("Melt", $"{ElementalReactionsPlugin.PREFIX}REACTION_MELT", pyroElement, cryoElement);
@@ -102,6 +92,15 @@ namespace ElementalReactionsMod.Reactions
             {
                 EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_StunChanceOnHit.ImpactStunGrenade_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
                 damage.damage *= element2 == pyroElement ? vaporizeMultiplierPyroTrigger : vaporizeMultiplierHydroTrigger;
+            };
+
+            electroCharge = ElementalReactionDef.CreateElementalReactionDef("ElectroCharge", $"{ElementalReactionsPlugin.PREFIX}REACTION_ELECTRO_CHARGE", electroElement, hydroElement);
+            electroCharge.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            {
+                if (victim)
+                {
+                    Orbs.ElectroChargedOrb.CreateOrb(victim.body.mainHurtBox, damage.attacker, electroChargeDamageCoefficient, damage.attacker ? damage.attacker.GetComponent<CharacterBody>() : null);
+                }
             };
 
             frozen = ElementalReactionDef.CreateElementalReactionDef("Frozen", $"{ElementalReactionsPlugin.PREFIX}REACTION_FROZEN", cryoElement, hydroElement);
@@ -113,8 +112,20 @@ namespace ElementalReactionsMod.Reactions
                 }
             };
 
+            superconduct = ElementalReactionDef.CreateElementalReactionDef("Superconduct", $"{ElementalReactionsPlugin.PREFIX}REACTION_SUPERCONDUCT", cryoElement, electroElement);
+            superconduct.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            {
+                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.ChefIceBoxExplosionVFX_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
+                DamageTypeCombo damageType = default;
+                //damageType.SetElement(cryoElement.index);
+                damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
+                damageType.AddModdedDamageType(DamageTypes.superconductDamageType);
+                damageType |= DamageType.AOE;
+                Util.CreateBlastAttack(damage, superconductDamageCoefficient, genericReactionExplosionRadius, 0f, damageType, 0f).Fire();
+            };
 
-            ElementalReactionCatalog.AddElementalReactionDefs([vaporize, overload, melt, frozen]);
+
+            ElementalReactionCatalog.AddElementalReactionDefs([vaporize, overload, melt, electroCharge, frozen, superconduct]);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace ElementalReactionsMod
         {
             string prefix = ElementalReactionsPlugin.PREFIX;
             LanguageAPI.Add($"{prefix}EXPANSION_NAME", "Elemental Reactions");
-            LanguageAPI.Add($"{prefix}EXPANSION_DESCRIPTION", "Adds Genshin Impact's Elemental Reaction system to the game.");
+            LanguageAPI.Add($"{prefix}EXPANSION_DESCRIPTION", "Adds the Elemental Reaction system from 'Genshin Impact' to the game.");
 
             #region Elements
             LanguageAPI.Add($"{prefix}ELEMENT_PYRO", "Pyro");
