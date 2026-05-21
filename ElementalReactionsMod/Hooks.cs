@@ -1,4 +1,5 @@
 ﻿using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Loadout;
 using ElementalReactionsMod.Reactions;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -30,7 +31,7 @@ namespace ElementalReactionsMod
                     if (!damage.rejected && ElementalReactionManager.instance)
                     {
                         ElementDef element = ElementCatalog.GetElementDef(damage.damageType.GetElement());
-                        if (element)
+                        if (element && element != DefaultElementDefs.physicalElement)
                         {
                             bool reactionTriggered = false;
                             ElementDef reacting = ElementalReactionCatalog.GetFirstReactableElement(element, self.body);
@@ -50,7 +51,7 @@ namespace ElementalReactionsMod
                             }
                         }
 
-                        if (self.body.HasBuff(Buffs.superconductBuff) && !element)
+                        if (self.body.HasBuff(Buffs.superconductBuff) && element == DefaultElementDefs.physicalElement)
                         {
                             damage.damage *= StaticValues.superconductDamageMultiplier;
                         }
@@ -78,7 +79,7 @@ namespace ElementalReactionsMod
             {
                 ElementDef element = ElementCatalog.GetElementDef(damageInfo.damageType.GetElement());
 
-                if (!element && damageInfo.attacker && damageInfo.damageType.IsDamageSourceSkillBased && damageInfo.attacker.TryGetComponent<ElementLoadoutComponent>(out var elementLoadout))
+                if (element == DefaultElementDefs.physicalElement && damageInfo.attacker && damageInfo.damageType.IsDamageSourceSkillBased && damageInfo.attacker.TryGetComponent<ElementLoadoutComponent>(out var elementLoadout))
                 {
                     element = elementLoadout.GetElement(damageInfo.damageType.damageSource);
                     if (element) damageInfo.damageType.SetElement(element.index);

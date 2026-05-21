@@ -7,6 +7,11 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using RoR2;
+using RoR2.ContentManagement;
+using RoR2.UI;
+using ElementalReactionsMod.Loadout;
+using ElementalReactionsMod.Elements;
+using UnityEngine.UI;
 
 namespace ElementalReactionsMod
 {
@@ -39,6 +44,45 @@ namespace ElementalReactionsMod
             Content.AddExpansionDef(elementalReactionExpansionDef);
 
             elementalReactionManagerPrefab.AddComponent<ExpansionRequirementComponent>().requiredExpansion = elementalReactionExpansionDef;
+        }
+
+        [SystemInitializer(typeof(ElementCatalog))]
+        public static void AddElementLoadoutMenu()
+        {
+            GameObject characterSelectMenu = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_UI.CharacterSelectUIMain_prefab)).WaitForCompletion();
+            CharacterSelectController characterSelectController = characterSelectMenu.GetComponent<CharacterSelectController>();
+            Array.Resize(ref characterSelectController.primaryColorImages, characterSelectController.primaryColorImages.Length + 1);
+            Transform menu = characterSelectMenu.transform.Find("SafeArea/LeftHandPanel (Layer: Main)/SurvivorInfoPanel, Active (Layer: Secondary)");
+            Transform headerButtons = menu.Find("SubheaderPanel (Overview, Skills, Loadout)");
+            Transform contentPanel = menu.Find("ContentPanel (Overview, Skills, Loadout)");
+            GameObject elementButton = GameObject.Instantiate(headerButtons.Find("GenericMenuButton (Loadout)").gameObject);
+            elementButton.transform.SetParent(headerButtons, false);
+            elementButton.transform.localScale = Vector3.one; // why do unity transforms break so damn hard when parenting anything
+            elementButton.transform.localEulerAngles = Vector3.zero;
+            elementButton.name = "GenericMenuButton (Elements)";
+            elementButton.transform.SetSiblingIndex(4);
+            elementButton.GetComponent<LanguageTextMeshController>().token = $"{ElementalReactionsPlugin.PREFIX}LOADOUT_ELEMENTS";
+            characterSelectController.primaryColorImages[characterSelectController.primaryColorImages.Length - 1] = elementButton.GetComponent<Image>();
+
+            GameObject elementPanel = GameObject.Instantiate(contentPanel.Find("LoadoutPanel").gameObject);
+            elementPanel.transform.SetParent(contentPanel, false);
+            elementPanel.transform.localScale = Vector3.one;
+            elementPanel.transform.localEulerAngles = Vector3.zero;
+            elementPanel.name = "ElementsPanel";
+            GameObject.Destroy(elementPanel.GetComponent<LoadoutPanelController>());
+            elementPanel.SetActive(false);
+            ElementLoadoutPanelController elementPanelController = elementPanel.AddComponent<ElementLoadoutPanelController>();
+            elementPanelController.hoverTextDescription = elementPanelController.transform.Find("DescriptionPanel, Loadout/DescriptionPanelContent (Layer: Secondary)/DescriptionText").GetComponent<LanguageTextMeshController>();
+            elementPanelController.requiredUILayerKey = menu.GetComponent<UILayerKey>();
+
+            headerButtons.GetComponent<HGHeaderNavigationController>().headers.Add(new HGHeaderNavigationController.Header { 
+                headerButton = elementButton.GetComponent<HGButton>(),
+                headerName = Language.GetString($"{ElementalReactionsPlugin.PREFIX}LOADOUT_ELEMENTS"),
+                tmpHeaderText = elementButton.transform.Find("ButtonText").GetComponent<HGTextMeshProUGUI>(),
+                headerRoot = elementPanel,
+                AreConsolePlatformsSupported = true,
+                isPrimaryPlayerOnly = false
+            });
         }
 
         public static class AssetReferences

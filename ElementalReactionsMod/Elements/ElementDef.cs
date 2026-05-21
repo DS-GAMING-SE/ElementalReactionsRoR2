@@ -14,6 +14,9 @@ namespace ElementalReactionsMod.Elements
         public string cachedName { get { return _cachedName; } set { name = value; _cachedName = value; } }
         private string _cachedName;
         public string nameToken;
+        public string descriptionToken;
+
+        public Color color;
 
         public BuffDef buff;
         public Sprite skillIcon;
@@ -36,14 +39,25 @@ namespace ElementalReactionsMod.Elements
         {
             return Language.GetString(this.nameToken, Language.currentLanguageName);
         }
-
-        public static ElementDef CreateElementDef(string internalName, string nameToken, Color color, Sprite icon, Sprite skillIcon, bool canPersist)
+        internal static ElementDef CreatePhysical(string internalName, string nameToken, string descriptionToken, Color color, Sprite skillIcon)
         {
             ElementDef elementDef = ScriptableObject.CreateInstance<ElementDef>();
             elementDef.cachedName = internalName;
             elementDef.nameToken = nameToken;
-            elementDef.buff = Util.AddNewBuff($"bdElementalReactions{internalName}", icon, color, false, true);
+            elementDef.descriptionToken = descriptionToken;
+            elementDef.color = color;
             elementDef.skillIcon = skillIcon;
+            return elementDef;
+        }
+        public static ElementDef CreateElementDef(string internalName, string nameToken, string descriptionToken, Color color, Sprite icon, Sprite skillIcon, bool canPersist)
+        {
+            ElementDef elementDef = ScriptableObject.CreateInstance<ElementDef>();
+            elementDef.cachedName = internalName;
+            elementDef.nameToken = nameToken;
+            elementDef.descriptionToken = descriptionToken;
+            elementDef.color = color;
+            elementDef.buff = Util.AddNewBuff($"bdElementalReactions{internalName}", icon, color, false, true);
+            elementDef.skillIcon = icon; // Replace with skillIcon
             elementDef.iconVFX = null;
             elementDef.canPersist = canPersist;
             return elementDef;
@@ -52,11 +66,12 @@ namespace ElementalReactionsMod.Elements
 
     public enum ElementIndex
     {
-        None = -1
+        Physical = 0
     }
 
     public static class DefaultElementDefs
     {
+        public static ElementDef physicalElement;
         public static ElementDef pyroElement;
         public static ElementDef hydroElement;
         public static ElementDef electroElement;
@@ -67,36 +82,46 @@ namespace ElementalReactionsMod.Elements
 
         public static void Initialize()
         {
-            pyroElement = ElementDef.CreateElementDef("PyroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_PYRO", new Color(0.9f, 0.51f, 0.384f),
+            physicalElement = ElementDef.CreatePhysical("PhysicalElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_PHYSICAL", 
+                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_PHYSICAL_DESCRIPTION", Color.white * 0.9f,
+                null);
+            pyroElement = ElementDef.CreateElementDef("PyroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_PYRO",
+                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_PYRO_DESCRIPTION", new Color(0.9f, 0.51f, 0.384f),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.pyroBuffIcon).WaitForCompletion(), 
                 null, 
                 true);
-            hydroElement = ElementDef.CreateElementDef("HydroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_HYDRO", ColorCatalog.GetColor(ColorCatalog.ColorIndex.LunarItem),
+            hydroElement = ElementDef.CreateElementDef("HydroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_HYDRO",
+                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_HYDRO_DESCRIPTION", ColorCatalog.GetColor(ColorCatalog.ColorIndex.LunarItem),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.hydroBuffIcon).WaitForCompletion(),
                 null,
                 true);
-            electroElement = ElementDef.CreateElementDef("ElectroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ELECTRO", ColorCatalog.GetColor(ColorCatalog.ColorIndex.Utility),
+            electroElement = ElementDef.CreateElementDef("ElectroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ELECTRO",
+                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ELECTRO_DESCRIPTION", ColorCatalog.GetColor(ColorCatalog.ColorIndex.Utility),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.electroBuffIcon).WaitForCompletion(),
                 null,
                 true);
-            cryoElement = ElementDef.CreateElementDef("CryoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_CRYO", new Color(0.584f, 0.8f, 0.9f),
+            cryoElement = ElementDef.CreateElementDef("CryoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_CRYO",
+                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_CRYO_DESCRIPTION", new Color(0.584f, 0.8f, 0.9f),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.cryoBuffIcon).WaitForCompletion(),
                 null,
                 true);
-            anemoElement = ElementDef.CreateElementDef("AnemoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ANEMO", new Color(0.5f, 0.9f, 0.8f),
+            anemoElement = ElementDef.CreateElementDef("AnemoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ANEMO",
+                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ANEMO_DESCRIPTION", new Color(0.5f, 0.9f, 0.8f),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.anemoBuffIcon).WaitForCompletion(),
                 null,
                 false);
-            geoElement = ElementDef.CreateElementDef("GeoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_GEO", new Color(0.9f, 0.788f, 0.384f),
+            geoElement = ElementDef.CreateElementDef("GeoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_GEO",
+                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_GEO_DESCRIPTION", new Color(0.9f, 0.788f, 0.384f),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.geoBuffIcon).WaitForCompletion(),
                 null,
                 false);
-            dendroElement = ElementDef.CreateElementDef("DendroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_DENDRO", new Color(0.612f, 0.9f, 0.384f),
+            dendroElement = ElementDef.CreateElementDef("DendroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_DENDRO",
+                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_DENDRO_DESCRIPTION", new Color(0.612f, 0.9f, 0.384f),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.dendroBuffIcon).WaitForCompletion(),
                 null,
                 true);
 
-            ElementCatalog.AddElementDefs([pyroElement, hydroElement, electroElement, cryoElement, anemoElement, geoElement, dendroElement]);
+            ElementCatalog.AddElementDefs([physicalElement, pyroElement, hydroElement, electroElement, cryoElement, anemoElement, geoElement, dendroElement]);
 
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(LookingGlass.PluginInfo.PLUGIN_GUID))
             {

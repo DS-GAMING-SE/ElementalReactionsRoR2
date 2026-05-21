@@ -83,7 +83,7 @@ namespace ElementalReactionsMod.Reactions
         }
         public static ElementIndex GetFirstReactableElement(ElementDef element, ElementIndex[] elements)
         {
-            return elements.DefaultIfEmpty(ElementIndex.None).First(x => element.reactsWith[(int)x]);
+            return elements.DefaultIfEmpty(ElementIndex.Physical).First(x => element.reactsWith[(int)x]);
         }
 
         public static ElementalReactionDef GetElementalReaction(ElementDef element1, ElementDef element2)

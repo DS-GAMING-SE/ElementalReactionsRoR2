@@ -24,7 +24,7 @@ namespace ElementalReactionsMod
         {
             for (int i = 0; i < ElementCatalog.elementIndexDamageTypeBits.Length; i++)
             {
-                if (GetBit((int)elementIndex + 1, i))
+                if (GetBit((int)elementIndex, i))
                 {
                     damageTypeCombo.AddModdedDamageType(ElementCatalog.elementIndexDamageTypeBits[i]);
                 }
@@ -54,7 +54,7 @@ namespace ElementalReactionsMod
 
         public static int GetDamageTypeIndex(DamageTypeCombo damageTypeCombo, DamageAPI.ModdedDamageType[] damageTypes)
         {
-            int index = -1;
+            int index = 0;
             for (int i = 0; i < damageTypes.Length; i++)
             {
                 if (damageTypeCombo.HasModdedDamageType(damageTypes[i]))

@@ -84,7 +84,7 @@ namespace ElementalReactionsMod.Reactions
             overload.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
             {
                 EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.ExplosionVFX_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
-                Util.CreateBlastAttack(damage, overloadDamageCoefficient, genericReactionExplosionRadius, 0f, ElementIndex.None, true, 1000f).Fire();
+                Util.CreateBlastAttack(damage, overloadDamageCoefficient, genericReactionExplosionRadius, 0f, ElementIndex.Physical, true, 1000f).Fire();
             };
 
             melt = ElementalReactionDef.CreateElementalReactionDef("Melt", $"{ElementalReactionsPlugin.PREFIX}REACTION_MELT", pyroElement, cryoElement);
@@ -124,8 +124,38 @@ namespace ElementalReactionsMod.Reactions
                 Util.CreateBlastAttack(damage, superconductDamageCoefficient, genericReactionExplosionRadius, 0f, damageType, 0f).Fire();
             };
 
+            swirl = ElementalReactionDef.CreateElementalReactionDef("Swirl", $"{ElementalReactionsPlugin.PREFIX}REACTION_SWIRL", anemoElement, [pyroElement, hydroElement, electroElement, cryoElement]);
+            swirl.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            {
+                ElementDef swirledElement = element1 == anemoElement ? element2 : element1;
+                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.ChefIceBoxExplosionVFX_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
+                DamageTypeCombo damageType = default;
+                damageType.SetElement(swirledElement.index);
+                damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
+                damageType |= DamageType.AOE;
+                BlastAttack blast = Util.CreateBlastAttack(damage, swirlDamageCoefficient, genericReactionExplosionRadius, 0f, damageType, 0f);
+            };
 
-            ElementalReactionCatalog.AddElementalReactionDefs([vaporize, overload, melt, electroCharge, frozen, superconduct]);
+            crystallize = ElementalReactionDef.CreateElementalReactionDef("Crystallize", $"{ElementalReactionsPlugin.PREFIX}REACTION_CRYSTALLIZE", geoElement, [pyroElement, hydroElement, electroElement, cryoElement]);
+            crystallize.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            {
+
+            };
+
+            burning = ElementalReactionDef.CreateElementalReactionDef("Burning", $"{ElementalReactionsPlugin.PREFIX}REACTION_BURNING", dendroElement, pyroElement);
+            burning.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            {
+                damage.damageType |= DamageType.IgniteOnHit;
+            };
+
+            quicken = ElementalReactionDef.CreateElementalReactionDef("Quicken", $"{ElementalReactionsPlugin.PREFIX}REACTION_QUICKEN", dendroElement, electroElement);
+            quicken.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            {
+                victim.body.AddTimedBuff(Buffs.quickenBuff, 5f);
+            };
+
+
+            ElementalReactionCatalog.AddElementalReactionDefs([vaporize, overload, melt, electroCharge, frozen, superconduct, swirl, crystallize, burning, quicken]);
         }
     }
 }

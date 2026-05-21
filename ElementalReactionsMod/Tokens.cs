@@ -14,14 +14,25 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}EXPANSION_NAME", "Elemental Reactions");
             LanguageAPI.Add($"{prefix}EXPANSION_DESCRIPTION", "Adds the Elemental Reaction system from 'Genshin Impact' to the game.");
 
+            LanguageAPI.Add($"{prefix}LOADOUT_ELEMENTS", "Elements");
+
             #region Elements
+            LanguageAPI.Add($"{prefix}ELEMENT_PHYSICAL", "Physical");
+            LanguageAPI.Add($"{prefix}ELEMENT_PHYSICAL_DESCRIPTION", "Physical");
             LanguageAPI.Add($"{prefix}ELEMENT_PYRO", "Pyro");
+            LanguageAPI.Add($"{prefix}ELEMENT_PYRO_DESCRIPTION", "Pyro");
             LanguageAPI.Add($"{prefix}ELEMENT_HYDRO", "Hydro");
+            LanguageAPI.Add($"{prefix}ELEMENT_HYDRO_DESCRIPTION", "Hydro");
             LanguageAPI.Add($"{prefix}ELEMENT_ELECTRO", "Electro");
+            LanguageAPI.Add($"{prefix}ELEMENT_ELECTRO_DESCRIPTION", "Electro");
             LanguageAPI.Add($"{prefix}ELEMENT_CRYO", "Cryo");
+            LanguageAPI.Add($"{prefix}ELEMENT_CRYO_DESCRIPTION", "Cryo");
             LanguageAPI.Add($"{prefix}ELEMENT_ANEMO", "Anemo");
+            LanguageAPI.Add($"{prefix}ELEMENT_ANEMO_DESCRIPTION", "Anemo");
             LanguageAPI.Add($"{prefix}ELEMENT_GEO", "Geo");
+            LanguageAPI.Add($"{prefix}ELEMENT_GEO_DESCRIPTION", "Geo");
             LanguageAPI.Add($"{prefix}ELEMENT_DENDRO", "Dendro");
+            LanguageAPI.Add($"{prefix}ELEMENT_DENDRO_DESCRIPTION", "Dendro");
             #endregion
 
             #region Items

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using RoR2;
+using ElementalReactionsMod.Elements;
+using HG;
 
-namespace ElementalReactionsMod.Elements
+namespace ElementalReactionsMod.Loadout
 {
     [RequireComponent(typeof(CharacterBody))]
     public class ElementLoadoutComponent : MonoBehaviour
@@ -31,6 +33,13 @@ namespace ElementalReactionsMod.Elements
             }
         }
 
+        public void ApplyElementLoadout(ElementDef[] elements)
+        {
+            primaryElement = ElementCatalog.GetElementDef(elements[0].index);
+            secondaryElement = ElementCatalog.GetElementDef(elements[1].index);
+            utilityElement = ElementCatalog.GetElementDef(elements[2].index);
+            specialElement = ElementCatalog.GetElementDef(elements[3].index);
+        }
         public void ApplyElementLoadout(ElementIndex[] elements)
         {
             primaryElement = ElementCatalog.GetElementDef(elements[0]);
@@ -44,7 +53,7 @@ namespace ElementalReactionsMod.Elements
         {
             foreach (var survivor in SurvivorCatalog.allSurvivorDefs)
             {
-                survivor.bodyPrefab.AddComponent<ElementLoadoutComponent>().ApplyElementLoadout([(ElementIndex)0, (ElementIndex)1, (ElementIndex)2, (ElementIndex)3]);
+                survivor.bodyPrefab.EnsureComponent<ElementLoadoutComponent>().ApplyElementLoadout([(ElementIndex)1, (ElementIndex)2, (ElementIndex)3, (ElementIndex)4]);
             }
         }
     }

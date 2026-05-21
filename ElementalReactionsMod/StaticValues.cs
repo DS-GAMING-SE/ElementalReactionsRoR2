@@ -18,6 +18,8 @@ namespace ElementalReactionsMod
         public const float superconductDamageCoefficient = 1f;
         public const float superconductDamageMultiplier = 1.2f;
 
+        public const float swirlDamageCoefficient = 2f;
+
         public const float quickenDamageAddCoefficient = 0.3f;
         #endregion
     }

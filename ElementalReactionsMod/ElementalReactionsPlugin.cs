@@ -36,13 +36,13 @@ namespace ElementalReactionsMod
 
             new ContentPacks().Initialize();
 
-            Tokens.Initialize();
-
             Assets.Initialize();
 
             DefaultElementDefs.Initialize();
 
             DefaultElementalReactions.Initialize();
+
+            Tokens.Initialize();
 
             DamageTypes.Initialize();
 
