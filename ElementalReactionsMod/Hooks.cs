@@ -1,4 +1,5 @@
 ﻿using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Items;
 using ElementalReactionsMod.Loadout;
 using ElementalReactionsMod.Reactions;
 using Mono.Cecil.Cil;
@@ -6,8 +7,11 @@ using MonoMod.Cil;
 using MonoMod.Utils;
 using R2API;
 using RoR2;
+using RoR2.EntitlementManagement;
+using RoR2.ExpansionManagement;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ElementalReactionsMod
@@ -18,6 +22,7 @@ namespace ElementalReactionsMod
         {
             IL.RoR2.HealthComponent.TakeDamageProcess += TakeDamageIL;
             On.RoR2.HealthComponent.TakeDamageProcess += TakeDamageHook;
+            On.RoR2.UI.LogBook.LogBookController.CanSelectItemEntry += NoDelusionsWithElementInLogbook;
         }
         private static void TakeDamageIL(ILContext il)
         {
@@ -31,25 +36,7 @@ namespace ElementalReactionsMod
                     if (!damage.rejected && ElementalReactionManager.instance)
                     {
                         ElementDef element = ElementCatalog.GetElementDef(damage.damageType.GetElement());
-                        if (element && element != DefaultElementDefs.physicalElement)
-                        {
-                            bool reactionTriggered = false;
-                            ElementDef reacting = ElementalReactionCatalog.GetFirstReactableElement(element, self.body);
-                            if (reacting)
-                            {
-                                ElementalReactionDef reaction = ElementalReactionCatalog.GetElementalReaction(element, reacting);
-                                if (reaction)
-                                {
-                                    self.body.ClearTimedBuffs(reacting.buff.buffIndex);
-                                    reaction.TriggerReaction(element, reacting, self, ref damage);
-                                    reactionTriggered = true;
-                                }
-                            }
-                            if (element.canPersist && !reactionTriggered)
-                            {
-                                self.body.AddTimedBuff(element.buff, 10, 1);
-                            }
-                        }
+                        ElementalReactionManager.ApplyElement(element, self.body);
 
                         if (self.body.HasBuff(Buffs.superconductBuff) && element == DefaultElementDefs.physicalElement)
                         {
@@ -86,6 +73,11 @@ namespace ElementalReactionsMod
                 }
             }
             orig(self, damageInfo);
+        }
+
+        private static bool NoDelusionsWithElementInLogbook(On.RoR2.UI.LogBook.LogBookController.orig_CanSelectItemEntry orig, ItemDef item, Dictionary<ExpansionDef, bool> entitlements)
+        {
+            return orig(item, entitlements) && item && !Items.Items.elementalDelusions.Contains(item);
         }
     }
 }

@@ -57,6 +57,18 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Icons/texElementalReactionExpansionIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 9f3cf544c7630a04fa25214a5197c191
+    m_Address: Assets/ElementalReactionsAssets/Items/Delusion/mdlDelusion.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 8c75207915d01ff4280ac8f0e15b5aad
+    m_Address: Assets/ElementalReactionsAssets/Items/Delusion/texDelusionIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e3301a4ccd084f4428b3b23e85dc1733
+    m_Address: Assets/ElementalReactionsAssets/Items/Common/Materials/matVision.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

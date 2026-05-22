@@ -6,7 +6,11 @@ using R2API.ContentManagement;
 using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using System.Security;
+using System.Security.Permissions;
+using ElementalReactionsMod.Items;
 
+[assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 [assembly: HG.Reflection.SearchableAttribute.OptIn]
 namespace ElementalReactionsMod
 {
@@ -47,6 +51,8 @@ namespace ElementalReactionsMod
             DamageTypes.Initialize();
 
             Buffs.Initialize();
+
+            Items.Items.Initialize();
 
             Hooks.Initialize();
 

@@ -11,7 +11,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-
+		
 		<PackageReference Include="BepInEx.Core" Version="5.4.21" />
 
 		<PackageReference Include="R2API.DamageType" Version="1.1.7" />
@@ -33,10 +33,6 @@
 	  <Reference Include="RiskOfOptions">
 	    <HintPath>..\lib\RiskOfOptions.dll</HintPath>
 	  </Reference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Items\" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

@@ -8,6 +8,9 @@ namespace ElementalReactionsMod
 {
     public static class Tokens
     {
+        public static string[] elements = ["Pyro", "Hydro", "Electro", "Cryo", "Anemo", "Geo", "Dendro"];
+        public static string[] elementsColored = ["Pyro", "Hydro", "Electro", Tokens.UtilityText("Cryo"), "Anemo", Tokens.DamageText("Geo"), "Dendro"];
+
         public static void Initialize()
         {
             string prefix = ElementalReactionsPlugin.PREFIX;
@@ -42,18 +45,33 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}ITEM_SOULSEEKER_SHELL_LORE", "");
 
             LanguageAPI.Add($"{prefix}ITEM_DELUSION_NAME", "Delusion");
-            LanguageAPI.Add($"{prefix}ITEM_DELUSION_PICKUP", $"Resonates with an element on pickup. High damage hits also blast enemies with an attack of that element... {RedText("BUT some of your life is consumed with each use")}. Recharges over time.");
-            string delusionDescription = $"Hits that deal {DamageText("more than 400% damage")} blasts enemies with an {DamageText("attack of the Delusion's element")}, dealing {DamageText("1000% base damage")}. Triggering this effect costs {RedText("10%")} of your max health and {RedText("reduces healing received by 30%")} {StackingText("+30% per stack")} while the effect is on cooldown. Recharges every {UtilityText("10")} seconds.";
-            LanguageAPI.Add($"{prefix}ITEM_DELUSION_DESCRIPTION", $"On pickup, {UtilityText("resonate")} with a {UtilityText("random element")}. {delusionDescription}");
-            LanguageAPI.Add($"{prefix}ITEM_DELUSION_LORE", """
+            LanguageAPI.Add($"{prefix}ITEM_DELUSION_PICKUP", $"Resonates with an element on pickup. {DelusionPickup("that element")}");
+            LanguageAPI.Add($"{prefix}ITEM_DELUSION_DESCRIPTION", $"On pickup, {UtilityText("resonate")} with a {UtilityText("random element you don't have")}. {DelusionDescription(DamageText("the Delusion's element"))}");
+
+            for (int i = 0; i < elements.Length; i++)
+            {
+                LanguageAPI.Add($"{prefix}ITEM_DELUSION_{elements[i].ToUpper()}_NAME", $"{elements[i]} Delusion");
+                LanguageAPI.Add($"{prefix}ITEM_DELUSION_{elements[i].ToUpper()}_PICKUP", DelusionPickup(elementsColored[i]));
+                LanguageAPI.Add($"{prefix}ITEM_DELUSION_{elements[i].ToUpper()}_DESCRIPTION", DelusionDescription(DamageText(DelusionPickup(elementsColored[i]))));
+            }
+
+            /*LanguageAPI.Add($"{prefix}ITEM_DELUSION_LORE", """
                 Usurper...
                 ---
                 ---parallel providence and heavenly principles. Unclear if pov is fatui or mithrix---
                 ---
                 I will endure the bitter cold for as long as it takes...
                 To see your world burn.
-                """);
+                """);*/
             #endregion
+        }
+        public static string DelusionPickup(string element)
+        {
+            return $"High damage hits also blast enemies with an attack of {element}... {RedText("BUT some of your life is consumed with each use")}. Recharges over time.";
+        }
+        public static string DelusionDescription(string element)
+        {
+            return $"Hits that deal {DamageText("more than 400% damage")} blasts enemies with an {DamageText("attack of ")+element}, dealing {DamageText("1000% base damage")}. Triggering this effect costs {RedText("10%")} of your max health and {RedText("reduces healing received by 30%")} {StackingText("+30% per stack")} while the effect is on cooldown. Recharges every {UtilityText("10")} seconds.";
         }
         public static string DamageText(string text)
         {

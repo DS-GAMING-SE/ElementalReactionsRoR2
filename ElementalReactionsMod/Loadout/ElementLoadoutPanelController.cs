@@ -9,6 +9,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using HG;
 
 namespace ElementalReactionsMod.Loadout
 {
@@ -76,7 +77,7 @@ namespace ElementalReactionsMod.Loadout
             }
             this.bodyIndex = bodyIndex;
             this.bodyName = BodyCatalog.GetBodyName(bodyIndex);
-            this.bodyElementLoadout = BodyCatalog.GetBodyPrefab(bodyIndex).GetComponent<ElementLoadoutComponent>();
+            this.bodyElementLoadout = BodyCatalog.GetBodyPrefab(bodyIndex).EnsureComponent<ElementLoadoutComponent>();
             this.Rebuild();
         }
 
@@ -97,11 +98,7 @@ namespace ElementalReactionsMod.Loadout
             this.rows.Clear();
         }
 
-
-
-
-
-        public class Row : IDisposable
+        public class Row : IDisposable // ----------------------------------------------------------------------------------------
         {
             public ElementLoadoutPanelController owner;
 
@@ -114,8 +111,6 @@ namespace ElementalReactionsMod.Loadout
             public Color primaryColor;
 
             private List<RowData> rowData = new List<RowData>();
-
-            private ConfigEntry<string> loadoutConfig;
 
             public SkillSlot skillSlot;
 
@@ -159,18 +154,14 @@ namespace ElementalReactionsMod.Loadout
                     int index = i;
                     row.AddButton(owner, ElementCatalog.elementCatalog[i]).onClick.AddListener(() => 
                     {
-                        row.loadoutConfig = Config.SetElementLoadoutConfig(owner.bodyName, (ElementIndex)index, skillSlot);
+                        Config.SetElementLoadoutConfig(owner.bodyName, ElementCatalog.elementCatalog[index], skillSlot);
                         row.OnLoadoutChanged(null, null);
                     });
                 }
-                row.UpdateCharacter();
                 return row;
             }
             public void UpdateCharacter()
             {
-                if (loadoutConfig != null) loadoutConfig.SettingChanged -= OnLoadoutChanged;
-                loadoutConfig = Config.GetElementLoadoutConfig(owner.bodyName);
-                if (loadoutConfig != null) loadoutConfig.SettingChanged += OnLoadoutChanged;
                 CharacterBody bodyPrefabBodyComponent = BodyCatalog.GetBodyPrefabBodyComponent(owner.bodyIndex);
                 if (bodyPrefabBodyComponent != null)
                 {
@@ -189,20 +180,20 @@ namespace ElementalReactionsMod.Loadout
 
             public void OnLoadoutChanged(object obj, EventArgs args)
             {
-                ElementIndex[] loadout = Config.GetElementLoadoutFromConfig(loadoutConfig);
+                ElementDef[] loadout = Config.GetElementLoadoutFromConfig(owner.bodyName, out _);
                 if (owner.bodyElementLoadout)
                 {
                     owner.bodyElementLoadout.ApplyElementLoadout(loadout);
                 }
-                int num = (int)loadout[(int)skillSlot];
                 for (int i = 0; i < this.rowData.Count; i++)
                 {
                     ColorBlock colors = this.rowData[i].button.colors;
                     colors.colorMultiplier = 0.5f;
                     this.rowData[i].button.colors = colors;
                     this.SetButtonColorMultiplier(i, 0.5f);
-                    if (num == this.rowData[i].defIndex)
+                    if ((int)loadout[(int)skillSlot].index == this.rowData[i].defIndex)
                     {
+                        Log.Message($"Loadout {i} selected");
                         this.choiceHighlightRect.SetParent((RectTransform)this.rowData[i].button.transform, false);
                         this.SetButtonColorMultiplier(i, 1f);
                     }
@@ -239,7 +230,6 @@ namespace ElementalReactionsMod.Loadout
 
             public void Dispose()
             {
-                if (loadoutConfig != null) loadoutConfig.SettingChanged -= OnLoadoutChanged;
                 for (int i = this.rowData.Count - 1; i >= 0; i--)
                 {
                     GameObject.Destroy(this.rowData[i].button.gameObject);

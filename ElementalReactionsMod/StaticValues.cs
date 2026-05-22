@@ -6,6 +6,11 @@ namespace ElementalReactionsMod
 {
     public static class StaticValues
     {
+        #region Elements
+        public const float elementAppliedICD = 1f;
+        public const float elementRemovedICD = 0.5f;
+        #endregion
+
         #region Reactions
         public const float genericReactionExplosionRadius = 8f;
         public const float vaporizeMultiplierPyroTrigger = 2f;

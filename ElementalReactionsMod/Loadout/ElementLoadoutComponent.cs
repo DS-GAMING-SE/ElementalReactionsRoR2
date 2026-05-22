@@ -5,6 +5,7 @@ using UnityEngine;
 using RoR2;
 using ElementalReactionsMod.Elements;
 using HG;
+using ElementalReactionsMod.Reactions;
 
 namespace ElementalReactionsMod.Loadout
 {
@@ -15,6 +16,26 @@ namespace ElementalReactionsMod.Loadout
         public ElementDef secondaryElement;
         public ElementDef utilityElement;
         public ElementDef specialElement;
+
+        public ElementDef permanentlyAppliedElement;
+
+        public CharacterBody characterBody;
+        private void Awake()
+        {
+            if (!ElementalReactionManager.instance)
+            {
+                this.enabled = false;
+            }
+            characterBody = GetComponent<CharacterBody>();
+        }
+
+        private void FixedUpdate()
+        {
+            if (permanentlyAppliedElement && permanentlyAppliedElement.buff)
+            {
+                characterBody.SetBuffCount(permanentlyAppliedElement.buff.buffIndex, 1);
+            }
+        }
 
         public ElementDef GetElement(DamageSource damageSource)
         {
@@ -53,7 +74,7 @@ namespace ElementalReactionsMod.Loadout
         {
             foreach (var survivor in SurvivorCatalog.allSurvivorDefs)
             {
-                survivor.bodyPrefab.EnsureComponent<ElementLoadoutComponent>().ApplyElementLoadout([(ElementIndex)1, (ElementIndex)2, (ElementIndex)3, (ElementIndex)4]);
+                survivor.bodyPrefab.EnsureComponent<ElementLoadoutComponent>();
             }
         }
     }

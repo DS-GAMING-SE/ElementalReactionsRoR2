@@ -5,6 +5,7 @@ using RiskOfOptions;
 using RiskOfOptions.Options;
 using RoR2;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -15,91 +16,112 @@ namespace ElementalReactionsMod
     public static class Config
     {
         #region Regular Configs
-        /*public static ConfigEntry<Logs> EnableLogs()
+        /*public static ConfigEntry<bool> EnableLogs()
         {
-            return ElementalReactionsPlugin.instance.Config.Bind<Logs>("Misc.", "Enable Logs", Logs.Minimum, "This controls how much information this mod will put in the logs. This information can help the mod creator fix issues should any come up, but it does impact performance a bit. Default is false.");
+            return ElementalReactionsPlugin.instance.Config.Bind<bool>("Survivors", "Can Use Elements", true, "Whether surviv");
         }*/
         #endregion
         #region Loadout
-        public static ElementIndex[] GetElementLoadoutFromConfig(ConfigEntry<string> config)
+        /*
+         * Writing my own stupid system for making configs because I just wanted to not write anything to the config UNLESS the value was different from default but nooooooo
+         * bepinex won't that happen. They've got a OrphanedEntries property in the config file that would've let me side step that and make my own things but nooooo
+         * it's private and even after trying NStrip and AssemblyPublicizer I couldn't get it to show up
+         */
+        public static string loadoutConfigFilePath = ElementalReactionsPlugin.instance.Config.ConfigFilePath.Replace(".cfg", "Loadouts.cfg");
+        public static Dictionary<string, ElementDef[]> elementLoadoutConfigs = new Dictionary<string, ElementDef[]>();
+
+        [SystemInitializer(typeof(ElementCatalog))]
+        internal static void ReadConfigFile()
         {
-            ElementIndex[] elements = [ElementIndex.Physical, ElementIndex.Physical, ElementIndex.Physical, ElementIndex.Physical];
-            if (!ElementCatalog.availability.available) return elements;
-            if (config != null && !string.IsNullOrEmpty(config.Value))
+            if (File.Exists(loadoutConfigFilePath))
             {
-                string[] elementString = config.Value.Split(", ").ToArray();
-                if (elementString.Length < 4)
+                foreach (var line in File.ReadAllLines(loadoutConfigFilePath))
                 {
-                    ElementDef physical = ElementCatalog.GetElementDef(ElementIndex.Physical);
-                    SetElementLoadoutConfig(config, [physical, physical, physical, physical]);
-                    return elements;
-                }
-                for (int i = 0; i < 4; i++)
-                {
-                    foreach (var element in ElementCatalog.elementCatalog)
+                    var split = line.Split("=", 2);
+                    if (split.Length != 2)
+                    { 
+                        continue; 
+                    }
+                    string[] elementStrings = split[1].Split(", ").ToArray();
+                    if (elementStrings.Length == 4)
                     {
-                        if (element.cachedName == elementString[i])
+                        ElementDef[] elements = [DefaultElementDefs.physicalElement, DefaultElementDefs.physicalElement, DefaultElementDefs.physicalElement, DefaultElementDefs.physicalElement];
+                        for (int i = 0; i < elementStrings.Length; i++)
                         {
-                            elements[i] = element.index;
+                            string elementString = elementStrings[i].Trim();
+                            foreach (var element in ElementCatalog.elementCatalog)
+                            {
+                                if (element.cachedName == elementString)
+                                {
+                                    elements[i] = element;
+                                    break;
+                                }
+                            }
                         }
+                        elementLoadoutConfigs.Add(split[0].Trim(), elements);
                     }
                 }
             }
+        }
+        public static ElementDef[] GetElementLoadoutFromConfig(string bodyName, out bool configExists)
+        {
+            configExists = false;
+            ElementDef[] elements = [DefaultElementDefs.physicalElement, DefaultElementDefs.physicalElement, DefaultElementDefs.physicalElement, DefaultElementDefs.physicalElement];
+            if (!ElementCatalog.availability.available) return elements;
+            if (!string.IsNullOrEmpty(bodyName) && File.Exists(loadoutConfigFilePath) && elementLoadoutConfigs.TryGetValue(bodyName, out ElementDef[] elementsFromConfig))
+            {
+                configExists = true;
+                return elementsFromConfig;
+            }
             return elements;
         }
-        public static ConfigEntry<string> GetElementLoadoutConfig(string bodyName)
+        public static void SetElementLoadoutConfig(string bodyName, ElementDef element, SkillSlot skillSlot)
         {
-            if (!string.IsNullOrEmpty(bodyName) && ElementalReactionsPlugin.instance.Config.TryGetEntry<string>("Loadouts", bodyName, out var entry))
+            ElementDef[] elementDefs = GetElementLoadoutFromConfig(bodyName, out bool exists);
+            if (elementDefs[(int)skillSlot] == element) return;
+            elementDefs[(int)skillSlot] = element;
+            if (exists)
             {
-                return entry;
-            }
-            return null;
-        }
-        public static ConfigEntry<string> SetElementLoadoutConfig(string bodyName, ElementIndex element, SkillSlot skillSlot)
-        {
-            ConfigEntry<string> config = GetElementLoadoutConfig(bodyName);
-            ElementIndex[] elements = GetElementLoadoutFromConfig(config);
-            if (elements[(int)skillSlot] == element) return config;
-            elements[(int)skillSlot] = element;
-            ElementDef[] elementDefs = [ElementCatalog.GetElementDef(elements[0]), ElementCatalog.GetElementDef(elements[1]),
-                ElementCatalog.GetElementDef(elements[2]), ElementCatalog.GetElementDef(elements[3])];
-            if (config == null)
-            {
-                return CreateElementLoadoutConfig(bodyName, elementDefs);
+                WriteElementLoadoutConfig(bodyName, elementDefs);
             }
             else
             {
-                return SetElementLoadoutConfig(config, elementDefs);
+                AppendNewElementLoadoutConfig(bodyName, elementDefs);
             }
         }
-        public static ConfigEntry<string> SetElementLoadoutConfig(string bodyName, ElementIndex[] elements)
+        public static void SetElementLoadoutConfig(string bodyName, ElementDef[] elementDefs)
         {
-            if (elements.Length < 4 || !ElementCatalog.availability.available || string.IsNullOrEmpty(bodyName)) return null;
-            ConfigEntry<string> config = GetElementLoadoutConfig(bodyName);
-            ElementDef[] elementDefs = [ElementCatalog.GetElementDef(elements[0]), ElementCatalog.GetElementDef(elements[1]),
-            ElementCatalog.GetElementDef(elements[2]), ElementCatalog.GetElementDef(elements[3])];
-            if (config == null) 
-            { 
-                return CreateElementLoadoutConfig(bodyName, elementDefs); 
+            if (elementLoadoutConfigs.ContainsKey(bodyName))
+            {
+                WriteElementLoadoutConfig(bodyName, elementDefs);
             }
-            return SetElementLoadoutConfig(config, elementDefs);
+            else
+            {
+                AppendNewElementLoadoutConfig(bodyName, elementDefs);
+            }
         }
-        public static ConfigEntry<string> SetElementLoadoutConfig(ConfigEntry<string> config, ElementDef[] elementDefs)
+        public static void WriteElementLoadoutConfig(string bodyName, ElementDef[] elementDefs)
         {
-            string newConfig = elementDefs[0].cachedName + ", " + elementDefs[1].cachedName + ", " + elementDefs[2].cachedName + ", " + elementDefs[3].cachedName;
-            Log.Message("Set Element Loadout for " + config.Definition.Key + ": " + newConfig);
-            config.Value = newConfig;
-            return config;
+            elementLoadoutConfigs[bodyName] = elementDefs;
+            using (var writer = new StreamWriter(loadoutConfigFilePath, false))
+            {
+                foreach (var loadout in elementLoadoutConfigs)
+                {
+                    string newConfig = loadout.Key + " = " + string.Join(", ", loadout.Value.Select(x => x ? x.cachedName : DefaultElementDefs.physicalElement.cachedName));
+                    writer.Write(newConfig);
+                }
+                Log.Message("Rewrote Element Loadout config");
+            }
         }
-        public static ConfigEntry<string> CreateElementLoadoutConfig(string bodyName, ElementDef[] elements)
+        public static void AppendNewElementLoadoutConfig(string bodyName, ElementDef[] elements)
         {
-            ConfigEntry<string> config = ElementalReactionsPlugin.instance.Config.Bind<string>("Loadouts", bodyName, 
-                DefaultElementDefs.physicalElement.cachedName+", "+ DefaultElementDefs.physicalElement.cachedName+", "+ DefaultElementDefs.physicalElement.cachedName+", "+DefaultElementDefs.physicalElement.cachedName, 
-                "The elements selected for the survivor's loadout. This value should be set in game through the Element tab of the character select screen.");
-            string newConfig = string.Join(", ", elements.Select(x => x ? x.cachedName : DefaultElementDefs.physicalElement.cachedName));
-            config.Value = newConfig;
-            Log.Message("Set Element Loadout for " + bodyName + ": " + newConfig);
-            return config;
+            string newConfig = bodyName+" = " + string.Join(", ", elements.Select(x => x ? x.cachedName : DefaultElementDefs.physicalElement.cachedName));
+            using (var writer = new StreamWriter(loadoutConfigFilePath, false))
+            {
+                writer.Write(newConfig);
+                Log.Message("Appended new Element Loadout: " + newConfig);
+            }
+            elementLoadoutConfigs.Add(bodyName, elements);
         }
         #endregion
         #region Risk Of Options

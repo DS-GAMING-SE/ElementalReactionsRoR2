@@ -1,16 +1,17 @@
-﻿using ElementalReactionsMod.Reactions;
+﻿using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Loadout;
+using ElementalReactionsMod.Reactions;
 using R2API;
+using RoR2;
+using RoR2.ContentManagement;
 using RoR2.ExpansionManagement;
+using RoR2.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using RoR2;
-using RoR2.ContentManagement;
-using RoR2.UI;
-using ElementalReactionsMod.Loadout;
-using ElementalReactionsMod.Elements;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 
 namespace ElementalReactionsMod
@@ -44,6 +45,43 @@ namespace ElementalReactionsMod
             Content.AddExpansionDef(elementalReactionExpansionDef);
 
             elementalReactionManagerPrefab.AddComponent<ExpansionRequirementComponent>().requiredExpansion = elementalReactionExpansionDef;
+
+            #region Items
+
+            #endregion
+        }
+
+        public static Material CreateVisionMaterial(AssetReferenceT<Texture> icon, AssetReferenceT<Texture> remapTex)
+        {
+            Material vision = new Material(Addressables.LoadAssetAsync<Shader>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Shaders.HGOpaqueCloudRemap_shader).WaitForCompletion());
+            vision.EnableKeyword("EMISSIONFROMALBEDO");
+            vision.EnableKeyword("DITHER");
+            vision.EnableKeyword("USE_CLOUDS");
+            vision.EnableKeyword("USE_UV1");
+            vision.EnableKeyword("_EMISSION");
+            AssetAsyncReferenceManager<Texture>.LoadAsset(icon).Completed += x =>
+            {
+                vision.SetTexture("_MainTex", x.Result);
+            };
+            AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_TiledTextures.texCloudIce_png)).Completed += x =>
+            {
+                vision.SetTexture("_Cloud1Tex", x.Result);
+                vision.SetTextureScale("_Cloud1Tex", new Vector2(5, 3));
+            };
+            AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_TiledTextures.texCloudOrganic2_png)).Completed += x =>
+            {
+                vision.SetTexture("_Cloud2Tex", x.Result);
+            };
+            AssetAsyncReferenceManager<Texture>.LoadAsset(remapTex).Completed += x =>
+            {
+                vision.SetTexture("_RemapTex", x.Result);
+            };
+            vision.SetVector("_CutoffScroll", new Vector4(0, -5, 2, -1));
+            vision.SetFloat("_AlphaBoost", 1.2f);
+            vision.SetFloat("_Cutoff", 0f);
+            vision.Specular(0.4f, 8.5f, false);
+
+            return vision;
         }
 
         [SystemInitializer(typeof(ElementCatalog))]
@@ -99,6 +137,16 @@ namespace ElementalReactionsMod
 
             public static AssetReferenceT<Sprite> quickenBuffIcon = new AssetReferenceT<Sprite>("fd1a80b8adab48644bde7e4c5d73fd13");
             public static AssetReferenceT<Sprite> superconductBuffIcon = new AssetReferenceT<Sprite>("5fc2055e4d7c33348889a483e5a0df1b");
+
+            #region Items
+            #region Common
+            public static AssetReferenceT<Material> visionMaterial = new AssetReferenceT<Material>("e3301a4ccd084f4428b3b23e85dc1733");
+            #endregion
+            #region Delusion
+            public static AssetReferenceT<GameObject> delusionPickupModel = new AssetReferenceT<GameObject>("9f3cf544c7630a04fa25214a5197c191");
+            public static AssetReferenceT<Texture> delusionLogo = new AssetReferenceT<Texture>("8c75207915d01ff4280ac8f0e15b5aad");
+            #endregion
+            #endregion
         }
     }
 }

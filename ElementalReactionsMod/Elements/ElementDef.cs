@@ -19,6 +19,8 @@ namespace ElementalReactionsMod.Elements
         public Color color;
 
         public BuffDef buff;
+        public BuffDef cooldownBuff;
+
         public Sprite skillIcon;
 
         public Material iconVFX;
@@ -57,6 +59,7 @@ namespace ElementalReactionsMod.Elements
             elementDef.descriptionToken = descriptionToken;
             elementDef.color = color;
             elementDef.buff = Util.AddNewBuff($"bdElementalReactions{internalName}", icon, color, false, true);
+            elementDef.cooldownBuff = Util.AddNewBuff($"bdElementalReactions{internalName}Cooldown", icon, new Color(0.29f, 0.24f, 0.26f), false, false, true);
             elementDef.skillIcon = icon; // Replace with skillIcon
             elementDef.iconVFX = null;
             elementDef.canPersist = canPersist;
