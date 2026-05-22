@@ -145,6 +145,7 @@ namespace ElementalReactionsMod
             #region Delusion
             public static AssetReferenceT<GameObject> delusionPickupModel = new AssetReferenceT<GameObject>("9f3cf544c7630a04fa25214a5197c191");
             public static AssetReferenceT<Texture> delusionLogo = new AssetReferenceT<Texture>("8c75207915d01ff4280ac8f0e15b5aad");
+            public static AssetReferenceT<Sprite> delusionItemIcon = new AssetReferenceT<Sprite>("884bdf224e0646e43b6dc1b6a2675c92");
             #endregion
             #endregion
         }

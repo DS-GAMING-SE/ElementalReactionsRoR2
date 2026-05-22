@@ -206,6 +206,7 @@ namespace ElementalReactionsMod.Loadout
                     (RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_UI.LoadoutButton_prefab)).WaitForCompletion(), this.buttonContainerTransform).GetComponent<HGButton>();
                 component.updateTextOnHover = true;
                 component.hoverLanguageTextMeshController = owner.hoverTextDescription;
+                component.hoverToken = element.keywordToken;
                 component.requiredTopLayer = owner.requiredUILayerKey;
                 TooltipProvider component2 = component.GetComponent<TooltipProvider>();
                 component.interactable = true;
@@ -214,15 +215,6 @@ namespace ElementalReactionsMod.Loadout
                 string desc = Language.GetString(element.descriptionToken);
                 component2.overrideTitleText = name;
                 component2.overrideBodyText = desc;
-                Color hoverColor = element.color;
-                hoverColor.a = 0.2f;
-                string stringFormatted = Language.GetStringFormatted("LOGBOOK_HOVER_DESCRIPTION_FORMAT", new object[]
-                {
-                    name,
-                    desc,
-                    ColorUtility.ToHtmlStringRGBA(hoverColor)
-                });
-                component.hoverToken = stringFormatted;
                 ((Image)component.targetGraphic).sprite = element.skillIcon;
                 this.rowData.Add(new RowData(component, (int)element.index));
                 return component;

@@ -10,6 +10,7 @@ using System.Linq;
 using R2API;
 using HG;
 using ElementalReactionsMod.Elements;
+using Newtonsoft.Json.Utilities;
 
 namespace ElementalReactionsMod.Reactions
 {
@@ -51,7 +52,7 @@ namespace ElementalReactionsMod.Reactions
         internal static void BakeElementalReactions()
         {
             elementalReactionGrid = new ReactionIndex[ ElementCatalog.elementCatalog.Length, ElementCatalog.elementCatalog.Length ];
-            foreach (var reaction in elementalReactionCatalog)
+            foreach (var reaction in elementalReactionCatalog) // Filling out elementalReactionGrid and element.reactsWith
             {
                 foreach (var element in reaction.reactingElements)
                 {
@@ -64,7 +65,22 @@ namespace ElementalReactionsMod.Reactions
                     elementalReactionGrid[(int)element.index, (int)reaction.baseElement.index] = reaction.index;
                     reaction.baseElement.reactsWith[(int)element.index] = true;
                     element.reactsWith[(int)reaction.baseElement.index] = true;
+
+                    element.reactions.AddDistinct(reaction.index);
+                    reaction.baseElement.reactions.AddDistinct(reaction.index);
                 }
+            }
+            for (int i = 0; i < ElementCatalog.elementCatalog.Length; i++) // Filling out keyword tokens
+            {
+                StringBuilder stringBuilder = HG.StringBuilderPool.RentStringBuilder();
+                for (int j = 0; j < ElementCatalog.elementCatalog[i].reactions.Count; j++)
+                {
+                    ElementalReactionDef reactionDef = GetElementalReaction(ElementCatalog.elementCatalog[i].reactions[j]);
+                    stringBuilder.Append(Tokens.KeywordText(Language.GetString(reactionDef.nameToken), Language.GetString(reactionDef.descriptionToken)));
+                    stringBuilder.Append("\n\n");
+                }
+                ElementCatalog.elementCatalog[i].keywordToken = stringBuilder.ToString();
+                stringBuilder = HG.StringBuilderPool.ReturnStringBuilder(stringBuilder);
             }
         }
         public static ElementDef GetFirstReactableElement(ElementDef element, CharacterBody characterBody)

@@ -108,7 +108,7 @@ namespace ElementalReactionsMod
                 foreach (var loadout in elementLoadoutConfigs)
                 {
                     string newConfig = loadout.Key + " = " + string.Join(", ", loadout.Value.Select(x => x ? x.cachedName : DefaultElementDefs.physicalElement.cachedName));
-                    writer.Write(newConfig);
+                    writer.WriteLine(newConfig);
                 }
                 Log.Message("Rewrote Element Loadout config");
             }

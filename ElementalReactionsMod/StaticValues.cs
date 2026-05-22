@@ -12,7 +12,7 @@ namespace ElementalReactionsMod
         #endregion
 
         #region Reactions
-        public const float genericReactionExplosionRadius = 8f;
+        public const float genericReactionExplosionRadius = 10f;
         public const float vaporizeMultiplierPyroTrigger = 2f;
         public const float vaporizeMultiplierHydroTrigger = 1.5f;
 

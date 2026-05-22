@@ -29,7 +29,7 @@ namespace ElementalReactionsMod
         {
             if (Language.languagesByName.TryGetValue("en", out Language en))
             {
-                Util.RegisterLookingGlassBuff(en, quickenBuff, "Quicken", $"Increases Electro and Dendro base damage by {StaticValues.quickenDamageAddCoefficient * 100f}%.");
+                Util.RegisterLookingGlassBuff(en, quickenBuff, "Quicken", $"Increases {Tokens.ElectroText("Electro")} and {Tokens.DendroText("Dendro")} base damage by {StaticValues.quickenDamageAddCoefficient * 100f}%.");
                 Util.RegisterLookingGlassBuff(en, superconductBuff, "Superconduct", $"Increases non-elemental damage by {(StaticValues.superconductDamageMultiplier - 1f) * 100f}%.");
             }
         }

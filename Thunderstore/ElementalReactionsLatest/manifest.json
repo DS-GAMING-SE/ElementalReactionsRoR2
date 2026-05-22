@@ -1,7 +1,7 @@
 ﻿{
 	"name": "ElementalReactions",
 	"version_number": "1.0.0",
-	"website_url": "",
+	"website_url": "https://github.com/DS-GAMING-SE/ElementalReactionsRoR2",
 	"description": "Adds Genshin Impact's Elemental Reaction system to RoR2",
 	"dependencies": [
 		"bbepis-BepInExPack-5.4.2108",

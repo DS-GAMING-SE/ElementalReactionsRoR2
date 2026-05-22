@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using RoR2;
 using R2API;
+using ElementalReactionsMod.Items;
+using ElementalReactionsMod.Reactions;
 
 namespace ElementalReactionsMod.Elements
 {
@@ -15,6 +17,7 @@ namespace ElementalReactionsMod.Elements
         private string _cachedName;
         public string nameToken;
         public string descriptionToken;
+        internal string keywordToken;
 
         public Color color;
 
@@ -28,6 +31,10 @@ namespace ElementalReactionsMod.Elements
         public bool canPersist;
 
         internal bool[] reactsWith;
+        internal List<ReactionIndex> reactions = new List<ReactionIndex>();
+
+        public bool hasDelusion;
+        public ItemDef delusion;
 
         [Tooltip("Set at runtime, do not set manually")]
         public ElementIndex index
@@ -41,28 +48,31 @@ namespace ElementalReactionsMod.Elements
         {
             return Language.GetString(this.nameToken, Language.currentLanguageName);
         }
-        internal static ElementDef CreatePhysical(string internalName, string nameToken, string descriptionToken, Color color, Sprite skillIcon)
+        internal static ElementDef CreatePhysical(string internalName, string token, Color color, Sprite skillIcon)
         {
             ElementDef elementDef = ScriptableObject.CreateInstance<ElementDef>();
             elementDef.cachedName = internalName;
-            elementDef.nameToken = nameToken;
-            elementDef.descriptionToken = descriptionToken;
+            elementDef.nameToken = token + "_NAME";
+            elementDef.descriptionToken = token + "_DESCRIPTION";
             elementDef.color = color;
             elementDef.skillIcon = skillIcon;
+            elementDef.hasDelusion = false;
             return elementDef;
         }
-        public static ElementDef CreateElementDef(string internalName, string nameToken, string descriptionToken, Color color, Sprite icon, Sprite skillIcon, bool canPersist)
+        public static ElementDef CreateElementDef(string internalName, string token, Color color, Sprite icon, Sprite skillIcon, bool canPersist, bool hasDelusion = true)
         {
             ElementDef elementDef = ScriptableObject.CreateInstance<ElementDef>();
             elementDef.cachedName = internalName;
-            elementDef.nameToken = nameToken;
-            elementDef.descriptionToken = descriptionToken;
+            elementDef.nameToken = token + "_NAME";
+            elementDef.descriptionToken = token + "_DESCRIPTION";
             elementDef.color = color;
             elementDef.buff = Util.AddNewBuff($"bdElementalReactions{internalName}", icon, color, false, true);
             elementDef.cooldownBuff = Util.AddNewBuff($"bdElementalReactions{internalName}Cooldown", icon, new Color(0.29f, 0.24f, 0.26f), false, false, true);
             elementDef.skillIcon = icon; // Replace with skillIcon
             elementDef.iconVFX = null;
             elementDef.canPersist = canPersist;
+            elementDef.hasDelusion = hasDelusion;
+            if (hasDelusion) elementDef.delusion = DelusionManager.CreateNewDelusion(elementDef);
             return elementDef;
         }
     }
@@ -85,41 +95,33 @@ namespace ElementalReactionsMod.Elements
 
         public static void Initialize()
         {
-            physicalElement = ElementDef.CreatePhysical("PhysicalElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_PHYSICAL", 
-                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_PHYSICAL_DESCRIPTION", Color.white * 0.9f,
+            physicalElement = ElementDef.CreatePhysical("Physical", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_PHYSICAL", Color.white * 0.9f,
                 null);
-            pyroElement = ElementDef.CreateElementDef("PyroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_PYRO",
-                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_PYRO_DESCRIPTION", new Color(0.9f, 0.51f, 0.384f),
+            pyroElement = ElementDef.CreateElementDef("Pyro", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_PYRO", new Color(0.9f, 0.51f, 0.384f),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.pyroBuffIcon).WaitForCompletion(), 
                 null, 
                 true);
-            hydroElement = ElementDef.CreateElementDef("HydroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_HYDRO",
-                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_HYDRO_DESCRIPTION", ColorCatalog.GetColor(ColorCatalog.ColorIndex.LunarItem),
+            hydroElement = ElementDef.CreateElementDef("Hydro", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_HYDRO", ColorCatalog.GetColor(ColorCatalog.ColorIndex.LunarItem),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.hydroBuffIcon).WaitForCompletion(),
                 null,
                 true);
-            electroElement = ElementDef.CreateElementDef("ElectroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ELECTRO",
-                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ELECTRO_DESCRIPTION", ColorCatalog.GetColor(ColorCatalog.ColorIndex.Utility),
+            electroElement = ElementDef.CreateElementDef("Electro", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ELECTRO", ColorCatalog.GetColor(ColorCatalog.ColorIndex.Utility),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.electroBuffIcon).WaitForCompletion(),
                 null,
                 true);
-            cryoElement = ElementDef.CreateElementDef("CryoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_CRYO",
-                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_CRYO_DESCRIPTION", new Color(0.584f, 0.8f, 0.9f),
+            cryoElement = ElementDef.CreateElementDef("Cryo", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_CRYO", new Color(0.584f, 0.8f, 0.9f),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.cryoBuffIcon).WaitForCompletion(),
                 null,
                 true);
-            anemoElement = ElementDef.CreateElementDef("AnemoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ANEMO",
-                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ANEMO_DESCRIPTION", new Color(0.5f, 0.9f, 0.8f),
+            anemoElement = ElementDef.CreateElementDef("Anemo", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ANEMO", new Color(0.5f, 0.9f, 0.8f),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.anemoBuffIcon).WaitForCompletion(),
                 null,
                 false);
-            geoElement = ElementDef.CreateElementDef("GeoElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_GEO",
-                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_GEO_DESCRIPTION", new Color(0.9f, 0.788f, 0.384f),
+            geoElement = ElementDef.CreateElementDef("Geo", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_GEO", new Color(0.9f, 0.788f, 0.384f),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.geoBuffIcon).WaitForCompletion(),
                 null,
                 false);
-            dendroElement = ElementDef.CreateElementDef("DendroElement", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_DENDRO",
-                $"{ElementalReactionsPlugin.PREFIX}ELEMENT_DENDRO_DESCRIPTION", new Color(0.612f, 0.9f, 0.384f),
+            dendroElement = ElementDef.CreateElementDef("Dendro", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_DENDRO", new Color(0.612f, 0.9f, 0.384f),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.dendroBuffIcon).WaitForCompletion(),
                 null,
                 true);
@@ -134,10 +136,13 @@ namespace ElementalReactionsMod.Elements
 
         private static void LookingGlassSetup()
         {
-            if (Language.languagesByName.TryGetValue("en", out Language en))
+            /*if (Language.languagesByName.TryGetValue("en", out Language en))
             {
-                Util.RegisterLookingGlassBuff(en, pyroElement.buff, "Pyro Element", $"May react to other elements.");
-            }
+                foreach (var element in ElementCatalog.elementCatalog)
+                {
+                    Util.RegisterLookingGlassBuff(en, element.buff, $"{element.cachedName} Element", $"May react to other elements.");
+                }
+            }*/
         }
     }
 }

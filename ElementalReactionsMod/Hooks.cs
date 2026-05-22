@@ -36,16 +36,18 @@ namespace ElementalReactionsMod
                     if (!damage.rejected && ElementalReactionManager.instance)
                     {
                         ElementDef element = ElementCatalog.GetElementDef(damage.damageType.GetElement());
-                        ElementalReactionManager.ApplyElement(element, self.body);
+                        ElementalReactionManager.ApplyElement(element, self.body, ref damage);
 
                         if (self.body.HasBuff(Buffs.superconductBuff) && element == DefaultElementDefs.physicalElement)
                         {
                             damage.damage *= StaticValues.superconductDamageMultiplier;
+                            damage.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                         }
 
                         if (self.body.HasBuff(Buffs.quickenBuff) && element == DefaultElementDefs.dendroElement || element == DefaultElementDefs.electroElement)
                         {
                             damage.damage += StaticValues.quickenDamageAddCoefficient * damage.procCoefficient;
+                            damage.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                         }
 
                         if (damage.damageType.HasModdedDamageType(DamageTypes.superconductDamageType))
@@ -77,7 +79,7 @@ namespace ElementalReactionsMod
 
         private static bool NoDelusionsWithElementInLogbook(On.RoR2.UI.LogBook.LogBookController.orig_CanSelectItemEntry orig, ItemDef item, Dictionary<ExpansionDef, bool> entitlements)
         {
-            return orig(item, entitlements) && item && !Items.Items.elementalDelusions.Contains(item);
+            return orig(item, entitlements) && item && !DelusionManager.elementalDelusions.Contains(item);
         }
     }
 }

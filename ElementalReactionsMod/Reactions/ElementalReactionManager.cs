@@ -41,7 +41,7 @@ namespace ElementalReactionsMod.Reactions
                         target.ClearTimedBuffs(reacting.buff.buffIndex);
                         target.AddTimedBuff(element.cooldownBuff, StaticValues.elementRemovedICD);
                         target.AddTimedBuff(reacting.cooldownBuff, StaticValues.elementRemovedICD);
-                        reaction.TriggerReaction(element, reacting, target, ref damageInfo);
+                        reaction.TriggerReaction(reacting, element, target, ref damageInfo);
                         reactionTriggered = true;
                     }
                 }

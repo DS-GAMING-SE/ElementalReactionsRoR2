@@ -16,6 +16,7 @@ namespace ElementalReactionsMod.Reactions
         public string cachedName { get { return _cachedName; } set { name = value; _cachedName = value; } }
         private string _cachedName;
         public string nameToken;
+        public string descriptionToken;
         public ElementDef baseElement;
         public ElementDef[] reactingElements;
         public delegate void ElementalReactionDelegate(ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo);
@@ -35,16 +36,17 @@ namespace ElementalReactionsMod.Reactions
         {
             return Language.GetString(this.nameToken, Language.currentLanguageName);
         }
-        public static ElementalReactionDef CreateElementalReactionDef(string internalName, string nameToken, ElementDef baseElement, ElementDef reactingElement)
+        public static ElementalReactionDef CreateElementalReactionDef(string internalName, string token, ElementDef baseElement, ElementDef reactingElement)
         {
-            return CreateElementalReactionDef(internalName, nameToken, baseElement, [reactingElement]);
+            return CreateElementalReactionDef(internalName, token, baseElement, [reactingElement]);
         }
 
-        public static ElementalReactionDef CreateElementalReactionDef(string internalName, string nameToken, ElementDef baseElement, ElementDef[] reactingElements)
+        public static ElementalReactionDef CreateElementalReactionDef(string internalName, string token, ElementDef baseElement, ElementDef[] reactingElements)
         {
             ElementalReactionDef reactionDef = ScriptableObject.CreateInstance<ElementalReactionDef>();
             reactionDef.cachedName = internalName;
-            reactionDef.nameToken = nameToken;
+            reactionDef.nameToken = token + "_NAME";
+            reactionDef.descriptionToken = token + "_DESCRIPTION";
             reactionDef.baseElement = baseElement;
             reactionDef.reactingElements = reactingElements;
             return reactionDef;
@@ -67,9 +69,9 @@ namespace ElementalReactionsMod.Reactions
         public static ElementalReactionDef swirl;
         public static ElementalReactionDef crystallize;
         public static ElementalReactionDef burning;
+        public static ElementalReactionDef quicken;
         public static ElementalReactionDef bloom;
         // bloom and burgeon will be IOnIncomingDamageServerReceiver on the bloom cores, so not using an ElementalReactionDef
-        public static ElementalReactionDef quicken;
 
         public static void Initialize()
         {
@@ -78,6 +80,7 @@ namespace ElementalReactionsMod.Reactions
             { 
                 EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_StunChanceOnHit.ImpactStunGrenade_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
                 damage.damage *= element2 == pyroElement ? vaporizeMultiplierPyroTrigger : vaporizeMultiplierHydroTrigger;
+                damage.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
             };
 
             overload = ElementalReactionDef.CreateElementalReactionDef("Overload", $"{ElementalReactionsPlugin.PREFIX}REACTION_OVERLOAD", pyroElement, electroElement);
@@ -92,6 +95,7 @@ namespace ElementalReactionsMod.Reactions
             {
                 EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_StunChanceOnHit.ImpactStunGrenade_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
                 damage.damage *= element2 == pyroElement ? vaporizeMultiplierPyroTrigger : vaporizeMultiplierHydroTrigger;
+                damage.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
             };
 
             electroCharge = ElementalReactionDef.CreateElementalReactionDef("ElectroCharge", $"{ElementalReactionsPlugin.PREFIX}REACTION_ELECTRO_CHARGE", electroElement, hydroElement);
@@ -133,7 +137,7 @@ namespace ElementalReactionsMod.Reactions
                 damageType.SetElement(swirledElement.index);
                 damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                 damageType |= DamageType.AOE;
-                BlastAttack blast = Util.CreateBlastAttack(damage, swirlDamageCoefficient, genericReactionExplosionRadius, 0f, damageType, 0f);
+                Util.CreateBlastAttack(damage, swirlDamageCoefficient, genericReactionExplosionRadius, 0f, damageType, 0f).Fire();
             };
 
             crystallize = ElementalReactionDef.CreateElementalReactionDef("Crystallize", $"{ElementalReactionsPlugin.PREFIX}REACTION_CRYSTALLIZE", geoElement, [pyroElement, hydroElement, electroElement, cryoElement]);
@@ -154,8 +158,14 @@ namespace ElementalReactionsMod.Reactions
                 victim.AddTimedBuff(Buffs.quickenBuff, 5f);
             };
 
+            bloom = ElementalReactionDef.CreateElementalReactionDef("Bloom", $"{ElementalReactionsPlugin.PREFIX}REACTION_BLOOM", dendroElement, hydroElement);
+            bloom.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            {
 
-            ElementalReactionCatalog.AddElementalReactionDefs([vaporize, overload, melt, electroCharge, frozen, superconduct, swirl, crystallize, burning, quicken]);
+            };
+
+
+            ElementalReactionCatalog.AddElementalReactionDefs([vaporize, overload, melt, electroCharge, frozen, superconduct, swirl, crystallize, burning, quicken, bloom]);
         }
     }
 }

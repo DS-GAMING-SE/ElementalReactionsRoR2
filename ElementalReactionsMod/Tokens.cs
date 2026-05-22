@@ -9,7 +9,7 @@ namespace ElementalReactionsMod
     public static class Tokens
     {
         public static string[] elements = ["Pyro", "Hydro", "Electro", "Cryo", "Anemo", "Geo", "Dendro"];
-        public static string[] elementsColored = ["Pyro", "Hydro", "Electro", Tokens.UtilityText("Cryo"), "Anemo", Tokens.DamageText("Geo"), "Dendro"];
+        public static string[] elementsColored = [PyroText("Pyro"), HydroText("Hydro"), ElectroText("Electro"), CryoText("Cryo"), AnemoText("Anemo"), GeoText("Geo"), DendroText("Dendro")];
 
         public static void Initialize()
         {
@@ -20,22 +20,60 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}LOADOUT_ELEMENTS", "Elements");
 
             #region Elements
-            LanguageAPI.Add($"{prefix}ELEMENT_PHYSICAL", "Physical");
+            LanguageAPI.Add($"{prefix}ELEMENT_PHYSICAL_NAME", "Physical");
             LanguageAPI.Add($"{prefix}ELEMENT_PHYSICAL_DESCRIPTION", "Physical");
-            LanguageAPI.Add($"{prefix}ELEMENT_PYRO", "Pyro");
+            LanguageAPI.Add($"{prefix}ELEMENT_PYRO_NAME", "Pyro");
             LanguageAPI.Add($"{prefix}ELEMENT_PYRO_DESCRIPTION", "Pyro");
-            LanguageAPI.Add($"{prefix}ELEMENT_HYDRO", "Hydro");
+            LanguageAPI.Add($"{prefix}ELEMENT_HYDRO_NAME", "Hydro");
             LanguageAPI.Add($"{prefix}ELEMENT_HYDRO_DESCRIPTION", "Hydro");
-            LanguageAPI.Add($"{prefix}ELEMENT_ELECTRO", "Electro");
+            LanguageAPI.Add($"{prefix}ELEMENT_ELECTRO_NAME", "Electro");
             LanguageAPI.Add($"{prefix}ELEMENT_ELECTRO_DESCRIPTION", "Electro");
-            LanguageAPI.Add($"{prefix}ELEMENT_CRYO", "Cryo");
+            LanguageAPI.Add($"{prefix}ELEMENT_CRYO_NAME", "Cryo");
             LanguageAPI.Add($"{prefix}ELEMENT_CRYO_DESCRIPTION", "Cryo");
-            LanguageAPI.Add($"{prefix}ELEMENT_ANEMO", "Anemo");
+            LanguageAPI.Add($"{prefix}ELEMENT_ANEMO_NAME", "Anemo");
             LanguageAPI.Add($"{prefix}ELEMENT_ANEMO_DESCRIPTION", "Anemo");
-            LanguageAPI.Add($"{prefix}ELEMENT_GEO", "Geo");
+            LanguageAPI.Add($"{prefix}ELEMENT_GEO_NAME", "Geo");
             LanguageAPI.Add($"{prefix}ELEMENT_GEO_DESCRIPTION", "Geo");
-            LanguageAPI.Add($"{prefix}ELEMENT_DENDRO", "Dendro");
+            LanguageAPI.Add($"{prefix}ELEMENT_DENDRO_NAME", "Dendro");
             LanguageAPI.Add($"{prefix}ELEMENT_DENDRO_DESCRIPTION", "Dendro");
+            #endregion
+
+            #region Reactions
+            LanguageAPI.Add($"{prefix}REACTION_VAPORIZE_NAME", "Vaporize");
+            LanguageAPI.Add($"{prefix}REACTION_VAPORIZE_DESCRIPTION", "Vaporize");
+
+            LanguageAPI.Add($"{prefix}REACTION_OVERLOAD_NAME", "Overload");
+            LanguageAPI.Add($"{prefix}REACTION_OVERLOAD_DESCRIPTION", "Overload");
+
+            LanguageAPI.Add($"{prefix}REACTION_MELT_NAME", "Melt");
+            LanguageAPI.Add($"{prefix}REACTION_MELT_DESCRIPTION", "Melt");
+
+            LanguageAPI.Add($"{prefix}REACTION_VAPORIZE_NAME", "Vaporize");
+            LanguageAPI.Add($"{prefix}REACTION_VAPORIZE_DESCRIPTION", "Vaporize");
+
+            LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_NAME", "Electro-Charge");
+            LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_DESCRIPTION", "Electro-Charge");
+
+            LanguageAPI.Add($"{prefix}REACTION_FROZEN_NAME", "Frozen");
+            LanguageAPI.Add($"{prefix}REACTION_FROZEN_DESCRIPTION", "Frozen");
+
+            LanguageAPI.Add($"{prefix}REACTION_SUPERCONDUCT_NAME", "Superconduct");
+            LanguageAPI.Add($"{prefix}REACTION_SUPERCONDUCT_DESCRIPTION", "Superconduct");
+
+            LanguageAPI.Add($"{prefix}REACTION_SWIRL_NAME", "Swirl");
+            LanguageAPI.Add($"{prefix}REACTION_SWIRL_DESCRIPTION", "Swirl");
+
+            LanguageAPI.Add($"{prefix}REACTION_CRYSTALLIZE_NAME", "Crystallize");
+            LanguageAPI.Add($"{prefix}REACTION_CRYSTALLIZE_DESCRIPTION", "Crystallize");
+
+            LanguageAPI.Add($"{prefix}REACTION_BURNING_NAME", "Burning");
+            LanguageAPI.Add($"{prefix}REACTION_BURNING_DESCRIPTION", "Burning");
+
+            LanguageAPI.Add($"{prefix}REACTION_QUICKEN_NAME", "Quicken");
+            LanguageAPI.Add($"{prefix}REACTION_QUICKEN_DESCRIPTION", "Quicken");
+
+            LanguageAPI.Add($"{prefix}REACTION_BLOOM_NAME", "Bloom");
+            LanguageAPI.Add($"{prefix}REACTION_BLOOM_DESCRIPTION", "Bloom");
             #endregion
 
             #region Items
@@ -52,7 +90,7 @@ namespace ElementalReactionsMod
             {
                 LanguageAPI.Add($"{prefix}ITEM_DELUSION_{elements[i].ToUpper()}_NAME", $"{elements[i]} Delusion");
                 LanguageAPI.Add($"{prefix}ITEM_DELUSION_{elements[i].ToUpper()}_PICKUP", DelusionPickup(elementsColored[i]));
-                LanguageAPI.Add($"{prefix}ITEM_DELUSION_{elements[i].ToUpper()}_DESCRIPTION", DelusionDescription(DamageText(DelusionPickup(elementsColored[i]))));
+                LanguageAPI.Add($"{prefix}ITEM_DELUSION_{elements[i].ToUpper()}_DESCRIPTION", DelusionDescription(DamageText(elementsColored[i])));
             }
 
             /*LanguageAPI.Add($"{prefix}ITEM_DELUSION_LORE", """
@@ -60,8 +98,9 @@ namespace ElementalReactionsMod
                 ---
                 ---parallel providence and heavenly principles. Unclear if pov is fatui or mithrix---
                 ---
-                I will endure the bitter cold for as long as it takes...
-                To see your world burn.
+                I don't care what it does to me.
+                Whether I must endure bitter cold, or set myself ablaze...
+                I will do whatever it takes to see your world burn.
                 """);*/
             #endregion
         }
@@ -71,7 +110,7 @@ namespace ElementalReactionsMod
         }
         public static string DelusionDescription(string element)
         {
-            return $"Hits that deal {DamageText("more than 400% damage")} blasts enemies with an {DamageText("attack of ")+element}, dealing {DamageText("1000% base damage")}. Triggering this effect costs {RedText("10%")} of your max health and {RedText("reduces healing received by 30%")} {StackingText("+30% per stack")} while the effect is on cooldown. Recharges every {UtilityText("10")} seconds.";
+            return $"Hits that deal {DamageText("more than 400% damage")} blast enemies with an {DamageText("attack of ")+element}, dealing {DamageText("1000% base damage")}. Triggering this effect costs {RedText("10%")} of your max health and {RedText("reduces healing received by 30%")} {StackingText("(+30% per stack)")} while the effect is on cooldown. Recharges every {UtilityText("10")} seconds.";
         }
         public static string DamageText(string text)
         {
@@ -102,5 +141,12 @@ namespace ElementalReactionsMod
         {
             return $"<style=cStack>{stack}</style>";
         }
+        public static string PyroText(string text) => HealthText(text);
+        public static string HydroText(string text) { return $"<color=#{ColorCatalog.GetColorHexString(ColorCatalog.ColorIndex.LunarItem)}>{text}</color>"; }
+        public static string ElectroText(string text) { return $"<color=#{ColorCatalog.GetColorHexString(ColorCatalog.ColorIndex.Utility)}>{text}</color>"; }
+        public static string CryoText(string text) => UtilityText(text);
+        public static string AnemoText(string text) { return $"<color=#7fe6cc>{text}</color>"; }
+        public static string GeoText(string text) => DamageText(text);
+        public static string DendroText(string text) { return $"<color=#{ColorCatalog.GetColorHexString(ColorCatalog.ColorIndex.Healing)}>{text}</color>"; }
     }
 }

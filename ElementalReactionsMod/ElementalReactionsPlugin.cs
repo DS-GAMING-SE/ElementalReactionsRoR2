@@ -10,7 +10,6 @@ using System.Security;
 using System.Security.Permissions;
 using ElementalReactionsMod.Items;
 
-[assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 [assembly: HG.Reflection.SearchableAttribute.OptIn]
 namespace ElementalReactionsMod
 {
@@ -41,6 +40,8 @@ namespace ElementalReactionsMod
             new ContentPacks().Initialize();
 
             Assets.Initialize();
+
+            DelusionManager.Initialize();
 
             DefaultElementDefs.Initialize();
 
