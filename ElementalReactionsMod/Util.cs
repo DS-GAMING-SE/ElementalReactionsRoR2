@@ -69,16 +69,17 @@ namespace ElementalReactionsMod
         {
             return (num & (1 << bitIndex)) != 0;
         }
-        internal static BuffDef AddNewBuff(string buffName, Sprite buffIcon, Color buffColor, bool canStack, bool isDebuff, bool hidden = false)
+        internal static BuffDef AddNewBuff(string buffName, Sprite buffIcon, Color buffColor, bool canStack, bool isDebuff, bool isCooldown = false, bool hidden = false)
         {
             BuffDef buffDef = ScriptableObject.CreateInstance<BuffDef>();
-            buffDef.name = buffName;
+            buffDef.name = "bdElementalReactions"+buffName;
             buffDef.buffColor = buffColor;
             buffDef.canStack = canStack;
             buffDef.isDebuff = isDebuff;
             buffDef.eliteDef = null;
             buffDef.iconSprite = buffIcon;
             buffDef.isHidden = hidden;
+            buffDef.isCooldown = isCooldown;
 
             Content.AddBuffDef(buffDef);
 
@@ -125,6 +126,15 @@ namespace ElementalReactionsMod
                 attackerFiltering = AttackerFiltering.NeverHitSelf
             };
             return blastAttack;
+        }
+        public static void AddTimedBuffTimer(this CharacterBody body, BuffDef buff, int timer)
+        {
+            int num = 1;
+            while (num <= timer)
+            {
+                body.AddTimedBuff(buff, num);
+                num++;
+            }
         }
     }
 }

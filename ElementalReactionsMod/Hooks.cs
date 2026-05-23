@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace ElementalReactionsMod
 {
@@ -23,6 +24,7 @@ namespace ElementalReactionsMod
             IL.RoR2.HealthComponent.TakeDamageProcess += TakeDamageIL;
             On.RoR2.HealthComponent.TakeDamageProcess += TakeDamageHook;
             On.RoR2.UI.LogBook.LogBookController.CanSelectItemEntry += NoDelusionsWithElementInLogbook;
+            On.RoR2.HealthComponent.Heal += HealingReceivedDebuff;
         }
         private static void TakeDamageIL(ILContext il)
         {
@@ -46,7 +48,7 @@ namespace ElementalReactionsMod
 
                         if (self.body.HasBuff(Buffs.quickenBuff) && element == DefaultElementDefs.dendroElement || element == DefaultElementDefs.electroElement)
                         {
-                            damage.damage += StaticValues.quickenDamageAddCoefficient * damage.procCoefficient;
+                            damage.damage += (StaticValues.quickenDamageAddCoefficient * damage.procCoefficient); // Multiply this by character damage stat
                             damage.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                         }
 
@@ -80,6 +82,15 @@ namespace ElementalReactionsMod
         private static bool NoDelusionsWithElementInLogbook(On.RoR2.UI.LogBook.LogBookController.orig_CanSelectItemEntry orig, ItemDef item, Dictionary<ExpansionDef, bool> entitlements)
         {
             return orig(item, entitlements) && item && !DelusionManager.elementalDelusions.Contains(item);
+        }
+
+        private static float HealingReceivedDebuff(On.RoR2.HealthComponent.orig_Heal orig, HealthComponent self, float amount, ProcChainMask proc, bool nonRegen)
+        {
+            if (self.body.HasBuff(Buffs.delusionActiveBuff) && self.body.inventory)
+            {
+                amount *= Mathf.Max(0, 1 - (DelusionManager.GetDelusionCount(self.body.inventory) * StaticValues.delusionHealingReceivedReduction));
+            }
+            return orig(self, amount, proc, nonRegen);
         }
     }
 }

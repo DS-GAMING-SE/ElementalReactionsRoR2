@@ -73,6 +73,18 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Items/Delusion/texDelusionItemIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: da2c01d04bcb15f43848d28d22db15d9
+    m_Address: Assets/ElementalReactionsAssets/Icons/Buff Icons/Delusion/texDelusionBuffReady.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c48688fe6fab6304badbca799ca382be
+    m_Address: Assets/ElementalReactionsAssets/Icons/Buff Icons/Delusion/texDelusionBuffActive.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 11b881fd7c08c0b4faf1b305df7e394d
+    m_Address: Assets/ElementalReactionsAssets/Icons/Buff Icons/Delusion/texDelusionBuffCooldown.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

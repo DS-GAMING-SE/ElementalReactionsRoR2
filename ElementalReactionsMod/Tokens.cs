@@ -3,6 +3,7 @@ using System;
 using System.Text;
 using UnityEngine;
 using R2API;
+using static ElementalReactionsMod.StaticValues;
 
 namespace ElementalReactionsMod
 {
@@ -21,21 +22,21 @@ namespace ElementalReactionsMod
 
             #region Elements
             LanguageAPI.Add($"{prefix}ELEMENT_PHYSICAL_NAME", "Physical");
-            LanguageAPI.Add($"{prefix}ELEMENT_PHYSICAL_DESCRIPTION", "Physical");
+            LanguageAPI.Add($"{prefix}ELEMENT_PHYSICAL_DESCRIPTION", "No element.");
             LanguageAPI.Add($"{prefix}ELEMENT_PYRO_NAME", "Pyro");
-            LanguageAPI.Add($"{prefix}ELEMENT_PYRO_DESCRIPTION", "Pyro");
+            LanguageAPI.Add($"{prefix}ELEMENT_PYRO_DESCRIPTION", "");
             LanguageAPI.Add($"{prefix}ELEMENT_HYDRO_NAME", "Hydro");
-            LanguageAPI.Add($"{prefix}ELEMENT_HYDRO_DESCRIPTION", "Hydro");
+            LanguageAPI.Add($"{prefix}ELEMENT_HYDRO_DESCRIPTION", "");
             LanguageAPI.Add($"{prefix}ELEMENT_ELECTRO_NAME", "Electro");
-            LanguageAPI.Add($"{prefix}ELEMENT_ELECTRO_DESCRIPTION", "Electro");
+            LanguageAPI.Add($"{prefix}ELEMENT_ELECTRO_DESCRIPTION", "");
             LanguageAPI.Add($"{prefix}ELEMENT_CRYO_NAME", "Cryo");
-            LanguageAPI.Add($"{prefix}ELEMENT_CRYO_DESCRIPTION", "Cryo");
+            LanguageAPI.Add($"{prefix}ELEMENT_CRYO_DESCRIPTION", "");
             LanguageAPI.Add($"{prefix}ELEMENT_ANEMO_NAME", "Anemo");
-            LanguageAPI.Add($"{prefix}ELEMENT_ANEMO_DESCRIPTION", "Anemo");
+            LanguageAPI.Add($"{prefix}ELEMENT_ANEMO_DESCRIPTION", "");
             LanguageAPI.Add($"{prefix}ELEMENT_GEO_NAME", "Geo");
-            LanguageAPI.Add($"{prefix}ELEMENT_GEO_DESCRIPTION", "Geo");
+            LanguageAPI.Add($"{prefix}ELEMENT_GEO_DESCRIPTION", "");
             LanguageAPI.Add($"{prefix}ELEMENT_DENDRO_NAME", "Dendro");
-            LanguageAPI.Add($"{prefix}ELEMENT_DENDRO_DESCRIPTION", "Dendro");
+            LanguageAPI.Add($"{prefix}ELEMENT_DENDRO_DESCRIPTION", "");
             #endregion
 
             #region Reactions
@@ -83,7 +84,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}ITEM_SOULSEEKER_SHELL_LORE", "");
 
             LanguageAPI.Add($"{prefix}ITEM_DELUSION_NAME", "Delusion");
-            LanguageAPI.Add($"{prefix}ITEM_DELUSION_PICKUP", $"Resonates with an element on pickup. {DelusionPickup("that element")}");
+            LanguageAPI.Add($"{prefix}ITEM_DELUSION_PICKUP", $"Resonates with a new element on pickup. {DelusionPickup("the Delusion's elemental")}");
             LanguageAPI.Add($"{prefix}ITEM_DELUSION_DESCRIPTION", $"On pickup, {UtilityText("resonate")} with a {UtilityText("random element you don't have")}. {DelusionDescription(DamageText("the Delusion's element"))}");
 
             for (int i = 0; i < elements.Length; i++)
@@ -106,11 +107,11 @@ namespace ElementalReactionsMod
         }
         public static string DelusionPickup(string element)
         {
-            return $"High damage hits also blast enemies with an attack of {element}... {RedText("BUT some of your life is consumed with each use")}. Recharges over time.";
+            return $"Activating your Special skill will make any skill damage deal extra hits of {element} damage... {RedText("BUT some of your life is consumed with each use")}. Recharges over time.";
         }
         public static string DelusionDescription(string element)
         {
-            return $"Hits that deal {DamageText("more than 400% damage")} blast enemies with an {DamageText("attack of ")+element}, dealing {DamageText("1000% base damage")}. Triggering this effect costs {RedText("10%")} of your max health and {RedText("reduces healing received by 30%")} {StackingText("(+30% per stack)")} while the effect is on cooldown. Recharges every {UtilityText("10")} seconds.";
+            return $"Activating your {UtilityText("Special skill")} will activate the Delusion for {UtilityText(delusionDuration+"s")}. While active, enemies hits with any {UtilityText("skill")} will be hit with an {DamageText("attack of ")+element}, dealing {DamageText($"{delusionDamageCoefficient * 100f}% base damage")}. Triggering this effect costs {RedText(delusionHealthPercentCost * 100f+"%")} of your max health and {RedText($"reduces healing received by {delusionHealingReceivedReduction*100f}%")} {StackingText($"(+{delusionHealingReceivedReduction * 100f}% per stack)")}. Recharges every {UtilityText(delusionCooldown.ToString())} seconds.";
         }
         public static string DamageText(string text)
         {

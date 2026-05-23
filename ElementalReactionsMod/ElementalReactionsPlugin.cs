@@ -9,6 +9,8 @@ using UnityEngine.AddressableAssets;
 using System.Security;
 using System.Security.Permissions;
 using ElementalReactionsMod.Items;
+using R2API.Networking;
+using ElementalReactionsMod.Loadout;
 
 [assembly: HG.Reflection.SearchableAttribute.OptIn]
 namespace ElementalReactionsMod
@@ -17,9 +19,10 @@ namespace ElementalReactionsMod
     [BepInDependency(LanguageAPI.PluginGUID)]
     [BepInDependency(PrefabAPI.PluginGUID)]
     [BepInDependency(DamageAPI.PluginGUID)]
+    [BepInDependency(RecalculateStatsAPI.PluginGUID)]
     [BepInDependency(R2APIContentManager.PluginGUID)]
-    [BepInDependency(LookingGlass.PluginInfo.PLUGIN_GUID)]
-    [BepInDependency(RiskOfOptions.PluginInfo.PLUGIN_GUID)]
+    [BepInDependency(LookingGlass.PluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency(RiskOfOptions.PluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
 
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class ElementalReactionsPlugin : BaseUnityPlugin
@@ -43,11 +46,11 @@ namespace ElementalReactionsMod
 
             DelusionManager.Initialize();
 
+            Tokens.Initialize();
+
             DefaultElementDefs.Initialize();
 
             DefaultElementalReactions.Initialize();
-
-            Tokens.Initialize();
 
             DamageTypes.Initialize();
 
@@ -56,6 +59,8 @@ namespace ElementalReactionsMod
             Items.Items.Initialize();
 
             Hooks.Initialize();
+
+            NetworkingAPI.RegisterMessageType<NetworkElementLoadout>();
 
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(LookingGlass.PluginInfo.PLUGIN_GUID)) ElementalReactionsMod.Config.RiskOfOptionsSetup();
         }

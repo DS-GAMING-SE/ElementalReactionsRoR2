@@ -11,13 +11,23 @@ namespace ElementalReactionsMod
     {
         public static BuffDef quickenBuff;
         public static BuffDef superconductBuff;
+
+        public static BuffDef delusionCooldownBuff;
+        public static BuffDef delusionReadyBuff;
+        public static BuffDef delusionActiveBuff;
         
         public static void Initialize()
         {
-            quickenBuff = Util.AddNewBuff("bdElementalReactionsQuickenReaction", 
+            quickenBuff = Util.AddNewBuff("QuickenReaction", 
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.quickenBuffIcon).WaitForCompletion(), Color.white, false, true);
-            superconductBuff = Util.AddNewBuff("bdElementalReactionsSuperconductReaction",
+            superconductBuff = Util.AddNewBuff("SuperconductReaction",
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.superconductBuffIcon).WaitForCompletion(), Color.white, false, true);
+            delusionCooldownBuff = Util.AddNewBuff("DelusionCooldown",
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionCooldownBuffIcon).WaitForCompletion(), Color.white, true, false, true);
+            delusionReadyBuff = Util.AddNewBuff("DelusionReady",
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionReadyBuffIcon).WaitForCompletion(), Color.white, false, false, false);
+            delusionActiveBuff = Util.AddNewBuff("DelusionActive",
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionActiveBuffIcon).WaitForCompletion(), Color.white, true, false, false);
 
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(LookingGlass.PluginInfo.PLUGIN_GUID))
             {

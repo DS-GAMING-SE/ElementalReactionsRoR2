@@ -29,6 +29,7 @@ namespace ElementalReactionsMod.Items
             };
             delusion = AddNewItem("Delusion", "DELUSION", true, Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.LunarTierDef_asset).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, ItemTag.Damage);
+            CharacterBody.onBodyInventoryChangedGlobal += AddDelusionBehaviour;
         }
         public static ItemDef CreateNewDelusion(ElementDef element)
         {
@@ -36,6 +37,19 @@ namespace ElementalReactionsMod.Items
                 Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, ItemTag.Damage, ItemTag.WorldUnique);
             elementalDelusions.Add(delusion);
             return delusion;
+        }
+        public static void AddDelusionBehaviour(CharacterBody body)
+        {
+            body.AddItemBehavior<DelusionBehaviour>(body.inventory.GetDelusionCount());
+        }
+        public static int GetDelusionCount(this Inventory inventory)
+        {
+            int count = 0;
+            foreach (var delusion in elementalDelusions)
+            {
+                count += inventory.GetItemCountEffective(delusion);
+            }
+            return count;
         }
     }
     public class NoElementDelusion : BaseItemBodyBehavior
@@ -62,14 +76,27 @@ namespace ElementalReactionsMod.Items
         {
             if (NetworkServer.active && Run.FixedTimeStamp.now > transformTimeStamp && body.inventory)
             {
-                new Inventory.ItemTransformation
+                if (new Inventory.ItemTransformation
                 {
                     originalItemIndex = GetItemDef().itemIndex,
                     newItemIndex = DecideDelusionElement().itemIndex,
                     maxToTransform = 1,
                     transformationType = 0
-                }.TryTransform(body.inventory, out _);
-                transformTimeStamp += 1f;
+                }.TryTransform(body.inventory, out var results))
+                {
+                    PickupIndex pickup = PickupCatalog.FindPickupIndex(results.givenItem.itemIndex);
+                    if (pickup != PickupIndex.none)
+                    {
+                        if (body.master && body.master.playerCharacterMasterController && body.master.playerCharacterMasterController.networkUser != null && body.master.playerCharacterMasterController.networkUser.localUser != null)
+                        {
+                            body.master.playerCharacterMasterController.networkUser.localUser.userProfile.DiscoverPickup(pickup);
+                        }
+                    }
+                }
+                else
+                {
+                    transformTimeStamp += 1f;
+                }
             }
         }
 
@@ -108,92 +135,63 @@ namespace ElementalReactionsMod.Items
             return possibleDelusions[rng.RangeInt(0, possibleDelusions.Count)];
         }
     }
-    public abstract class Delusion : BaseItemBodyBehavior
+    public class DelusionBehaviour : CharacterBody.ItemBehavior
     {
+        private bool wasActive = false;
+        
+        private void OnEnable()
+        {
+            if (body)
+            {
+                body.onSkillActivatedServer += OnSkillActivated;
+            }
+        }
+        // OnSkillActivated never runs?
+        private void OnSkillActivated(GenericSkill skill)
+        {
+            if (body.HasBuff(Buffs.delusionReadyBuff) && body.skillLocator && body.skillLocator.special && body.skillLocator.special == skill)
+            {
+                Log.Message("Delusion activated");
+                body.AddTimedBuffTimer(Buffs.delusionActiveBuff, StaticValues.delusionDuration);
+                body.RemoveBuff(Buffs.delusionReadyBuff);
+            }
+        }
+        private void FixedUpdate()
+        {
+            bool cooldown = body.HasBuff(Buffs.delusionCooldownBuff);
+            bool ready = body.HasBuff(Buffs.delusionReadyBuff);
+            bool active = body.HasBuff(Buffs.delusionActiveBuff);
+            if (!cooldown && !ready && !active)
+            {
+                if (wasActive)
+                {
+                    body.AddTimedBuffTimer(Buffs.delusionCooldownBuff, StaticValues.delusionCooldown);
+                }
+                else
+                {
+                    body.AddBuff(Buffs.delusionReadyBuff);
+                }
+            }
+            if (ready && active)
+            {
+                body.RemoveBuff(Buffs.delusionReadyBuff);
+            }
+            if (active && cooldown)
+            {
+                body.RemoveBuff(Buffs.delusionActiveBuff);
+            }
+            wasActive = body.HasBuff(Buffs.delusionActiveBuff);
+        }
 
-    }
-    public class DelusionPyro : BaseItemBodyBehavior
-    {
-        [BaseItemBodyBehavior.ItemDefAssociationAttribute(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef()
+        private void OnDisable()
         {
-            return GetElementDef().delusion;
-        }
-        private static ElementDef GetElementDef()
-        {
-            return DefaultElementDefs.pyroElement;
-        }
-    }
-    public class DelusionHydro : BaseItemBodyBehavior
-    {
-        [BaseItemBodyBehavior.ItemDefAssociationAttribute(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef()
-        {
-            return GetElementDef().delusion;
-        }
-        private static ElementDef GetElementDef()
-        {
-            return DefaultElementDefs.hydroElement;
-        }
-    }
-    public class DelusionElectro : BaseItemBodyBehavior
-    {
-        [BaseItemBodyBehavior.ItemDefAssociationAttribute(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef()
-        {
-            return GetElementDef().delusion;
-        }
-        private static ElementDef GetElementDef()
-        {
-            return DefaultElementDefs.electroElement;
-        }
-    }
-    public class DelusionCryo : BaseItemBodyBehavior
-    {
-        [BaseItemBodyBehavior.ItemDefAssociationAttribute(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef()
-        {
-            return GetElementDef().delusion;
-        }
-        private static ElementDef GetElementDef()
-        {
-            return DefaultElementDefs.cryoElement;
-        }
-    }
-    public class DelusionAnemo : BaseItemBodyBehavior
-    {
-        [BaseItemBodyBehavior.ItemDefAssociationAttribute(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef()
-        {
-            return GetElementDef().delusion;
-        }
-        private static ElementDef GetElementDef()
-        {
-            return DefaultElementDefs.anemoElement;
-        }
-    }
-    public class DelusionGeo : BaseItemBodyBehavior
-    {
-        [BaseItemBodyBehavior.ItemDefAssociationAttribute(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef()
-        {
-            return GetElementDef().delusion;
-        }
-        private static ElementDef GetElementDef()
-        {
-            return DefaultElementDefs.geoElement;
-        }
-    }
-    public class DelusionDendro : BaseItemBodyBehavior
-    {
-        [BaseItemBodyBehavior.ItemDefAssociationAttribute(useOnServer = true, useOnClient = false)]
-        private static ItemDef GetItemDef()
-        {
-            return GetElementDef().delusion;
-        }
-        private static ElementDef GetElementDef()
-        {
-            return DefaultElementDefs.dendroElement;
-        }
+            if (body)
+            {
+                body.onSkillActivatedServer -= OnSkillActivated;
+                if (body.HasBuff(Buffs.delusionCooldownBuff)) body.RemoveBuff(Buffs.delusionCooldownBuff);
+                if (body.HasBuff(Buffs.delusionReadyBuff)) body.RemoveBuff(Buffs.delusionReadyBuff);
+                if (body.HasBuff(Buffs.delusionActiveBuff)) body.RemoveBuff(Buffs.delusionActiveBuff);
+            }
+        } 
     }
 }

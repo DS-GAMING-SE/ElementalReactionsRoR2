@@ -27,5 +27,14 @@ namespace ElementalReactionsMod
 
         public const float quickenDamageAddCoefficient = 0.3f;
         #endregion
+
+        #region Items
+        public const int delusionDuration = 10;
+        public const int delusionCooldown = 10;
+        public const float delusionDamageCoefficient = 6f;
+        public const float delusionAttacksPerSecond = 0.5f;
+        public const float delusionHealthPercentCost = 0.05f;
+        public const float delusionHealingReceivedReduction = 0.3f;
+        #endregion
     }
 }

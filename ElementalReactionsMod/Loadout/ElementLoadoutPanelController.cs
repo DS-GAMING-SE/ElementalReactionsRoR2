@@ -13,8 +13,6 @@ using HG;
 
 namespace ElementalReactionsMod.Loadout
 {
-    // Following loadoutPanelController too closely. The panel will be the same for all survivors, so it doesn't need to be remade constantly. Bake rows into prefab?
-    // Honestly just delete like, all of this, and figure it out your own way. Config does all the hard work. Just make buttons n shit
     public class ElementLoadoutPanelController : MonoBehaviour
     {
         public LanguageTextMeshController hoverTextDescription;
@@ -193,7 +191,6 @@ namespace ElementalReactionsMod.Loadout
                     this.SetButtonColorMultiplier(i, 0.5f);
                     if ((int)loadout[(int)skillSlot].index == this.rowData[i].defIndex)
                     {
-                        Log.Message($"Loadout {i} selected");
                         this.choiceHighlightRect.SetParent((RectTransform)this.rowData[i].button.transform, false);
                         this.SetButtonColorMultiplier(i, 1f);
                     }
@@ -211,10 +208,8 @@ namespace ElementalReactionsMod.Loadout
                 TooltipProvider component2 = component.GetComponent<TooltipProvider>();
                 component.interactable = true;
                 component2.titleColor = element.color;
-                string name = Language.GetString(element.nameToken);
-                string desc = Language.GetString(element.descriptionToken);
-                component2.overrideTitleText = name;
-                component2.overrideBodyText = desc;
+                component2.overrideTitleText = Language.GetString(element.nameToken);
+                component2.overrideBodyText = Language.GetString(element.descriptionToken);
                 ((Image)component.targetGraphic).sprite = element.skillIcon;
                 this.rowData.Add(new RowData(component, (int)element.index));
                 return component;

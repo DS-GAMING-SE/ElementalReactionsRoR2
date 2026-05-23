@@ -6,6 +6,8 @@ using RoR2;
 using ElementalReactionsMod.Elements;
 using HG;
 using ElementalReactionsMod.Reactions;
+using UnityEngine.Networking;
+using R2API.Networking.Interfaces;
 
 namespace ElementalReactionsMod.Loadout
 {
@@ -27,6 +29,14 @@ namespace ElementalReactionsMod.Loadout
                 this.enabled = false;
             }
             characterBody = GetComponent<CharacterBody>();
+        }
+
+        private void Start()
+        {
+            if (characterBody.isPlayerControlled && !NetworkServer.active)
+            {
+                new NetworkElementLoadout(characterBody.netId, primaryElement.index, secondaryElement.index, utilityElement.index, specialElement.index).Send(R2API.Networking.NetworkDestination.Server);
+            }
         }
 
         private void FixedUpdate()
@@ -68,13 +78,18 @@ namespace ElementalReactionsMod.Loadout
             utilityElement = ElementCatalog.GetElementDef(elements[2]);
             specialElement = ElementCatalog.GetElementDef(elements[3]);
         }
-
+        // UNTESTED
         [SystemInitializer(typeof(SurvivorCatalog), typeof(ElementCatalog))]
         public static void AddElementLoadoutComponents()
         {
             foreach (var survivor in SurvivorCatalog.allSurvivorDefs)
             {
-                survivor.bodyPrefab.EnsureComponent<ElementLoadoutComponent>();
+                ElementDef[] config = Config.GetElementLoadoutFromConfig(survivor.cachedName, out var exists);
+                ElementLoadoutComponent loadout = survivor.bodyPrefab.EnsureComponent<ElementLoadoutComponent>();
+                if (exists)
+                {
+                    loadout.ApplyElementLoadout(config);
+                }
             }
         }
     }

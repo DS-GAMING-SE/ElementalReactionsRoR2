@@ -63,23 +63,26 @@ namespace ElementalReactionsMod
             {
                 vision.SetTexture("_MainTex", x.Result);
             };
-            AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_TiledTextures.texCloudIce_png)).Completed += x =>
+            AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.texChefOilDecalMask_png)).Completed += x =>
             {
                 vision.SetTexture("_Cloud1Tex", x.Result);
-                vision.SetTextureScale("_Cloud1Tex", new Vector2(5, 3));
+                vision.SetTextureScale("_Cloud1Tex", new Vector2(1, 0.3f));
             };
-            AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_TiledTextures.texCloudOrganic2_png)).Completed += x =>
+            AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX_ParticleMasks.texAlphaGradient2_png)).Completed += x =>
             {
                 vision.SetTexture("_Cloud2Tex", x.Result);
+                vision.SetTextureScale("_Cloud2Tex", new Vector2(1, -1));
+                vision.SetTextureOffset("_Cloud2Tex", new Vector2(0, 1.08f));
             };
             AssetAsyncReferenceManager<Texture>.LoadAsset(remapTex).Completed += x =>
             {
                 vision.SetTexture("_RemapTex", x.Result);
             };
-            vision.SetVector("_CutoffScroll", new Vector4(0, -5, 2, -1));
-            vision.SetFloat("_AlphaBoost", 1.2f);
+            vision.SetVector("_CutoffScroll", new Vector4(0, -1.5f, 0, 0));
+            vision.SetFloat("_AlphaBoost", 0.75f);
             vision.SetFloat("_Cutoff", 0f);
-            vision.Specular(0.4f, 8.5f, false);
+            vision.Specular(0.7f, 9f, false);
+            vision.SetFloat("_RampInfo", 1);
 
             return vision;
         }
@@ -140,12 +143,16 @@ namespace ElementalReactionsMod
 
             #region Items
             #region Common
-            public static AssetReferenceT<Material> visionMaterial = new AssetReferenceT<Material>("e3301a4ccd084f4428b3b23e85dc1733");
+            public static AssetReferenceT<Material> visionHolderMaterial = new AssetReferenceT<Material>("e3301a4ccd084f4428b3b23e85dc1733");
             #endregion
             #region Delusion
             public static AssetReferenceT<GameObject> delusionPickupModel = new AssetReferenceT<GameObject>("9f3cf544c7630a04fa25214a5197c191");
             public static AssetReferenceT<Texture> delusionLogo = new AssetReferenceT<Texture>("8c75207915d01ff4280ac8f0e15b5aad");
             public static AssetReferenceT<Sprite> delusionItemIcon = new AssetReferenceT<Sprite>("884bdf224e0646e43b6dc1b6a2675c92");
+
+            public static AssetReferenceT<Sprite> delusionCooldownBuffIcon = new AssetReferenceT<Sprite>("11b881fd7c08c0b4faf1b305df7e394d");
+            public static AssetReferenceT<Sprite> delusionReadyBuffIcon = new AssetReferenceT<Sprite>("da2c01d04bcb15f43848d28d22db15d9");
+            public static AssetReferenceT<Sprite> delusionActiveBuffIcon = new AssetReferenceT<Sprite>("c48688fe6fab6304badbca799ca382be");
             #endregion
             #endregion
         }
