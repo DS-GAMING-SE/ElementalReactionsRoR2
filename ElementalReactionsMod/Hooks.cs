@@ -26,7 +26,7 @@ namespace ElementalReactionsMod
             On.RoR2.UI.LogBook.LogBookController.CanSelectItemEntry += NoDelusionsWithElementInLogbook;
             On.RoR2.HealthComponent.Heal += HealingReceivedDebuff;
         }
-        private static void TakeDamageIL(ILContext il)
+        private static void TakeDamageIL(ILContext il) // Move this to right after ionincoming so bloom cores can reject having elements applied
         {
             ILCursor c = new ILCursor(il);
             if (c.TryGotoNext(x => x.MatchLdfld<HealthComponent>(nameof(HealthComponent.onIncomingDamageReceivers))))

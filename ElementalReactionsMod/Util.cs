@@ -3,6 +3,7 @@ using ElementalReactionsMod.Reactions;
 using LookingGlass.LookingGlassLanguage;
 using R2API;
 using RoR2;
+using RoR2.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -135,6 +136,37 @@ namespace ElementalReactionsMod
                 body.AddTimedBuff(buff, num);
                 num++;
             }
+        }
+
+        public static bool GetRandomNode(Vector3 origin, out Vector3 destination, float minDistance, float maxDistance)
+        {
+            NodeGraph nodeGraph = SceneInfo.instance.GetNodeGraph(MapNodeGroup.GraphType.Ground);
+            NodeGraph.NodeIndex nodeIndex = NodeGraph.NodeIndex.invalid;
+            List<NodeGraph.NodeIndex> list;
+
+            list = nodeGraph.FindNodesInRange(origin, minDistance, maxDistance, HullMask.Human);
+            if (list.Count > 0)
+            {
+                nodeIndex = list[UnityEngine.Random.Range(0, list.Count)];
+            }
+            if (nodeIndex == NodeGraph.NodeIndex.invalid)
+            {
+                list ??= new();
+                nodeGraph.GetActiveNodesForHullMask(HullMask.Human, list);
+                if (list.Count > 0)
+                {
+                    nodeIndex = list[UnityEngine.Random.Range(0, Mathf.Max(1, list.Count))];
+                }
+            }
+            if (list.Count <= 0)
+            {
+                destination = origin;
+                return false;
+            }
+
+            nodeGraph.GetNodePosition(nodeIndex, out Vector3 vector3);
+            destination = vector3;
+            return true;
         }
     }
 }

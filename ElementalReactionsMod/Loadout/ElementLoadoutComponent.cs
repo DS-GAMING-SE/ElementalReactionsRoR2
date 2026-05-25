@@ -66,10 +66,10 @@ namespace ElementalReactionsMod.Loadout
 
         public void ApplyElementLoadout(ElementDef[] elements)
         {
-            primaryElement = ElementCatalog.GetElementDef(elements[0].index);
-            secondaryElement = ElementCatalog.GetElementDef(elements[1].index);
-            utilityElement = ElementCatalog.GetElementDef(elements[2].index);
-            specialElement = ElementCatalog.GetElementDef(elements[3].index);
+            primaryElement = elements[0];
+            secondaryElement = elements[1];
+            utilityElement = elements[2];
+            specialElement = elements[3];
         }
         public void ApplyElementLoadout(ElementIndex[] elements)
         {
@@ -78,8 +78,7 @@ namespace ElementalReactionsMod.Loadout
             utilityElement = ElementCatalog.GetElementDef(elements[2]);
             specialElement = ElementCatalog.GetElementDef(elements[3]);
         }
-        // UNTESTED
-        [SystemInitializer(typeof(SurvivorCatalog), typeof(ElementCatalog))]
+
         public static void AddElementLoadoutComponents()
         {
             foreach (var survivor in SurvivorCatalog.allSurvivorDefs)

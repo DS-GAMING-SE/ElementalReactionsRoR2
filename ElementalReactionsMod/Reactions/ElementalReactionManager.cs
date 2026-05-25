@@ -1,5 +1,6 @@
 ﻿using ElementalReactionsMod.Elements;
 using RoR2;
+using RoR2.ContentManagement;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,6 +14,8 @@ namespace ElementalReactionsMod.Reactions
         public void OnEnable()
         {
             SingletonHelper.Assign(ref instance, this);
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.bloomObject, AsyncReferenceHandleUnloadType.OnRunEnd);
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.crystallizePickup, AsyncReferenceHandleUnloadType.OnRunEnd);
         }
         public void OnDisable()
         {

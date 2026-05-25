@@ -21,6 +21,7 @@ namespace ElementalReactionsMod.Reactions
         public ElementDef[] reactingElements;
         public delegate void ElementalReactionDelegate(ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo);
         public event ElementalReactionDelegate onElementalReactionTriggered;
+        public bool showInLoadoutMenu;
         public ReactionIndex index
         {
             get
@@ -36,12 +37,12 @@ namespace ElementalReactionsMod.Reactions
         {
             return Language.GetString(this.nameToken, Language.currentLanguageName);
         }
-        public static ElementalReactionDef CreateElementalReactionDef(string internalName, string token, ElementDef baseElement, ElementDef reactingElement)
+        public static ElementalReactionDef CreateElementalReactionDef(string internalName, string token, ElementDef baseElement, ElementDef reactingElement, bool showInLoadoutMenu = true)
         {
             return CreateElementalReactionDef(internalName, token, baseElement, [reactingElement]);
         }
 
-        public static ElementalReactionDef CreateElementalReactionDef(string internalName, string token, ElementDef baseElement, ElementDef[] reactingElements)
+        public static ElementalReactionDef CreateElementalReactionDef(string internalName, string token, ElementDef baseElement, ElementDef[] reactingElements, bool showInLoadoutMenu = true)
         {
             ElementalReactionDef reactionDef = ScriptableObject.CreateInstance<ElementalReactionDef>();
             reactionDef.cachedName = internalName;
@@ -49,6 +50,7 @@ namespace ElementalReactionsMod.Reactions
             reactionDef.descriptionToken = token + "_DESCRIPTION";
             reactionDef.baseElement = baseElement;
             reactionDef.reactingElements = reactingElements;
+            reactionDef.showInLoadoutMenu = showInLoadoutMenu;
             return reactionDef;
         }
     }
@@ -86,7 +88,7 @@ namespace ElementalReactionsMod.Reactions
             overload = ElementalReactionDef.CreateElementalReactionDef("Overload", $"{ElementalReactionsPlugin.PREFIX}REACTION_OVERLOAD", pyroElement, electroElement);
             overload.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
             {
-                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.ExplosionVFX_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
+                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusAmalgamator.SolusAmalgamatorTrackingBombExplosion_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
                 Util.CreateBlastAttack(damage, overloadDamageCoefficient, genericReactionExplosionRadius, 0f, pyroElement.index, true, 1000f).Fire();
             };
 
@@ -119,7 +121,7 @@ namespace ElementalReactionsMod.Reactions
             superconduct = ElementalReactionDef.CreateElementalReactionDef("Superconduct", $"{ElementalReactionsPlugin.PREFIX}REACTION_SUPERCONDUCT", cryoElement, electroElement);
             superconduct.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
             {
-                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.ChefIceBoxExplosionVFX_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
+                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.ChefSecondaryIceBoxBoostedVFXShort_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
                 DamageTypeCombo damageType = default;
                 damageType.SetElement(cryoElement.index);
                 damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
@@ -143,7 +145,12 @@ namespace ElementalReactionsMod.Reactions
             crystallize = ElementalReactionDef.CreateElementalReactionDef("Crystallize", $"{ElementalReactionsPlugin.PREFIX}REACTION_CRYSTALLIZE", geoElement, [pyroElement, hydroElement, electroElement, cryoElement]);
             crystallize.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
             {
-
+                Util.GetRandomNode(damage.position, out var pos, 0.5f, 15f);
+                GameObject crystallize = GameObject.Instantiate(Assets.crystallizePickup, pos, Quaternion.identity);
+                if (damage.attacker)
+                {
+                    crystallize.GetComponent<TeamFilter>().teamIndex = TeamComponent.GetObjectTeam(damage.attacker);
+                }
             };
 
             burning = ElementalReactionDef.CreateElementalReactionDef("Burning", $"{ElementalReactionsPlugin.PREFIX}REACTION_BURNING", dendroElement, pyroElement);
@@ -161,7 +168,8 @@ namespace ElementalReactionsMod.Reactions
             bloom = ElementalReactionDef.CreateElementalReactionDef("Bloom", $"{ElementalReactionsPlugin.PREFIX}REACTION_BLOOM", dendroElement, hydroElement);
             bloom.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
             {
-
+                Util.GetRandomNode(damage.position, out var pos, 0.5f, 15f);
+                GameObject.Instantiate(Assets.bloomDendroCore, pos, Quaternion.identity);
             };
 
 

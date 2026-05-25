@@ -85,6 +85,26 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Icons/Buff Icons/Delusion/texDelusionBuffCooldown.png
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 7e50ea908069f874fac56c93f70a328d
+    m_Address: Assets/ElementalReactionsAssets/Items/Moonwheel/mdlMoonwheel.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 3208908270e8db14489bfb68079f0dcd
+    m_Address: Assets/ElementalReactionsAssets/Reactions/Bloom/Bloom.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c74a8fba09c05e843afab90abce26e10
+    m_Address: Assets/ElementalReactionsAssets/Reactions/Bloom/matBloom.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 77d939fda7dde4048a33fccac924a029
+    m_Address: Assets/ElementalReactionsAssets/Reactions/Bloom/texBloomFresnelMask.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 677d6b93d9a81fa44b68adbcd2288857
+    m_Address: Assets/ElementalReactionsAssets/Reactions/Crystallize/CrystallizePickup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

@@ -17,12 +17,7 @@ namespace ElementalReactionsMod.Items
 
         public static void Initialize()
         {
-            AssetAsyncReferenceManager<Material>.LoadAsset(visionHolderMaterial).Completed += x =>
-            {
-                x.Result.SetHopooMaterial().Specular(0.4f, 3f, false);
-                x.Result.SetNormal(2.5f);
-                x.Result.SetFloat("_RampInfo", 1);
-            };
+            
         }
         internal static GameObject AddModelPanelParameters(GameObject item)
         {

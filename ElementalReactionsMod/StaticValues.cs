@@ -26,6 +26,9 @@ namespace ElementalReactionsMod
         public const float swirlDamageCoefficient = 2f;
 
         public const float quickenDamageAddCoefficient = 0.3f;
+
+        public const float crystallizeBarrierPercent = 0.1f;
+        public const float crystallizeMaxBarrierPercent = 0.3f;
         #endregion
 
         #region Items

@@ -1,5 +1,6 @@
 ﻿using BepInEx.Configuration;
 using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Loadout;
 using ElementalReactionsMod.Reactions;
 using RiskOfOptions;
 using RiskOfOptions.Options;
@@ -24,13 +25,13 @@ namespace ElementalReactionsMod
         #region Loadout
         /*
          * Writing my own stupid system for making configs because I just wanted to not write anything to the config UNLESS the value was different from default but nooooooo
-         * bepinex won't that happen. They've got a OrphanedEntries property in the config file that would've let me side step that and make my own things but nooooo
+         * bepinex won't let that happen. They've got a OrphanedEntries property in the config file that would've let me side step that and make my own things but nooooo
          * it's private and even after trying NStrip and AssemblyPublicizer I couldn't get it to show up
          */
         public static string loadoutConfigFilePath = ElementalReactionsPlugin.instance.Config.ConfigFilePath.Replace(".cfg", "Loadouts.cfg");
         public static Dictionary<string, ElementDef[]> elementLoadoutConfigs = new Dictionary<string, ElementDef[]>();
 
-        [SystemInitializer(typeof(ElementCatalog))]
+        [SystemInitializer(typeof(ElementCatalog), typeof(SurvivorCatalog))]
         internal static void ReadConfigFile()
         {
             if (File.Exists(loadoutConfigFilePath))
@@ -62,6 +63,7 @@ namespace ElementalReactionsMod
                     }
                 }
             }
+            ElementLoadoutComponent.AddElementLoadoutComponents();
         }
         public static ElementDef[] GetElementLoadoutFromConfig(string bodyName, out bool configExists)
         {

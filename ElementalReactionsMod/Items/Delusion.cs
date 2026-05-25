@@ -138,15 +138,14 @@ namespace ElementalReactionsMod.Items
     public class DelusionBehaviour : CharacterBody.ItemBehavior
     {
         private bool wasActive = false;
-        
-        private void OnEnable()
+
+        private void Start()
         {
             if (body)
             {
                 body.onSkillActivatedServer += OnSkillActivated;
             }
         }
-        // OnSkillActivated never runs?
         private void OnSkillActivated(GenericSkill skill)
         {
             if (body.HasBuff(Buffs.delusionReadyBuff) && body.skillLocator && body.skillLocator.special && body.skillLocator.special == skill)

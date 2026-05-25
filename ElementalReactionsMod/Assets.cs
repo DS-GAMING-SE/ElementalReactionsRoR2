@@ -5,14 +5,18 @@ using R2API;
 using RoR2;
 using RoR2.ContentManagement;
 using RoR2.ExpansionManagement;
+using RoR2.Projectile;
 using RoR2.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Networking;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
+using static Rewired.Controller;
 
 namespace ElementalReactionsMod
 {
@@ -20,6 +24,10 @@ namespace ElementalReactionsMod
     {
         public static ExpansionDef elementalReactionExpansionDef;
         public static GameObject elementalReactionManagerPrefab;
+
+        public static GameObject bloomDendroCore;
+        public static GameObject crystallizePickup;
+
         public static string AddressablesDirectory { get; private set; }
         internal static void LoadAddressables()
         {
@@ -46,8 +54,84 @@ namespace ElementalReactionsMod
 
             elementalReactionManagerPrefab.AddComponent<ExpansionRequirementComponent>().requiredExpansion = elementalReactionExpansionDef;
 
-            #region Items
+            #region Reactions
+            AssetAsyncReferenceManager<Material>.LoadAsset(AssetReferences.bloomMaterial).Completed += x =>
+            {
+                x.Result.SetHopooMaterial();
+                AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.bloomFresnelMask).Completed += y =>
+                {
+                    x.Result.SetTexture("_FresnelMask", y.Result);
+                };
+                AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampBeetleQueen_png)).Completed += y =>
+                {
+                    x.Result.SetTexture("_FresnelRamp", y.Result);
+                };
+                x.Result.EnableKeyword("FRESNEL_EMISSION");
+                x.Result.SetFloat("_FresnelBoost", 4f);
+                x.Result.SetFloat("_FresnelPower", 0.8f);
+                x.Result.SetEmission(0.4f);
+            };
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.bloomObject).Completed += x =>
+            { // taking damage that isn't rejected causes it to error, probably because no charactermodel?
+                x.Result.AddComponent<NetworkIdentity>();
+                x.Result.AddComponent<ModelLocator>();
+                var characterBody = x.Result.AddComponent<CharacterBody>();
+                characterBody.baseNameToken = $"{ElementalReactionsPlugin.PREFIX}REACTION_BLOOM_OBJECT_NAME";
+                characterBody.bodyFlags = CharacterBody.BodyFlags.Masterless | CharacterBody.BodyFlags.HasBackstabImmunity;
+                var healthComponent = x.Result.AddComponent<HealthComponent>();
+                healthComponent.dontShowHealthbar = true;
+                healthComponent.body = characterBody;
+                characterBody.baseMaxHealth = 1f;
+                characterBody.healthComponent = healthComponent;
+                var hurtBoxGroup = x.Result.transform.GetChild(0).gameObject.AddComponent<HurtBoxGroup>();
+                hurtBoxGroup.mainHurtBox = hurtBoxGroup.transform.GetChild(0).GetChild(0).gameObject.AddComponent<HurtBox>();
+                hurtBoxGroup.hurtBoxes = [hurtBoxGroup.mainHurtBox];
+                hurtBoxGroup.mainHurtBox.healthComponent = healthComponent;
+                hurtBoxGroup.mainHurtBox.isBullseye = true;
+                hurtBoxGroup.transform.GetChild(0).gameObject.AddComponent<RotateItem>().spinSpeed = 60f;
+                var specialObjectAttributes = x.Result.AddComponent<SpecialObjectAttributes>();
+                specialObjectAttributes.grabbable = true;
+                specialObjectAttributes.massOverride = 0;
+                specialObjectAttributes.hullClassification = HullClassification.Human;
+                specialObjectAttributes.orientToFloor = true;
+                x.Result.AddComponent<BloomController>();
 
+                bloomDendroCore = x.Result;
+                Content.AddNetworkedObjectPrefab(x.Result);
+            };
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.crystallizePickup).Completed += x =>
+            {
+                x.Result.AddComponent<NetworkIdentity>();
+                var teamFilter = x.Result.AddComponent<TeamFilter>();
+                teamFilter.defaultTeam = TeamIndex.Player;
+                x.Result.AddComponent<DestroyOnTimer>().duration = 10;
+                /*var networkTransform = x.Result.AddComponent<ProjectileNetworkTransform>(); ???????????????????????????????
+                networkTransform.interpolationFactor = 2f;
+                networkTransform.positionTransmitInterval = 0.66666f;*/
+                var gravitate = x.Result.transform.Find("GravitationController").gameObject.AddComponent<GravitatePickup>();
+                gravitate.rigidbody = x.Result.GetComponent<Rigidbody>();
+                gravitate.maxSpeed = 40f;
+                gravitate.acceleration = 5;
+                gravitate.teamFilter = teamFilter;
+                gravitate.gravitateAtFullHealth = true;
+                var vfxParent = x.Result.transform.GetChild(0);
+                vfxParent.GetChild(0).gameObject.AddComponent<RotateItem>().spinSpeed = 60f;
+                var controller = x.Result.transform.Find("PickupTrigger").gameObject.AddComponent<CrystallizeController>();
+                controller.teamFilter = teamFilter;
+                controller.baseGameObject = x.Result;
+
+                crystallizePickup = x.Result;
+                Content.AddNetworkedObjectPrefab(x.Result);
+            };
+            #endregion
+
+            #region Items
+            AssetAsyncReferenceManager<Material>.LoadAsset(AssetReferences.visionHolderMaterial).Completed += x =>
+            {
+                x.Result.SetHopooMaterial().Specular(0.4f, 3f, false);
+                x.Result.SetNormal(1.3f);
+                x.Result.SetFloat("_RampInfo", 1);
+            };
             #endregion
         }
 
@@ -141,6 +225,14 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<Sprite> quickenBuffIcon = new AssetReferenceT<Sprite>("fd1a80b8adab48644bde7e4c5d73fd13");
             public static AssetReferenceT<Sprite> superconductBuffIcon = new AssetReferenceT<Sprite>("5fc2055e4d7c33348889a483e5a0df1b");
 
+            #region Reactions
+            public static AssetReferenceT<GameObject> crystallizePickup = new("677d6b93d9a81fa44b68adbcd2288857");
+
+            public static AssetReferenceT<GameObject> bloomObject = new("3208908270e8db14489bfb68079f0dcd");
+            public static AssetReferenceT<Material> bloomMaterial = new("c74a8fba09c05e843afab90abce26e10");
+            public static AssetReferenceT<Texture> bloomFresnelMask = new("77d939fda7dde4048a33fccac924a029");
+            #endregion
+
             #region Items
             #region Common
             public static AssetReferenceT<Material> visionHolderMaterial = new AssetReferenceT<Material>("e3301a4ccd084f4428b3b23e85dc1733");
@@ -153,6 +245,9 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<Sprite> delusionCooldownBuffIcon = new AssetReferenceT<Sprite>("11b881fd7c08c0b4faf1b305df7e394d");
             public static AssetReferenceT<Sprite> delusionReadyBuffIcon = new AssetReferenceT<Sprite>("da2c01d04bcb15f43848d28d22db15d9");
             public static AssetReferenceT<Sprite> delusionActiveBuffIcon = new AssetReferenceT<Sprite>("c48688fe6fab6304badbca799ca382be");
+            #endregion
+            #region Moonwheel
+            public static AssetReferenceT<GameObject> moonwheelPickupModel = new AssetReferenceT<GameObject>("7e50ea908069f874fac56c93f70a328d");
             #endregion
             #endregion
         }
