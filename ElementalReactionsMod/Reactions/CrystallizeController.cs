@@ -24,7 +24,14 @@ namespace ElementalReactionsMod.Reactions
                     {
                         float barrier = (component.healthComponent.fullBarrier * StaticValues.crystallizeMaxBarrierPercent) - component.healthComponent.barrier;
                         if (barrier > 0) component.healthComponent.AddBarrier(Mathf.Min(barrier, component.healthComponent.fullBarrier * StaticValues.crystallizeBarrierPercent));
-                        GameObject.Destroy(baseGameObject);
+                        if (baseGameObject.TryGetComponent<ElementalReactionPooledObject>(out var pool))
+                        {
+                            pool.ReturnObject();
+                        }
+                        else
+                        {
+                            GameObject.Destroy(baseGameObject);
+                        }
                     }
                 }
             }

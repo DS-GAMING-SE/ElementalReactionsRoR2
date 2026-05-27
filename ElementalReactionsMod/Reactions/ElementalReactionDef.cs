@@ -73,7 +73,7 @@ namespace ElementalReactionsMod.Reactions
         public static ElementalReactionDef burning;
         public static ElementalReactionDef quicken;
         public static ElementalReactionDef bloom;
-        // bloom and burgeon will be IOnIncomingDamageServerReceiver on the bloom cores, so not using an ElementalReactionDef
+        // bloom and burgeon are an IOnIncomingDamageServerReceiver on the bloom cores, so not using an ElementalReactionDef
 
         public static void Initialize()
         {
@@ -145,11 +145,13 @@ namespace ElementalReactionsMod.Reactions
             crystallize = ElementalReactionDef.CreateElementalReactionDef("Crystallize", $"{ElementalReactionsPlugin.PREFIX}REACTION_CRYSTALLIZE", geoElement, [pyroElement, hydroElement, electroElement, cryoElement]);
             crystallize.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
             {
-                Util.GetRandomNode(damage.position, out var pos, 0.5f, 15f);
-                GameObject crystallize = GameObject.Instantiate(Assets.crystallizePickup, pos, Quaternion.identity);
-                if (damage.attacker)
+                if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var characterBody))
                 {
-                    crystallize.GetComponent<TeamFilter>().teamIndex = TeamComponent.GetObjectTeam(damage.attacker);
+                    Util.GetRandomNode(damage.position, out var pos, 0.5f, 15f);
+                    //ElementalReactionPooledObject crystallize = ElementalReactionManager.CreatePooledDeployable(ElementalReactionManager.crystallizePool, characterBody, ElementalReactionManager.crystallizeDeployableSlot, pos);
+                    GameObject crystallize = GameObject.Instantiate(Assets.crystallizePickup, pos, Quaternion.identity);
+                    if (characterBody.master) characterBody.master.AddDeployable(crystallize.GetComponent<Deployable>(), ElementalReactionManager.crystallizeDeployableSlot);
+                    if (crystallize) crystallize.GetComponent<TeamFilter>().teamIndex = characterBody.teamComponent.teamIndex;
                 }
             };
 
@@ -168,8 +170,14 @@ namespace ElementalReactionsMod.Reactions
             bloom = ElementalReactionDef.CreateElementalReactionDef("Bloom", $"{ElementalReactionsPlugin.PREFIX}REACTION_BLOOM", dendroElement, hydroElement);
             bloom.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
             {
-                Util.GetRandomNode(damage.position, out var pos, 0.5f, 15f);
-                GameObject.Instantiate(Assets.bloomDendroCore, pos, Quaternion.identity);
+                if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var characterBody))
+                {
+                    Util.GetRandomNode(damage.position, out var pos, 0.5f, 15f);
+                    //ElementalReactionPooledObject bloom = ElementalReactionManager.CreatePooledDeployable(ElementalReactionManager.bloomPool, characterBody, ElementalReactionManager.bloomDeployableSlot, pos);
+                    GameObject bloom = GameObject.Instantiate(Assets.bloomDendroCore, pos, Quaternion.identity);
+                    if (characterBody.master) characterBody.master.AddDeployable(bloom.GetComponent<Deployable>(), ElementalReactionManager.bloomDeployableSlot);
+                    //if (bloom) bloom.teamFilter.teamIndex = characterBody.teamComponent.teamIndex;
+                }
             };
 
 

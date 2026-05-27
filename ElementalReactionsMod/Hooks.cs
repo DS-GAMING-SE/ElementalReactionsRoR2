@@ -26,10 +26,12 @@ namespace ElementalReactionsMod
             On.RoR2.UI.LogBook.LogBookController.CanSelectItemEntry += NoDelusionsWithElementInLogbook;
             On.RoR2.HealthComponent.Heal += HealingReceivedDebuff;
         }
-        private static void TakeDamageIL(ILContext il) // Move this to right after ionincoming so bloom cores can reject having elements applied
+        // Right after IOnincomingDamageReceiver does its thing, since that's where many things (including bloom dendro cores) reject damage
+        private static void TakeDamageIL(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            if (c.TryGotoNext(x => x.MatchLdfld<HealthComponent>(nameof(HealthComponent.onIncomingDamageReceivers))))
+            if (c.TryGotoNext(x => x.MatchLdfld<HealthComponent>(nameof(HealthComponent.onIncomingDamageReceivers))) && 
+                c.TryGotoNext(MoveType.After, x => x.MatchBrfalse(out ILLabel falseBranch), x => x.MatchRet(), x => x.MatchLdloc(0)))
             {
                 c.Emit(OpCodes.Ldarg_0); // healthcomponent
                 c.Emit(OpCodes.Ldarg_1); // damageInfo
@@ -39,6 +41,7 @@ namespace ElementalReactionsMod
                     {
                         ElementDef element = ElementCatalog.GetElementDef(damage.damageType.GetElement());
                         ElementalReactionManager.ApplyElement(element, self.body, ref damage);
+                        CharacterBody attackerBody = damage.attacker ? damage.attacker.GetComponent<CharacterBody>() : null;
 
                         if (self.body.HasBuff(Buffs.superconductBuff) && element == DefaultElementDefs.physicalElement)
                         {
@@ -46,9 +49,9 @@ namespace ElementalReactionsMod
                             damage.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                         }
 
-                        if (self.body.HasBuff(Buffs.quickenBuff) && element == DefaultElementDefs.dendroElement || element == DefaultElementDefs.electroElement)
+                        if (self.body.HasBuff(Buffs.quickenBuff) && attackerBody && element == DefaultElementDefs.dendroElement || element == DefaultElementDefs.electroElement)
                         {
-                            damage.damage += (StaticValues.quickenDamageAddCoefficient * damage.procCoefficient); // Multiply this by character damage stat
+                            damage.damage += (StaticValues.quickenDamageAddCoefficient * damage.procCoefficient * attackerBody.damage);
                             damage.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                         }
 

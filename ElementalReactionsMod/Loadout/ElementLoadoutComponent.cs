@@ -33,7 +33,7 @@ namespace ElementalReactionsMod.Loadout
 
         private void Start()
         {
-            if (characterBody.isPlayerControlled && !NetworkServer.active)
+            if (!NetworkServer.active && characterBody.isPlayerControlled)
             {
                 new NetworkElementLoadout(characterBody.netId, primaryElement.index, secondaryElement.index, utilityElement.index, specialElement.index).Send(R2API.Networking.NetworkDestination.Server);
             }
@@ -83,7 +83,7 @@ namespace ElementalReactionsMod.Loadout
         {
             foreach (var survivor in SurvivorCatalog.allSurvivorDefs)
             {
-                ElementDef[] config = Config.GetElementLoadoutFromConfig(survivor.cachedName, out var exists);
+                ElementDef[] config = Config.GetElementLoadoutFromConfig(BodyCatalog.GetBodyName(BodyCatalog.FindBodyIndex(survivor.bodyPrefab)), out var exists);
                 ElementLoadoutComponent loadout = survivor.bodyPrefab.EnsureComponent<ElementLoadoutComponent>();
                 if (exists)
                 {

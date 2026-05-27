@@ -1,24 +1,36 @@
 ﻿using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Loadout;
+using Grumpy;
+using R2API.Networking.Interfaces;
 using RoR2;
 using RoR2.ContentManagement;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace ElementalReactionsMod.Reactions
 {
     public class ElementalReactionManager : MonoBehaviour
     {
         public static ElementalReactionManager instance;
+        // how do you network pools?
+        public static DeployableSlot bloomDeployableSlot;
+        //public static PrefabComponentPool<ElementalReactionPooledObject> bloomPool;
+
+        public static DeployableSlot crystallizeDeployableSlot;
+        //public static PrefabComponentPool<ElementalReactionPooledObject> crystallizePool;
         public void OnEnable()
         {
             SingletonHelper.Assign(ref instance, this);
-            AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.bloomObject, AsyncReferenceHandleUnloadType.OnRunEnd);
-            AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.crystallizePickup, AsyncReferenceHandleUnloadType.OnRunEnd);
+            //if (bloomPool == null) CreatePool(ref bloomPool, AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.bloomObject, AsyncReferenceHandleUnloadType.OnRunEnd).WaitForCompletion(), StaticValues.bloomCap);
+            //if (crystallizePool == null) CreatePool(ref crystallizePool, AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.crystallizePickup, AsyncReferenceHandleUnloadType.OnRunEnd).WaitForCompletion(), StaticValues.crystallizeCap);
         }
         public void OnDisable()
         {
+            //bloomPool.Kill();
+            //crystallizePool.Kill();
             SingletonHelper.Unassign(ref instance, this);
         }
 
@@ -54,6 +66,55 @@ namespace ElementalReactionsMod.Reactions
                     target.AddTimedBuff(element.cooldownBuff, StaticValues.elementAppliedICD);
                 }
             }
+        }
+        public static void CreatePool(ref PrefabComponentPool<ElementalReactionPooledObject> pool, GameObject prefab, int baseCap)
+        {
+            pool = new PrefabComponentPool<ElementalReactionPooledObject>
+            {
+                PrefabObject = prefab,
+                AddComponentIfMissing = true,
+                AlwaysGrowable = true,
+                DoNotCull = true
+            };
+            pool.Initialize(baseCap, baseCap);
+        }
+        public static ElementalReactionPooledObject CreatePooledDeployable(PrefabComponentPool<ElementalReactionPooledObject> pool, CharacterBody owner, DeployableSlot deployableSlot, Vector3 position)
+        {
+            if (owner && owner.master)
+            {
+                ElementalReactionPooledObject pooledObject = CreatePooledObject(pool, position);
+                if (pooledObject)
+                {
+                    if (pooledObject.deployable)
+                    {
+                        owner.master.AddDeployable(pooledObject.deployable, deployableSlot);
+                    }
+                }
+                return pooledObject;
+            }
+            return null;
+        }
+        public static ElementalReactionPooledObject CreatePooledObject(PrefabComponentPool<ElementalReactionPooledObject> pool, Vector3 position)
+        {
+            ElementalReactionPooledObject pooledObject = pool.GetObject();
+            if (pooledObject)
+            {
+                pooledObject.gameObject.SetActive(true);
+                pooledObject.pool = pool;
+                pooledObject.transform.position = position;
+                pooledObject.transform.rotation = Quaternion.identity;
+                if (pooledObject.newlySpawned)
+                {
+                    pooledObject.newlySpawned = false;
+                    NetworkServer.Spawn(pooledObject.gameObject);
+                }
+                else
+                {
+                    new NetworkPooledObjectSetActive(pooledObject.networkIdentity.netId, true).Send(R2API.Networking.NetworkDestination.Clients);
+                }
+                return pooledObject;
+            }
+            return null;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace ElementalReactionsMod
     [BepInDependency(DamageAPI.PluginGUID)]
     [BepInDependency(RecalculateStatsAPI.PluginGUID)]
     [BepInDependency(R2APIContentManager.PluginGUID)]
+    [BepInDependency(DeployableAPI.PluginGUID)]
     [BepInDependency(LookingGlass.PluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(RiskOfOptions.PluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
 
@@ -44,6 +45,9 @@ namespace ElementalReactionsMod
 
             Assets.Initialize();
 
+            ElementalReactionManager.bloomDeployableSlot = DeployableAPI.RegisterDeployableSlot((self, deployableCountMultiplier) => { return StaticValues.bloomCap; });
+            ElementalReactionManager.crystallizeDeployableSlot = DeployableAPI.RegisterDeployableSlot((self, deployableCountMultiplier) => { return StaticValues.crystallizeCap; });
+
             DelusionManager.Initialize();
 
             Tokens.Initialize();
@@ -61,6 +65,7 @@ namespace ElementalReactionsMod
             Hooks.Initialize();
 
             NetworkingAPI.RegisterMessageType<NetworkElementLoadout>();
+            NetworkingAPI.RegisterMessageType<NetworkPooledObjectSetActive>();
 
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(LookingGlass.PluginInfo.PLUGIN_GUID)) ElementalReactionsMod.Config.RiskOfOptionsSetup();
         }

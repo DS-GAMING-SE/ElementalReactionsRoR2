@@ -44,22 +44,22 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_VAPORIZE_DESCRIPTION", $"{PyroText()} + {HydroText()}. Based on whether {PyroText()} or {HydroText()} is applied last, increase damage by {DamageMultiplierText(vaporizeMultiplierPyroTrigger)} or {DamageMultiplierText(vaporizeMultiplierHydroTrigger)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_OVERLOAD_NAME", "Overload");
-            LanguageAPI.Add($"{prefix}REACTION_OVERLOAD_DESCRIPTION", $"{PyroText()} + {ElectroText()}. Create an explosion of {PyroText()} dealing {DamageValueBaseText(overloadDamageCoefficient)}.");
+            LanguageAPI.Add($"{prefix}REACTION_OVERLOAD_DESCRIPTION", $"{PyroText()} + {ElectroText()}. Create an explosion of {PyroText()} dealing {DamageValueText(overloadDamageCoefficient)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_MELT_NAME", "Melt");
             LanguageAPI.Add($"{prefix}REACTION_MELT_DESCRIPTION", $"{PyroText()} + {CryoText()}. Based on whether {PyroText()} or {CryoText()} is applied last, increase damage by {DamageMultiplierText(vaporizeMultiplierPyroTrigger)} or {DamageMultiplierText(vaporizeMultiplierHydroTrigger)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_NAME", "Electro-Charge");
-            LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_DESCRIPTION", $"{ElectroText()} + {HydroText()}. Create {DamageText("chain lightning")} that arcs between enemies affected by {HydroText()} for {DamageValueBaseText(electroChargeDamageCoefficient)}.");
+            LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_DESCRIPTION", $"{ElectroText()} + {HydroText()}. Create {DamageText("chain lightning")} that arcs between enemies affected by {HydroText()} for {DamageValueText(electroChargeDamageCoefficient)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_FROZEN_NAME", "Frozen");
             LanguageAPI.Add($"{prefix}REACTION_FROZEN_DESCRIPTION", $"{CryoText()} + {HydroText()}. Briefly {UtilityText("freeze")} the target.");
 
             LanguageAPI.Add($"{prefix}REACTION_SUPERCONDUCT_NAME", "Superconduct");
-            LanguageAPI.Add($"{prefix}REACTION_SUPERCONDUCT_DESCRIPTION", $"{CryoText()} + {ElectroText()}. Create a blast of {CryoText()} dealing {DamageValueBaseText(superconductDamageCoefficient)} and increasing all non-elemental damage dealt by {DamageMultiplierText(superconductDamageMultiplier)}.");
+            LanguageAPI.Add($"{prefix}REACTION_SUPERCONDUCT_DESCRIPTION", $"{CryoText()} + {ElectroText()}. Create a blast of {CryoText()} dealing {DamageValueText(superconductDamageCoefficient)} and increasing all non-elemental damage dealt by {DamageMultiplierText(superconductDamageMultiplier)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_SWIRL_NAME", "Swirl");
-            LanguageAPI.Add($"{prefix}REACTION_SWIRL_DESCRIPTION", $"{AnemoText()} + {PyroText()}/{HydroText()}/{ElectroText()}/{CryoText()}. TODO.");
+            LanguageAPI.Add($"{prefix}REACTION_SWIRL_DESCRIPTION", $"{AnemoText()} + {PyroText()}/{HydroText()}/{ElectroText()}/{CryoText()}. Create a burst of the non-{AnemoText()} element dealing {DamageValueText(swirlDamageCoefficient)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_CRYSTALLIZE_NAME", "Crystallize");
             LanguageAPI.Add($"{prefix}REACTION_CRYSTALLIZE_DESCRIPTION", $"{GeoText()} + {PyroText()}/{HydroText()}/{ElectroText()}/{CryoText()}. Create a shard that grants you a {HealingText("temporary barrier")} for {HealingText(crystallizeBarrierPercent*100f+"%")} of your max health, up to {HealingText(crystallizeMaxBarrierPercent * 100f + "%")}.");
@@ -68,10 +68,10 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_BURNING_DESCRIPTION", $"{DendroText()} + {PyroText()}. {DamageText("Ignite")} the target.");
 
             LanguageAPI.Add($"{prefix}REACTION_QUICKEN_NAME", "Quicken");
-            LanguageAPI.Add($"{prefix}REACTION_QUICKEN_DESCRIPTION", $"{DendroText()} + {ElectroText()}. Increase damage dealt by all {DendroText()} or {ElectroText(   )} attacks by a flat {DamageText((quickenDamageAddCoefficient * 100f).ToString())}%.");
+            LanguageAPI.Add($"{prefix}REACTION_QUICKEN_DESCRIPTION", $"{DendroText()} + {ElectroText()}. Increase damage dealt by all {DendroText()} or {ElectroText()} attacks by a flat {DamageText((quickenDamageAddCoefficient * 100f).ToString()+"% base damage")}.");
 
             LanguageAPI.Add($"{prefix}REACTION_BLOOM_NAME", "Bloom");
-            LanguageAPI.Add($"{prefix}REACTION_BLOOM_DESCRIPTION", $"{DendroText()} + {HydroText()}. TODO.");
+            LanguageAPI.Add($"{prefix}REACTION_BLOOM_DESCRIPTION", $"{DendroText()} + {HydroText()}. Create a {DendroText("Dendro Core")} which explodes for {DamageValueText(bloomDamageCoefficient)} after {UtilityText(bloomDuration+"s")}.\n{ElectroText()} converts the core into a {DamageText("homing projectile")} dealing {DamageValueText(hyperBloomDamageCoefficient)}.\n{PyroText()} causes the core to explode in a {DamageText("larger radius")}, dealing {DamageValueText(burgeonDamageCoefficient)}.");
             LanguageAPI.Add($"{prefix}REACTION_BLOOM_OBJECT_NAME", "Dendro Core");
             #endregion
 
@@ -109,7 +109,7 @@ namespace ElementalReactionsMod
         }
         public static string DelusionDescription(string element)
         {
-            return $"Activating your {UtilityText("Special skill")} will activate the Delusion for {UtilityText(delusionDuration+"s")}. While active, damaging enemies with any {UtilityText("skill")} will fire {DamageText("attacks of ")+element}, dealing {DamageText($"{delusionDamageCoefficient * 100f}% base damage")}, but will also drain your health by {RedText(delusionHealthPercentCost * 100f+"%")}. While active, {RedText($"reduces healing received by {delusionHealingReceivedReduction*100f}%")} {StackingText($"(+{delusionHealingReceivedReduction * 100f}% per stack)")}. Recharges every {UtilityText(delusionCooldown.ToString())} seconds.";
+            return $"Activating your {UtilityText("Special skill")} will activate the Delusion for {UtilityText(delusionDuration+"s")}. While active, damaging enemies with any {UtilityText("skill")} will fire an {DamageText("attack of ")+element}, dealing {DamageText($"{delusionDamageCoefficient * 100f}% base damage")} {StackingText($"(+{delusionStackDamageCoefficient * 100f}% per same-element stack)")}, while also draining your health by {RedText(delusionHealthPercentCost * 100f+"%")}. While the Delusion is active, {RedText($"healing received is reduced by {delusionHealingReceivedReduction*100f}%")} {StackingText($"(+{delusionHealingReceivedReduction * 100f}% per stack)")}. Recharges every {UtilityText(delusionCooldown.ToString())} seconds. {StackingText("A separate attack will be fired for each Delusion you have of a unique element")}.";
         }
         public static string DamageText(string text)
         {

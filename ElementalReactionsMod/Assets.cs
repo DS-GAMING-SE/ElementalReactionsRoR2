@@ -72,9 +72,8 @@ namespace ElementalReactionsMod
                 x.Result.SetEmission(0.4f);
             };
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.bloomObject).Completed += x =>
-            { // taking damage that isn't rejected causes it to error, probably because no charactermodel?
+            {
                 x.Result.AddComponent<NetworkIdentity>();
-                x.Result.AddComponent<ModelLocator>();
                 var characterBody = x.Result.AddComponent<CharacterBody>();
                 characterBody.baseNameToken = $"{ElementalReactionsPlugin.PREFIX}REACTION_BLOOM_OBJECT_NAME";
                 characterBody.bodyFlags = CharacterBody.BodyFlags.Masterless | CharacterBody.BodyFlags.HasBackstabImmunity;
@@ -84,6 +83,7 @@ namespace ElementalReactionsMod
                 characterBody.baseMaxHealth = 1f;
                 characterBody.healthComponent = healthComponent;
                 var hurtBoxGroup = x.Result.transform.GetChild(0).gameObject.AddComponent<HurtBoxGroup>();
+                x.Result.AddComponent<ModelLocator>().modelTransform = hurtBoxGroup.transform;
                 hurtBoxGroup.mainHurtBox = hurtBoxGroup.transform.GetChild(0).GetChild(0).gameObject.AddComponent<HurtBox>();
                 hurtBoxGroup.hurtBoxes = [hurtBoxGroup.mainHurtBox];
                 hurtBoxGroup.mainHurtBox.healthComponent = healthComponent;
@@ -95,6 +95,7 @@ namespace ElementalReactionsMod
                 specialObjectAttributes.hullClassification = HullClassification.Human;
                 specialObjectAttributes.orientToFloor = true;
                 x.Result.AddComponent<BloomController>();
+                x.Result.AddComponent<Deployable>();
 
                 bloomDendroCore = x.Result;
                 Content.AddNetworkedObjectPrefab(x.Result);
@@ -119,6 +120,8 @@ namespace ElementalReactionsMod
                 var controller = x.Result.transform.Find("PickupTrigger").gameObject.AddComponent<CrystallizeController>();
                 controller.teamFilter = teamFilter;
                 controller.baseGameObject = x.Result;
+                x.Result.AddComponent<Deployable>();
+                x.Result.AddComponent<ElementalReactionPooledObject>().gravitatePickup = gravitate;
 
                 crystallizePickup = x.Result;
                 Content.AddNetworkedObjectPrefab(x.Result);
