@@ -205,7 +205,7 @@ namespace ElementalReactionsMod.Items
                     {
                         attacker = null,
                         inflictor = null,
-                        damage = StaticValues.delusionHealthPercentCost * body.healthComponent.fullHealth,
+                        damage = (StaticValues.delusionHealthPercentCost * body.inventory.GetItemCountEffective(element.delusion)) * body.healthComponent.fullHealth,
                         damageType = DamageType.BypassArmor | DamageType.NonLethal,
                         position = body.corePosition,
                         crit = false,
@@ -213,6 +213,7 @@ namespace ElementalReactionsMod.Items
                         inflictedHurtbox = body.mainHurtBox
                     });
                     DelusionOrb.FireDelusionOrb(body, target, body.inventory.GetItemCountEffective(element.delusion), body.RollCrit(), element.index);
+                    GenericElementActivatedEffectComponent.SpawnEffect(gameObject.transform, element.index, true);
                     yield return new WaitForSeconds((1 / StaticValues.delusionAttacksPerSecond) / DelusionManager.elementalDelusions.Count);
                 }
             }

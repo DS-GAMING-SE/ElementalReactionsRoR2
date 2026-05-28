@@ -12,6 +12,7 @@ namespace ElementalReactionsMod.Reactions
     public class BloomController : MonoBehaviour, IOnIncomingDamageServerReceiver
     {
         ElementalReactionPooledObject pool;
+        private float timer;
         public void Start()
         {
             pool = GetComponent<ElementalReactionPooledObject>();
@@ -44,6 +45,14 @@ namespace ElementalReactionsMod.Reactions
                 }
             }
             damageInfo.rejected = true;
+        }
+        private void FixedUpdate()
+        {
+            timer += Time.fixedDeltaTime;
+            if (timer > StaticValues.bloomDuration)
+            {
+                GameObject.Destroy(gameObject);
+            }
         }
     }
 }

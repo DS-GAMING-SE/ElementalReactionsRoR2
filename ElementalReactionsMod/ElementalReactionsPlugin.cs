@@ -65,7 +65,7 @@ namespace ElementalReactionsMod
             Hooks.Initialize();
 
             NetworkingAPI.RegisterMessageType<NetworkElementLoadout>();
-            NetworkingAPI.RegisterMessageType<NetworkPooledObjectSetActive>();
+            //NetworkingAPI.RegisterMessageType<NetworkPooledObjectSetActive>();
 
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(LookingGlass.PluginInfo.PLUGIN_GUID)) ElementalReactionsMod.Config.RiskOfOptionsSetup();
         }

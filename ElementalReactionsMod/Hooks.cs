@@ -42,16 +42,16 @@ namespace ElementalReactionsMod
                         ElementDef element = ElementCatalog.GetElementDef(damage.damageType.GetElement());
                         ElementalReactionManager.ApplyElement(element, self.body, ref damage);
                         CharacterBody attackerBody = damage.attacker ? damage.attacker.GetComponent<CharacterBody>() : null;
+                        float damageIncreaseFromReactions = 0f;
 
                         if (self.body.HasBuff(Buffs.superconductBuff) && element == DefaultElementDefs.physicalElement)
                         {
-                            damage.damage *= StaticValues.superconductDamageMultiplier;
+                            damageIncreaseFromReactions += damage.damage * StaticValues.superconductDamageMultiplier;
                             damage.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                         }
-
-                        if (self.body.HasBuff(Buffs.quickenBuff) && attackerBody && element == DefaultElementDefs.dendroElement || element == DefaultElementDefs.electroElement)
+                        else if (damage.damage > 0 && self.body.HasBuff(Buffs.quickenBuff) && attackerBody && element == DefaultElementDefs.dendroElement || element == DefaultElementDefs.electroElement)
                         {
-                            damage.damage += (StaticValues.quickenDamageAddCoefficient * damage.procCoefficient * attackerBody.damage);
+                            damageIncreaseFromReactions += (StaticValues.quickenDamageAddCoefficient * damage.procCoefficient * attackerBody.damage);
                             damage.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                         }
 
@@ -59,6 +59,8 @@ namespace ElementalReactionsMod
                         {
                             self.body.AddTimedBuff(Buffs.superconductBuff, 5, 1);
                         }
+
+                        damage.damage += damageIncreaseFromReactions;
                     }
                 });
             }

@@ -105,6 +105,38 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Reactions/Crystallize/CrystallizePickup.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 0dcaf09df2cb8ab4c838c88c6d997a39
+    m_Address: Assets/ElementalReactionsAssets/Common/VFX/ElementActivatedEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 3eb8865e5a13b7742b66a47fbdd2aee7
+    m_Address: Assets/ElementalReactionsAssets/Common/VFX/Element Icons/texHydroIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: cdc71ccb0e628c74ba052480a5bc3cd4
+    m_Address: Assets/ElementalReactionsAssets/Common/VFX/Element Icons/texDendroIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 9435d25802bf8994a89c7275c9264810
+    m_Address: Assets/ElementalReactionsAssets/Common/VFX/Element Icons/texCryoIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 56c4fbbb5b62cb84abd0f8a9575caf3f
+    m_Address: Assets/ElementalReactionsAssets/Common/VFX/Element Icons/texElectroIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 38a3562c6487d3d459a11ab8ce19b418
+    m_Address: Assets/ElementalReactionsAssets/Common/VFX/Element Icons/texAnemoIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: f972169ff42390a4da00e9b3eb915dbe
+    m_Address: Assets/ElementalReactionsAssets/Common/VFX/Element Icons/texGeoIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 13e481dbe51e4d640ad603f14cb6bfe9
+    m_Address: Assets/ElementalReactionsAssets/Common/VFX/Element Icons/texPyroIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

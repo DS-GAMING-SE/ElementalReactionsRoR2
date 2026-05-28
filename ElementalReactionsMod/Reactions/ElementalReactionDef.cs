@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Networking;
 using static ElementalReactionsMod.Elements.DefaultElementDefs;
 using static ElementalReactionsMod.StaticValues;
 
@@ -149,9 +150,10 @@ namespace ElementalReactionsMod.Reactions
                 {
                     Util.GetRandomNode(damage.position, out var pos, 0.5f, 15f);
                     //ElementalReactionPooledObject crystallize = ElementalReactionManager.CreatePooledDeployable(ElementalReactionManager.crystallizePool, characterBody, ElementalReactionManager.crystallizeDeployableSlot, pos);
-                    GameObject crystallize = GameObject.Instantiate(Assets.crystallizePickup, pos, Quaternion.identity);
+                    GameObject crystallize = GameObject.Instantiate(Assets.crystallizePickup, pos + (1.5f * Vector3.up), Quaternion.identity);
                     if (characterBody.master) characterBody.master.AddDeployable(crystallize.GetComponent<Deployable>(), ElementalReactionManager.crystallizeDeployableSlot);
                     if (crystallize) crystallize.GetComponent<TeamFilter>().teamIndex = characterBody.teamComponent.teamIndex;
+                    NetworkServer.Spawn(crystallize);
                 }
             };
 
@@ -174,9 +176,10 @@ namespace ElementalReactionsMod.Reactions
                 {
                     Util.GetRandomNode(damage.position, out var pos, 0.5f, 15f);
                     //ElementalReactionPooledObject bloom = ElementalReactionManager.CreatePooledDeployable(ElementalReactionManager.bloomPool, characterBody, ElementalReactionManager.bloomDeployableSlot, pos);
-                    GameObject bloom = GameObject.Instantiate(Assets.bloomDendroCore, pos, Quaternion.identity);
+                    GameObject bloom = GameObject.Instantiate(Assets.bloomDendroCore, pos + (1.5f * Vector3.up), Quaternion.identity);
                     if (characterBody.master) characterBody.master.AddDeployable(bloom.GetComponent<Deployable>(), ElementalReactionManager.bloomDeployableSlot);
                     //if (bloom) bloom.teamFilter.teamIndex = characterBody.teamComponent.teamIndex;
+                    NetworkServer.Spawn(bloom);
                 }
             };
 

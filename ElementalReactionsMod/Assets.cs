@@ -9,6 +9,7 @@ using RoR2.Projectile;
 using RoR2.UI;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -27,6 +28,9 @@ namespace ElementalReactionsMod
 
         public static GameObject bloomDendroCore;
         public static GameObject crystallizePickup;
+
+        public static GameObject genericElementActivatedEffect;
+        public static Material genericElementEffectMaterial;
 
         public static string AddressablesDirectory { get; private set; }
         internal static void LoadAddressables()
@@ -54,6 +58,31 @@ namespace ElementalReactionsMod
 
             elementalReactionManagerPrefab.AddComponent<ExpansionRequirementComponent>().requiredExpansion = elementalReactionExpansionDef;
 
+            CreateGenericElementEffectMaterial();
+
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.genericElementActivatedEffect).Completed += x =>
+            {
+                EffectComponent effect = x.Result.AddComponent<EffectComponent>();
+                effect.positionAtReferencedTransform = true;
+                effect.parentToReferencedTransform = true;
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+                vfx.DoNotPool = false;
+                x.Result.AddComponent<DestroyOnTimer>().duration = 0.7f;
+                x.Result.AddComponent<NetworkIdentity>();
+                GenericElementActivatedEffectComponent component = x.Result.AddComponent<GenericElementActivatedEffectComponent>();
+                component.icon = x.Result.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
+                component.mainRecolors = [x.Result.transform.GetChild(0).GetComponent<ParticleSystem>(), x.Result.transform.GetChild(1).GetComponent<ParticleSystem>(),
+                x.Result.transform.GetChild(2).GetComponent<ParticleSystem>()];
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser3_mat)).Completed += y =>
+                {
+                    x.Result.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = y.Result;
+                };
+                genericElementActivatedEffect = x.Result;
+                AddNewEffectDef(genericElementActivatedEffect);
+            };
+
             #region Reactions
             AssetAsyncReferenceManager<Material>.LoadAsset(AssetReferences.bloomMaterial).Completed += x =>
             {
@@ -62,14 +91,14 @@ namespace ElementalReactionsMod
                 {
                     x.Result.SetTexture("_FresnelMask", y.Result);
                 };
-                AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampBeetleQueen_png)).Completed += y =>
+                AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampOrbitalLaser_png)).Completed += y =>
                 {
                     x.Result.SetTexture("_FresnelRamp", y.Result);
                 };
                 x.Result.EnableKeyword("FRESNEL_EMISSION");
-                x.Result.SetFloat("_FresnelBoost", 4f);
-                x.Result.SetFloat("_FresnelPower", 0.8f);
-                x.Result.SetEmission(0.4f);
+                x.Result.SetFloat("_FresnelBoost", 7f);
+                x.Result.SetFloat("_FresnelPower", 1.6f);
+                x.Result.SetEmission(0.25f);
             };
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.bloomObject).Completed += x =>
             {
@@ -82,13 +111,15 @@ namespace ElementalReactionsMod
                 healthComponent.body = characterBody;
                 characterBody.baseMaxHealth = 1f;
                 characterBody.healthComponent = healthComponent;
-                var hurtBoxGroup = x.Result.transform.GetChild(0).gameObject.AddComponent<HurtBoxGroup>();
-                x.Result.AddComponent<ModelLocator>().modelTransform = hurtBoxGroup.transform;
-                hurtBoxGroup.mainHurtBox = hurtBoxGroup.transform.GetChild(0).GetChild(0).gameObject.AddComponent<HurtBox>();
-                hurtBoxGroup.hurtBoxes = [hurtBoxGroup.mainHurtBox];
-                hurtBoxGroup.mainHurtBox.healthComponent = healthComponent;
-                hurtBoxGroup.mainHurtBox.isBullseye = true;
-                hurtBoxGroup.transform.GetChild(0).gameObject.AddComponent<RotateItem>().spinSpeed = 60f;
+                var model = x.Result.transform.GetChild(0).gameObject.AddComponent<HurtBoxGroup>();
+                x.Result.AddComponent<ModelLocator>().modelTransform = model.transform;
+                model.mainHurtBox = model.transform.GetChild(0).GetChild(0).gameObject.AddComponent<HurtBox>();
+                model.hurtBoxes = [model.mainHurtBox];
+                model.mainHurtBox.healthComponent = healthComponent;
+                model.mainHurtBox.isBullseye = true;
+                var rotate = model.transform.GetChild(0).gameObject.AddComponent<RotateItem>();
+                rotate.spinSpeed = 80f;
+                rotate.offsetVector = new Vector3(0, 1.3f, 0);
                 var specialObjectAttributes = x.Result.AddComponent<SpecialObjectAttributes>();
                 specialObjectAttributes.grabbable = true;
                 specialObjectAttributes.massOverride = 0;
@@ -106,9 +137,9 @@ namespace ElementalReactionsMod
                 var teamFilter = x.Result.AddComponent<TeamFilter>();
                 teamFilter.defaultTeam = TeamIndex.Player;
                 x.Result.AddComponent<DestroyOnTimer>().duration = 10;
-                /*var networkTransform = x.Result.AddComponent<ProjectileNetworkTransform>(); ???????????????????????????????
+                var networkTransform = x.Result.AddComponent<ProjectileNetworkTransform>();
                 networkTransform.interpolationFactor = 2f;
-                networkTransform.positionTransmitInterval = 0.66666f;*/
+                networkTransform.positionTransmitInterval = 0.66666f;
                 var gravitate = x.Result.transform.Find("GravitationController").gameObject.AddComponent<GravitatePickup>();
                 gravitate.rigidbody = x.Result.GetComponent<Rigidbody>();
                 gravitate.maxSpeed = 40f;
@@ -116,12 +147,32 @@ namespace ElementalReactionsMod
                 gravitate.teamFilter = teamFilter;
                 gravitate.gravitateAtFullHealth = true;
                 var vfxParent = x.Result.transform.GetChild(0);
-                vfxParent.GetChild(0).gameObject.AddComponent<RotateItem>().spinSpeed = 60f;
+                var model = vfxParent.GetChild(0).gameObject;
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matOmniRing1Generic_mat)).Completed += x =>
+                {
+                    model.transform.Find("CrystallizeRings").GetComponent<ParticleSystemRenderer>().sharedMaterial = x.Result;
+                };
+                model.gameObject.AddComponent<RotateItem>().spinSpeed = 120f;
                 var controller = x.Result.transform.Find("PickupTrigger").gameObject.AddComponent<CrystallizeController>();
                 controller.teamFilter = teamFilter;
                 controller.baseGameObject = x.Result;
                 x.Result.AddComponent<Deployable>();
-                x.Result.AddComponent<ElementalReactionPooledObject>().gravitatePickup = gravitate;
+                //x.Result.AddComponent<ElementalReactionPooledObject>().gravitatePickup = gravitate;
+
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Elites_EliteAurelionite.matEliteAurelioniteAffixDisplay_mat)).Completed += x =>
+                {
+                    Material crystallizeMat = new Material(x.Result);
+                    crystallizeMat.SetNormal(0.1f);
+                    AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampGrandparent_png)).Completed += y =>
+                    {
+                        crystallizeMat.SetTexture("_FresnelRamp", y.Result);
+                    };
+                    crystallizeMat.EnableKeyword("FRESNEL_EMISSION");
+                    crystallizeMat.SetFloat("_FresnelBoost", 20f);
+                    crystallizeMat.SetFloat("_FresnelPower", 1.5f);
+
+                    model.GetComponent<MeshRenderer>().sharedMaterial = crystallizeMat;
+                };
 
                 crystallizePickup = x.Result;
                 Content.AddNetworkedObjectPrefab(x.Result);
@@ -141,6 +192,7 @@ namespace ElementalReactionsMod
         public static Material CreateVisionMaterial(AssetReferenceT<Texture> icon, AssetReferenceT<Texture> remapTex)
         {
             Material vision = new Material(Addressables.LoadAssetAsync<Shader>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Shaders.HGOpaqueCloudRemap_shader).WaitForCompletion());
+            vision.name = "ElementalReactionsVision";
             vision.EnableKeyword("EMISSIONFROMALBEDO");
             vision.EnableKeyword("DITHER");
             vision.EnableKeyword("USE_CLOUDS");
@@ -172,6 +224,28 @@ namespace ElementalReactionsMod
             vision.SetFloat("_RampInfo", 1);
 
             return vision;
+        }
+        private static void CreateGenericElementEffectMaterial()
+        {
+            genericElementEffectMaterial = new Material(Addressables.LoadAssetAsync<Shader>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Shaders.HGCloudRemap_shader).WaitForCompletion());
+            genericElementEffectMaterial.EnableKeyword("CLOUDOFFSET");
+            genericElementEffectMaterial.EnableKeyword("USE_CLOUDS");
+            genericElementEffectMaterial.EnableKeyword("VERTEXCOLOR");
+            genericElementEffectMaterial.EnableKeyword("EMISSIONFROMALBEDO");
+            genericElementEffectMaterial.EnableKeyword("_EMISSION");
+            genericElementEffectMaterial.SetFloat("_Boost", 5f);
+            genericElementEffectMaterial.SetFloat("_AlphaBoost", 3f);
+            genericElementEffectMaterial.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampDefault_png)).WaitForCompletion());
+            genericElementEffectMaterial.SetFloat("_DepthOffset", -5f);
+            genericElementEffectMaterial.SetFloat("_ZTest", 8f);
+            genericElementEffectMaterial.SetTexture("_Cloud1Tex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_TiledTextures.texCloudDifferenceBW2_png)).WaitForCompletion());
+            genericElementEffectMaterial.SetVector("_CutoffScroll", new Vector4(10f, -25f, 0, 0));
+        }
+        public static Material CreateElementEffectMaterial(Texture icon)
+        {
+            Material newMat = new Material(genericElementEffectMaterial);
+            newMat.SetTexture("_MainTex", icon);
+            return newMat;
         }
 
         [SystemInitializer(typeof(ElementCatalog))]
@@ -212,6 +286,21 @@ namespace ElementalReactionsMod
                 isPrimaryPlayerOnly = false
             });
         }
+        private static void AddNewEffectDef(GameObject effectPrefab)
+        {
+            AddNewEffectDef(effectPrefab, "");
+        }
+        private static void AddNewEffectDef(GameObject effectPrefab, string soundName)
+        {
+            EffectDef newEffectDef = new EffectDef();
+            newEffectDef.prefab = effectPrefab;
+            newEffectDef.prefabEffectComponent = effectPrefab.GetComponent<EffectComponent>();
+            newEffectDef.prefabName = effectPrefab.name;
+            newEffectDef.prefabVfxAttributes = effectPrefab.GetComponent<VFXAttributes>();
+            newEffectDef.spawnSoundEventName = soundName;
+
+            Content.AddEffectDef(newEffectDef);
+        }
 
         public static class AssetReferences
         {
@@ -227,6 +316,16 @@ namespace ElementalReactionsMod
 
             public static AssetReferenceT<Sprite> quickenBuffIcon = new AssetReferenceT<Sprite>("fd1a80b8adab48644bde7e4c5d73fd13");
             public static AssetReferenceT<Sprite> superconductBuffIcon = new AssetReferenceT<Sprite>("5fc2055e4d7c33348889a483e5a0df1b");
+
+            public static AssetReferenceT<Texture> pyroIcon = new("13e481dbe51e4d640ad603f14cb6bfe9");
+            public static AssetReferenceT<Texture> hydroIcon = new("3eb8865e5a13b7742b66a47fbdd2aee7");
+            public static AssetReferenceT<Texture> electroIcon = new("56c4fbbb5b62cb84abd0f8a9575caf3f");
+            public static AssetReferenceT<Texture> cryoIcon = new("9435d25802bf8994a89c7275c9264810");
+            public static AssetReferenceT<Texture> anemoIcon = new("38a3562c6487d3d459a11ab8ce19b418");
+            public static AssetReferenceT<Texture> geoIcon = new("f972169ff42390a4da00e9b3eb915dbe");
+            public static AssetReferenceT<Texture> dendroIcon = new("cdc71ccb0e628c74ba052480a5bc3cd4");
+
+            public static AssetReferenceT<GameObject> genericElementActivatedEffect = new("0dcaf09df2cb8ab4c838c88c6d997a39");
 
             #region Reactions
             public static AssetReferenceT<GameObject> crystallizePickup = new("677d6b93d9a81fa44b68adbcd2288857");
