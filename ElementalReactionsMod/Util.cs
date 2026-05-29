@@ -86,12 +86,6 @@ namespace ElementalReactionsMod
 
             return buffDef;
         }
-        [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-        internal static void RegisterLookingGlassBuff(Language lang, BuffDef buff, string name, string description)
-        {
-            LookingGlassLanguageAPI.SetupToken(lang, $"NAME_{buff.name}", name);
-            LookingGlassLanguageAPI.SetupToken(lang, $"DESCRIPTION_{buff.name}", description);
-        }
         public static BlastAttack CreateBlastAttack(DamageInfo damageInfo, float damage, float radius, float proc, ElementIndex element, bool isReaction, float force)
         {
             CharacterBody characterBody = damageInfo.attacker ? damageInfo.attacker.GetComponent<CharacterBody>() : null;

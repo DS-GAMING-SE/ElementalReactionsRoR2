@@ -14,10 +14,13 @@ namespace ElementalReactionsMod.Items
     public static class Items
     {
         public static ItemDef delusion;
+        public static ItemDef instructorsTeaCup;
 
         public static void Initialize()
         {
-            
+            instructorsTeaCup = AddNewItem("InstructorsTeaCup", "INSTRUCTORS_TEA_CUP", true,
+                Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.Tier1Def_asset).WaitForCompletion(),
+                instructorsTeaCupItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), instructorsTeaCupPickupModel, ItemTag.Damage, ItemTag.CanBeTemporary);
         }
         internal static GameObject AddModelPanelParameters(GameObject item)
         {

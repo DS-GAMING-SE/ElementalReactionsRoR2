@@ -12,8 +12,6 @@ namespace ElementalReactionsMod
         public static BuffDef quickenBuff;
         public static BuffDef superconductBuff;
 
-        public static BuffDef delusionCooldownBuff;
-        public static BuffDef delusionReadyBuff;
         public static BuffDef delusionActiveBuff;
         
         public static void Initialize()
@@ -22,26 +20,8 @@ namespace ElementalReactionsMod
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.quickenBuffIcon).WaitForCompletion(), Color.white, false, true);
             superconductBuff = Util.AddNewBuff("SuperconductReaction",
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.superconductBuffIcon).WaitForCompletion(), Color.white, false, true);
-            delusionCooldownBuff = Util.AddNewBuff("DelusionCooldown",
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionCooldownBuffIcon).WaitForCompletion(), Color.white, true, false, true);
-            delusionReadyBuff = Util.AddNewBuff("DelusionReady",
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionReadyBuffIcon).WaitForCompletion(), Color.white, false, false, false);
             delusionActiveBuff = Util.AddNewBuff("DelusionActive",
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionActiveBuffIcon).WaitForCompletion(), Color.white, true, false, false);
-
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(LookingGlass.PluginInfo.PLUGIN_GUID))
-            {
-                RoR2Application.onLoad += LookingGlassSetup;
-            }
-        }
-
-        private static void LookingGlassSetup()
-        {
-            if (Language.languagesByName.TryGetValue("en", out Language en))
-            {
-                Util.RegisterLookingGlassBuff(en, quickenBuff, "Quicken", $"Increases {Tokens.ElectroText("Electro")} and {Tokens.DendroText("Dendro")} base damage by {StaticValues.quickenDamageAddCoefficient * 100f}%.");
-                Util.RegisterLookingGlassBuff(en, superconductBuff, "Superconduct", $"Increases non-elemental damage by {(StaticValues.superconductDamageMultiplier - 1f) * 100f}%.");
-            }
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionActiveBuffIcon).WaitForCompletion(), Color.white, false, false, false);
         }
     }
 }

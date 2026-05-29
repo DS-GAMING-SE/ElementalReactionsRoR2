@@ -67,7 +67,8 @@ namespace ElementalReactionsMod
             NetworkingAPI.RegisterMessageType<NetworkElementLoadout>();
             //NetworkingAPI.RegisterMessageType<NetworkPooledObjectSetActive>();
 
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(LookingGlass.PluginInfo.PLUGIN_GUID)) ElementalReactionsMod.Config.RiskOfOptionsSetup();
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(RiskOfOptions.PluginInfo.PLUGIN_GUID)) ElementalReactionsMod.Config.RiskOfOptionsSetup();
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(LookingGlass.PluginInfo.PLUGIN_GUID)) LookingGlassSupport.Initialize();
         }
     }
 }

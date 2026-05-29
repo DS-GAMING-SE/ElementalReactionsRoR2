@@ -46,6 +46,8 @@ namespace ElementalReactionsMod
         public const float delusionAttacksPerSecond = 0.5f;
         public const float delusionHealthPercentCost = 0.05f;
         public const float delusionHealingReceivedReduction = 0.3f;
+
+        public const float instructorsTeaCupDamageMultiplier = 0.15f;
         #endregion
     }
 }

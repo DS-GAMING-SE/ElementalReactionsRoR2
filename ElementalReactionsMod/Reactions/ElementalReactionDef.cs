@@ -20,7 +20,7 @@ namespace ElementalReactionsMod.Reactions
         public string descriptionToken;
         public ElementDef baseElement;
         public ElementDef[] reactingElements;
-        public delegate void ElementalReactionDelegate(ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo);
+        public delegate void ElementalReactionDelegate(ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo, ref float addedDamage);
         public event ElementalReactionDelegate onElementalReactionTriggered;
         public bool showInLoadoutMenu;
         public ReactionIndex index
@@ -30,9 +30,9 @@ namespace ElementalReactionsMod.Reactions
                 return (ReactionIndex)Array.IndexOf(ElementalReactionCatalog.elementalReactionCatalog, this);
             }
         }
-        public void TriggerReaction(ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo)
+        public void TriggerReaction(ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo, ref float addedDamage)
         {
-            onElementalReactionTriggered?.Invoke(firstElement, secondElement, victim, ref damageInfo);
+            onElementalReactionTriggered?.Invoke(firstElement, secondElement, victim, ref damageInfo, ref addedDamage);
         }
         public override string ToString()
         {
@@ -79,30 +79,28 @@ namespace ElementalReactionsMod.Reactions
         public static void Initialize()
         {
             vaporize = ElementalReactionDef.CreateElementalReactionDef("Vaporize", $"{ElementalReactionsPlugin.PREFIX}REACTION_VAPORIZE", pyroElement, hydroElement);
-            vaporize.onElementalReactionTriggered += (element1, element2, victim, ref damage) => 
+            vaporize.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) => 
             { 
                 EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_StunChanceOnHit.ImpactStunGrenade_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
-                damage.damage *= element2 == pyroElement ? vaporizeMultiplierPyroTrigger : vaporizeMultiplierHydroTrigger;
-                damage.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
+                addedDamage = damage.damage * (element2 == pyroElement ? vaporizeMultiplierPyroTrigger : vaporizeMultiplierHydroTrigger);
             };
 
             overload = ElementalReactionDef.CreateElementalReactionDef("Overload", $"{ElementalReactionsPlugin.PREFIX}REACTION_OVERLOAD", pyroElement, electroElement);
-            overload.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            overload.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusAmalgamator.SolusAmalgamatorTrackingBombExplosion_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
                 Util.CreateBlastAttack(damage, overloadDamageCoefficient, genericReactionExplosionRadius, 0f, pyroElement.index, true, 1000f).Fire();
             };
 
             melt = ElementalReactionDef.CreateElementalReactionDef("Melt", $"{ElementalReactionsPlugin.PREFIX}REACTION_MELT", pyroElement, cryoElement);
-            melt.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            melt.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_StunChanceOnHit.ImpactStunGrenade_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
-                damage.damage *= element2 == pyroElement ? vaporizeMultiplierPyroTrigger : vaporizeMultiplierHydroTrigger;
-                damage.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
+                addedDamage = damage.damage * (element2 == pyroElement ? vaporizeMultiplierPyroTrigger : vaporizeMultiplierHydroTrigger);
             };
 
             electroCharge = ElementalReactionDef.CreateElementalReactionDef("ElectroCharge", $"{ElementalReactionsPlugin.PREFIX}REACTION_ELECTRO_CHARGE", electroElement, hydroElement);
-            electroCharge.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            electroCharge.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 if (victim)
                 {
@@ -111,7 +109,7 @@ namespace ElementalReactionsMod.Reactions
             };
 
             frozen = ElementalReactionDef.CreateElementalReactionDef("Frozen", $"{ElementalReactionsPlugin.PREFIX}REACTION_FROZEN", cryoElement, hydroElement);
-            frozen.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            frozen.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 if (victim && victim.healthComponent && victim.healthComponent.alive && victim.TryGetComponent<SetStateOnHurt>(out var freeze))
                 {
@@ -120,7 +118,7 @@ namespace ElementalReactionsMod.Reactions
             };
 
             superconduct = ElementalReactionDef.CreateElementalReactionDef("Superconduct", $"{ElementalReactionsPlugin.PREFIX}REACTION_SUPERCONDUCT", cryoElement, electroElement);
-            superconduct.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            superconduct.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.ChefSecondaryIceBoxBoostedVFXShort_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
                 DamageTypeCombo damageType = default;
@@ -132,7 +130,7 @@ namespace ElementalReactionsMod.Reactions
             };
 
             swirl = ElementalReactionDef.CreateElementalReactionDef("Swirl", $"{ElementalReactionsPlugin.PREFIX}REACTION_SWIRL", anemoElement, [pyroElement, hydroElement, electroElement, cryoElement]);
-            swirl.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            swirl.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 ElementDef swirledElement = element1 == anemoElement ? element2 : element1;
                 EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.ChefIceBoxExplosionVFX_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
@@ -144,7 +142,7 @@ namespace ElementalReactionsMod.Reactions
             };
 
             crystallize = ElementalReactionDef.CreateElementalReactionDef("Crystallize", $"{ElementalReactionsPlugin.PREFIX}REACTION_CRYSTALLIZE", geoElement, [pyroElement, hydroElement, electroElement, cryoElement]);
-            crystallize.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            crystallize.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var characterBody))
                 {
@@ -158,19 +156,19 @@ namespace ElementalReactionsMod.Reactions
             };
 
             burning = ElementalReactionDef.CreateElementalReactionDef("Burning", $"{ElementalReactionsPlugin.PREFIX}REACTION_BURNING", dendroElement, pyroElement);
-            burning.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            burning.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 damage.damageType |= DamageType.IgniteOnHit;
             };
 
             quicken = ElementalReactionDef.CreateElementalReactionDef("Quicken", $"{ElementalReactionsPlugin.PREFIX}REACTION_QUICKEN", dendroElement, electroElement);
-            quicken.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            quicken.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 victim.AddTimedBuff(Buffs.quickenBuff, 5f);
             };
 
             bloom = ElementalReactionDef.CreateElementalReactionDef("Bloom", $"{ElementalReactionsPlugin.PREFIX}REACTION_BLOOM", dendroElement, hydroElement);
-            bloom.onElementalReactionTriggered += (element1, element2, victim, ref damage) =>
+            bloom.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var characterBody))
                 {

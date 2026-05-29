@@ -21,8 +21,7 @@ namespace ElementalReactionsMod.Items
 {
     public static class DelusionManager
     {
-        public static List<ItemDef> elementalDelusions = new List<ItemDef>();
-        public static List<ElementDef> delusionElements = new List<ElementDef>();
+        public static Dictionary<ItemDef, ElementDef> delusionToElement = new Dictionary<ItemDef, ElementDef>();
 
         public static void Initialize()
         {
@@ -39,8 +38,7 @@ namespace ElementalReactionsMod.Items
         {
             ItemDef delusion = AddNewItem($"Delusion{element.cachedName}", $"DELUSION_{element.cachedName.ToUpper()}", true, Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.LunarTierDef_asset).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, ItemTag.Damage, ItemTag.WorldUnique);
-            elementalDelusions.Add(delusion);
-            delusionElements.Add(element);
+            delusionToElement.Add(delusion, element);
             return delusion;
         }
         public static void AddDelusionBehaviour(CharacterBody body)
@@ -56,7 +54,7 @@ namespace ElementalReactionsMod.Items
         {
             List<ElementDef> list = new();
             count = 0;
-            foreach (var element in delusionElements)
+            foreach (var element in delusionToElement.Values)
             {
                 if (inventory.GetItemCountEffective(element.delusion) > 0)
                 {
@@ -69,7 +67,7 @@ namespace ElementalReactionsMod.Items
         public static int GetDelusionCount(this Inventory inventory)
         {
             int count = 0;
-            foreach (var delusion in elementalDelusions)
+            foreach (var delusion in delusionToElement.Keys)
             {
                 count += inventory.GetItemCountEffective(delusion);
             }
@@ -116,6 +114,10 @@ namespace ElementalReactionsMod.Items
                             body.master.playerCharacterMasterController.networkUser.localUser.userProfile.DiscoverPickup(pickup);
                         }
                     }
+                    if (DelusionManager.delusionToElement.TryGetValue(ItemCatalog.GetItemDef(results.givenItem.itemIndex), out var element))
+                    {
+                        GenericElementEffectComponent.SpawnActivatedEffect(gameObject.transform, element.index, 1.5f, true);
+                    };
                 }
                 else
                 {
@@ -127,8 +129,7 @@ namespace ElementalReactionsMod.Items
         private ItemDef DecideDelusionElement()
         {
             Xoroshiro128Plus rng = new Xoroshiro128Plus(Run.instance.treasureRng.nextUlong);
-            List<ItemDef> possibleDelusions = new List<ItemDef>();
-            RoR2.Util.CopyList<ItemDef>(DelusionManager.elementalDelusions, possibleDelusions);
+            List<ItemDef> possibleDelusions = DelusionManager.delusionToElement.Keys.ToList();
             List<ItemDef> loadoutElements = new List<ItemDef>();
             if (elementLoadout)
             {
@@ -174,11 +175,10 @@ namespace ElementalReactionsMod.Items
         }
         private void OnSkillActivated(GenericSkill skill)
         {
-            if (body.HasBuff(Buffs.delusionReadyBuff) && body.skillLocator && body.skillLocator.special && body.skillLocator.special == skill)
+            if (body.skillLocator && body.skillLocator.special && body.skillLocator.special == skill)
             {
-                Log.Message("Delusion activated");
-                body.AddTimedBuffTimer(Buffs.delusionActiveBuff, StaticValues.delusionDuration);
-                body.RemoveBuff(Buffs.delusionReadyBuff);
+                //body.AddTimedBuffTimer(Buffs.delusionActiveBuff, StaticValues.delusionDuration);
+                body.AddTimedBuff(Buffs.delusionActiveBuff, StaticValues.delusionDuration);
                 attackCooldown = 0;
             }
         }
@@ -213,37 +213,14 @@ namespace ElementalReactionsMod.Items
                         inflictedHurtbox = body.mainHurtBox
                     });
                     DelusionOrb.FireDelusionOrb(body, target, body.inventory.GetItemCountEffective(element.delusion), body.RollCrit(), element.index);
-                    GenericElementActivatedEffectComponent.SpawnEffect(gameObject.transform, element.index, true);
-                    yield return new WaitForSeconds((1 / StaticValues.delusionAttacksPerSecond) / DelusionManager.elementalDelusions.Count);
+                    GenericElementEffectComponent.SpawnActivatedEffect(gameObject.transform, element.index, true);
+                    yield return new WaitForSeconds((1 / StaticValues.delusionAttacksPerSecond) / DelusionManager.delusionToElement.Keys.Count);
                 }
             }
         }
         private void FixedUpdate()
         {
-            bool cooldown = body.HasBuff(Buffs.delusionCooldownBuff);
-            bool ready = body.HasBuff(Buffs.delusionReadyBuff);
-            bool active = body.HasBuff(Buffs.delusionActiveBuff);
-            if (!cooldown && !ready && !active)
-            {
-                if (wasActive)
-                {
-                    body.AddTimedBuffTimer(Buffs.delusionCooldownBuff, StaticValues.delusionCooldown);
-                }
-                else
-                {
-                    body.AddBuff(Buffs.delusionReadyBuff);
-                }
-            }
-            if (ready && active)
-            {
-                body.RemoveBuff(Buffs.delusionReadyBuff);
-            }
-            if (active && cooldown)
-            {
-                body.RemoveBuff(Buffs.delusionActiveBuff);
-            }
-            wasActive = body.HasBuff(Buffs.delusionActiveBuff);
-            if (active) attackCooldown = Mathf.Max(attackCooldown - Time.fixedDeltaTime, 0);
+            if (body.HasBuff(Buffs.delusionActiveBuff)) attackCooldown = Mathf.Max(attackCooldown - Time.fixedDeltaTime, 0);
         }
 
         private void OnDisable()
@@ -251,8 +228,6 @@ namespace ElementalReactionsMod.Items
             if (body)
             {
                 body.onSkillActivatedServer -= OnSkillActivated;
-                if (body.HasBuff(Buffs.delusionCooldownBuff)) body.RemoveBuff(Buffs.delusionCooldownBuff);
-                if (body.HasBuff(Buffs.delusionReadyBuff)) body.RemoveBuff(Buffs.delusionReadyBuff);
                 if (body.HasBuff(Buffs.delusionActiveBuff)) body.RemoveBuff(Buffs.delusionActiveBuff);
             }
         } 

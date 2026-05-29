@@ -69,12 +69,19 @@ namespace ElementalReactionsMod
                 vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
                 vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
                 vfx.DoNotPool = false;
-                x.Result.AddComponent<DestroyOnTimer>().duration = 0.7f;
                 x.Result.AddComponent<NetworkIdentity>();
-                GenericElementActivatedEffectComponent component = x.Result.AddComponent<GenericElementActivatedEffectComponent>();
+                GenericElementEffectComponent component = x.Result.AddComponent<GenericElementEffectComponent>();
+                ParticleSystem iconParticle = x.Result.transform.GetChild(0).GetComponent<ParticleSystem>();
+                ParticleSystem rayParticle = x.Result.transform.GetChild(1).GetComponent<ParticleSystem>();
+                ParticleSystem glowParticle = x.Result.transform.GetChild(2).GetComponent<ParticleSystem>();
                 component.icon = x.Result.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
-                component.mainRecolors = [x.Result.transform.GetChild(0).GetComponent<ParticleSystem>(), x.Result.transform.GetChild(1).GetComponent<ParticleSystem>(),
-                x.Result.transform.GetChild(2).GetComponent<ParticleSystem>()];
+                component.particlesToRecolor = [iconParticle, rayParticle, glowParticle];
+                component.scaleDuration = true;
+                x.Result.AddComponent<DestroyOnParticleEnd>().trackedParticleSystem = glowParticle;
+                var scale = x.Result.AddComponent<ScaleParticleSystemDuration>();
+                scale.initialDuration = 0.6f;
+                scale.particleSystems = [iconParticle, rayParticle, glowParticle];
+                component.particleDuration = scale;
                 AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser3_mat)).Completed += y =>
                 {
                     x.Result.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = y.Result;
@@ -186,6 +193,27 @@ namespace ElementalReactionsMod
                 x.Result.SetNormal(1.3f);
                 x.Result.SetFloat("_RampInfo", 1);
             };
+
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.instructorsTeaCupPickupModel).Completed += x =>
+            {
+                Items.Items.AddModelPanelParameters(x.Result);
+            };
+            AssetAsyncReferenceManager<Material>.LoadAsset(AssetReferences.instructorsTeaCupMaterial).Completed += x =>
+            {
+                x.Result.SetHopooMaterial().Specular(0.6f, 3f, false);
+                x.Result.SetNormal(1.5f);
+                x.Result.EnableKeyword("FRESNEL_EMISSION");
+                x.Result.SetFloat("_FresnelBoost", 1f);
+                x.Result.SetFloat("_FresnelPower", 2f);
+                AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.instructorsTeaCupFresnelMask).Completed += y =>
+                {
+                    x.Result.SetTexture("_FresnelMask", y.Result);
+                };
+                AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampDroneFire_png)).Completed += y =>
+                {
+                    x.Result.SetTexture("_FresnelRamp", y.Result);
+                };
+            };
             #endregion
         }
 
@@ -228,6 +256,7 @@ namespace ElementalReactionsMod
         private static void CreateGenericElementEffectMaterial()
         {
             genericElementEffectMaterial = new Material(Addressables.LoadAssetAsync<Shader>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Shaders.HGCloudRemap_shader).WaitForCompletion());
+            genericElementEffectMaterial.name = "ElementalReactionsElementIconVFX";
             genericElementEffectMaterial.EnableKeyword("CLOUDOFFSET");
             genericElementEffectMaterial.EnableKeyword("USE_CLOUDS");
             genericElementEffectMaterial.EnableKeyword("VERTEXCOLOR");
@@ -347,6 +376,12 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<Sprite> delusionCooldownBuffIcon = new AssetReferenceT<Sprite>("11b881fd7c08c0b4faf1b305df7e394d");
             public static AssetReferenceT<Sprite> delusionReadyBuffIcon = new AssetReferenceT<Sprite>("da2c01d04bcb15f43848d28d22db15d9");
             public static AssetReferenceT<Sprite> delusionActiveBuffIcon = new AssetReferenceT<Sprite>("c48688fe6fab6304badbca799ca382be");
+            #endregion
+            #region Instructor's Tea Cup
+            public static AssetReferenceT<GameObject> instructorsTeaCupPickupModel = new("b51b42d6d9466d845a1d09da7a916642");
+            public static AssetReferenceT<Material> instructorsTeaCupMaterial = new("21fcdb5cd2cf4b44fa0b04fe96e09702");
+            public static AssetReferenceT<Texture> instructorsTeaCupFresnelMask = new("053b6932d6b15d5488c3626eb00c31ec");
+            public static AssetReferenceT<Sprite> instructorsTeaCupItemIcon = new("371e6f4214277484c90a8755fa3e42e1");
             #endregion
             #region Moonwheel
             public static AssetReferenceT<GameObject> moonwheelPickupModel = new AssetReferenceT<GameObject>("7e50ea908069f874fac56c93f70a328d");

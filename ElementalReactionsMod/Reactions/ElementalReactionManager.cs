@@ -39,11 +39,12 @@ namespace ElementalReactionsMod.Reactions
             if (element && target)
             {
                 DamageInfo empty = new DamageInfo();
-                ApplyElement(element, target, ref empty);
+                ApplyElement(element, target, ref empty, out _);
             }
         }
-        public static void ApplyElement(ElementDef element, CharacterBody target, ref DamageInfo damageInfo)
+        public static void ApplyElement(ElementDef element, CharacterBody target, ref DamageInfo damageInfo, out float addedDamage)
         {
+            addedDamage = 0;
             if (element && element != DefaultElementDefs.physicalElement && !target.HasBuff(element.cooldownBuff))
             {
                 bool reactionTriggered = false;
@@ -56,7 +57,7 @@ namespace ElementalReactionsMod.Reactions
                         target.ClearTimedBuffs(reacting.buff.buffIndex);
                         target.AddTimedBuff(element.cooldownBuff, StaticValues.elementRemovedICD);
                         target.AddTimedBuff(reacting.cooldownBuff, StaticValues.elementRemovedICD);
-                        reaction.TriggerReaction(reacting, element, target, ref damageInfo);
+                        reaction.TriggerReaction(reacting, element, target, ref damageInfo, ref addedDamage);
                         reactionTriggered = true;
                     }
                 }

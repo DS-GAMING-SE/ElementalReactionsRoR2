@@ -1,5 +1,4 @@
-﻿using LookingGlass.LookingGlassLanguage;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -134,22 +133,6 @@ namespace ElementalReactionsMod.Elements
                 true);
 
             ElementCatalog.AddElementDefs([physicalElement, pyroElement, hydroElement, electroElement, cryoElement, anemoElement, geoElement, dendroElement]);
-
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(LookingGlass.PluginInfo.PLUGIN_GUID))
-            {
-                RoR2Application.onLoad += LookingGlassSetup;
-            }
-        }
-
-        private static void LookingGlassSetup()
-        {
-            /*if (Language.languagesByName.TryGetValue("en", out Language en))
-            {
-                foreach (var element in ElementCatalog.elementCatalog)
-                {
-                    Util.RegisterLookingGlassBuff(en, element.buff, $"{element.cachedName} Element", $"May react to other elements.");
-                }
-            }*/
         }
     }
 }

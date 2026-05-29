@@ -40,19 +40,16 @@ namespace ElementalReactionsMod
                     if (!damage.rejected && ElementalReactionManager.instance)
                     {
                         ElementDef element = ElementCatalog.GetElementDef(damage.damageType.GetElement());
-                        ElementalReactionManager.ApplyElement(element, self.body, ref damage);
+                        ElementalReactionManager.ApplyElement(element, self.body, ref damage, out float damageIncreaseFromReactions);
                         CharacterBody attackerBody = damage.attacker ? damage.attacker.GetComponent<CharacterBody>() : null;
-                        float damageIncreaseFromReactions = 0f;
 
                         if (self.body.HasBuff(Buffs.superconductBuff) && element == DefaultElementDefs.physicalElement)
                         {
                             damageIncreaseFromReactions += damage.damage * StaticValues.superconductDamageMultiplier;
-                            damage.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                         }
                         else if (damage.damage > 0 && self.body.HasBuff(Buffs.quickenBuff) && attackerBody && element == DefaultElementDefs.dendroElement || element == DefaultElementDefs.electroElement)
                         {
                             damageIncreaseFromReactions += (StaticValues.quickenDamageAddCoefficient * damage.procCoefficient * attackerBody.damage);
-                            damage.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                         }
 
                         if (damage.damageType.HasModdedDamageType(DamageTypes.superconductDamageType))
@@ -60,7 +57,23 @@ namespace ElementalReactionsMod
                             self.body.AddTimedBuff(Buffs.superconductBuff, 5, 1);
                         }
 
-                        damage.damage += damageIncreaseFromReactions;
+                        if (attackerBody && attackerBody.inventory)
+                        {
+                            if (damage.damageType.HasModdedDamageType(DamageTypes.elementalReactionDamageType))
+                            {
+                                damage.damage += damageIncreaseFromReactions;
+                                damage.damage *= 1 + (StaticValues.instructorsTeaCupDamageMultiplier * attackerBody.inventory.GetItemCountEffective(Items.Items.instructorsTeaCup));
+                            }
+                            else
+                            {
+                                damageIncreaseFromReactions *= 1 + (StaticValues.instructorsTeaCupDamageMultiplier * attackerBody.inventory.GetItemCountEffective(Items.Items.instructorsTeaCup));
+                                damage.damage += damageIncreaseFromReactions;
+                            }
+                        }
+                        else
+                        {
+                            damage.damage += damageIncreaseFromReactions;
+                        }
                     }
                 });
             }
@@ -86,7 +99,7 @@ namespace ElementalReactionsMod
 
         private static bool NoDelusionsWithElementInLogbook(On.RoR2.UI.LogBook.LogBookController.orig_CanSelectItemEntry orig, ItemDef item, Dictionary<ExpansionDef, bool> entitlements)
         {
-            return orig(item, entitlements) && item && !DelusionManager.elementalDelusions.Contains(item);
+            return orig(item, entitlements) && item && !DelusionManager.delusionToElement.Keys.Contains(item);
         }
 
         private static float HealingReceivedDebuff(On.RoR2.HealthComponent.orig_Heal orig, HealthComponent self, float amount, ProcChainMask proc, bool nonRegen)

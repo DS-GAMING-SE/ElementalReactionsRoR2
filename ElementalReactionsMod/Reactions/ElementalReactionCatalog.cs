@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using LookingGlass.LookingGlassLanguage;
 using System.Linq;
 using R2API;
 using HG;

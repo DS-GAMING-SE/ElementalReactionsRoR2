@@ -84,14 +84,6 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}ITEM_DELUSION_NAME", "Delusion");
             LanguageAPI.Add($"{prefix}ITEM_DELUSION_PICKUP", $"Resonates with a new element on pickup. {DelusionPickup("the Delusion's elemental")}");
             LanguageAPI.Add($"{prefix}ITEM_DELUSION_DESCRIPTION", $"On pickup, {UtilityText("resonate")} with a {UtilityText("random element you don't have")}. {DelusionDescription(DamageText("the Delusion's element"))}");
-
-            for (int i = 0; i < elements.Length; i++)
-            {
-                LanguageAPI.Add($"{prefix}ITEM_DELUSION_{elements[i].ToUpper()}_NAME", $"{elements[i]} Delusion");
-                LanguageAPI.Add($"{prefix}ITEM_DELUSION_{elements[i].ToUpper()}_PICKUP", DelusionPickup(elementsColored[i]));
-                LanguageAPI.Add($"{prefix}ITEM_DELUSION_{elements[i].ToUpper()}_DESCRIPTION", DelusionDescription(DamageText(elementsColored[i])));
-            }
-
             /*LanguageAPI.Add($"{prefix}ITEM_DELUSION_LORE", """
                 Usurper...
                 ---
@@ -101,15 +93,34 @@ namespace ElementalReactionsMod
                 Whether I must endure bitter cold, or set myself ablaze...
                 I will do whatever it takes to see your world burn.
                 """);*/
+            for (int i = 0; i < elements.Length; i++)
+            {
+                LanguageAPI.Add($"{prefix}ITEM_DELUSION_{elements[i].ToUpper()}_NAME", $"{elements[i]} Delusion");
+                LanguageAPI.Add($"{prefix}ITEM_DELUSION_{elements[i].ToUpper()}_PICKUP", DelusionPickup(elementsColored[i]));
+                LanguageAPI.Add($"{prefix}ITEM_DELUSION_{elements[i].ToUpper()}_DESCRIPTION", DelusionDescription(DamageText(elementsColored[i])));
+            }
+
+            LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_NAME", "Instructor's Tea Cup");
+            LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_PICKUP", "Deal bonus damage from elemental reactions");
+            LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_DESCRIPTION", $"Increase {UtilityText("elemental reaction")} damage by {DamageText($"{instructorsTeaCupDamageMultiplier * 100f}%")} {StackingText($"(+{instructorsTeaCupDamageMultiplier * 100f}% per stack)")}.");
+            LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_LORE", """"""
+                Every military student knows that the so-called "free training time" could not have anything less to do with freedom.
+                
+                The instructor sits back and watches while the students train rigorously in the field.
+                
+                A cup of black tea with a little too much sugar in it marks a typical afternoon for the instructor.
+                
+                This peaceful time is a privilege of the instructor, and the embodiment of his authority.
+                """""");
             #endregion
         }
         public static string DelusionPickup(string element)
         {
-            return $"Activating your Special skill will make any skill damage fire attacks of {element} damage... {RedText("BUT at the cost of your health")}. Recharges over time.";
+            return $"Activating your Special skill will make any skill damage fire attacks of {element} damage... {RedText("BUT at the cost of your health")}.";
         }
         public static string DelusionDescription(string element)
         {
-            return $"Activating your {UtilityText("Special skill")} will activate the Delusion for {UtilityText(delusionDuration+"s")}. While active, damaging enemies with any {UtilityText("skill")} will fire an {DamageText("attack of ")+element}, dealing {DamageText($"{delusionDamageCoefficient * 100f}% base damage")} {StackingText($"(+{delusionStackDamageCoefficient * 100f}% per same-element stack)")}, while also draining your health by {RedText(delusionHealthPercentCost * 100f+"%")} {StackingText($"(+{delusionHealthPercentCost * 100f+"%"} per same-element stack)")}. While the Delusion is active, {RedText($"healing received is reduced by {delusionHealingReceivedReduction*100f}%")} {StackingText($"(+{delusionHealingReceivedReduction * 100f}% per stack)")}. Recharges every {UtilityText(delusionCooldown.ToString())} seconds. {StackingText("A separate attack will be fired for each Delusion you have of a unique element")}.";
+            return $"Activating your {UtilityText("Special skill")} will activate the Delusion for {UtilityText(delusionDuration+"s")}. While active, damaging enemies with any {UtilityText("skill")} will fire an {DamageText("attack of ")+element}, dealing {DamageText($"{delusionDamageCoefficient * 100f}% base damage")} {StackingText($"(+{delusionStackDamageCoefficient * 100f}% per same-element stack)")}, while also draining your health by {RedText(delusionHealthPercentCost * 100f+"%")} {StackingText($"(+{delusionHealthPercentCost * 100f+"%"} per same-element stack)")}. While the Delusion is active, {RedText($"healing received is reduced by {delusionHealingReceivedReduction*100f}%")} {StackingText($"(+{delusionHealingReceivedReduction * 100f}% per stack)")}. {StackingText("A separate attack will be fired for each Delusion you have of a unique element")}.";
         }
         public static string DamageText(string text)
         {
