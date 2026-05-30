@@ -18,6 +18,8 @@
 
 		<PackageReference Include="R2API.Deployable" Version="1.0.1" />
 
+		<PackageReference Include="R2API.Dot" Version="1.1.2" />
+
 		<PackageReference Include="R2API.Networking" Version="1.0.4" />
 
 		<PackageReference Include="R2API.Prefab" Version="1.1.1" />

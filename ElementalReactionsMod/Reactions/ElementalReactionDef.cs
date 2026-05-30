@@ -104,7 +104,7 @@ namespace ElementalReactionsMod.Reactions
             {
                 if (victim)
                 {
-                    Orbs.ElectroChargedOrb.CreateOrb(victim.mainHurtBox, damage.attacker, electroChargeDamageCoefficient, damage.attacker ? damage.attacker.GetComponent<CharacterBody>() : null);
+                    DotController.InflictDot(victim.gameObject, damage.attacker, damage.inflictedHurtbox, ElectroChargedDot.electroChargeDot, 5f);
                 }
             };
 

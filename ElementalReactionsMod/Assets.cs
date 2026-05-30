@@ -345,6 +345,7 @@ namespace ElementalReactionsMod
 
             public static AssetReferenceT<Sprite> quickenBuffIcon = new AssetReferenceT<Sprite>("fd1a80b8adab48644bde7e4c5d73fd13");
             public static AssetReferenceT<Sprite> superconductBuffIcon = new AssetReferenceT<Sprite>("5fc2055e4d7c33348889a483e5a0df1b");
+            public static AssetReferenceT<Sprite> electroChargeBuffIcon = new AssetReferenceT<Sprite>("151966ab1f5e45043ab88e997d14ae7d");
 
             public static AssetReferenceT<Texture> pyroIcon = new("13e481dbe51e4d640ad603f14cb6bfe9");
             public static AssetReferenceT<Texture> hydroIcon = new("3eb8865e5a13b7742b66a47fbdd2aee7");

@@ -11,6 +11,7 @@ namespace ElementalReactionsMod
     {
         public static BuffDef quickenBuff;
         public static BuffDef superconductBuff;
+        public static BuffDef electroChargeBuff;
 
         public static BuffDef delusionActiveBuff;
         
@@ -20,8 +21,11 @@ namespace ElementalReactionsMod
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.quickenBuffIcon).WaitForCompletion(), Color.white, false, true);
             superconductBuff = Util.AddNewBuff("SuperconductReaction",
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.superconductBuffIcon).WaitForCompletion(), Color.white, false, true);
+            electroChargeBuff = Util.AddNewBuff("ElectroChargeReaction",
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.electroChargeBuffIcon).WaitForCompletion(), Color.white, false, true);
+
             delusionActiveBuff = Util.AddNewBuff("DelusionActive",
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionActiveBuffIcon).WaitForCompletion(), Color.white, false, false, false);
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionActiveBuffIcon).WaitForCompletion(), Color.white, false, false);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace ElementalReactionsMod
 
         public const float overloadDamageCoefficient = 2f;
 
-        public const float electroChargeDamageCoefficient = 1f;
+        public const float electroChargeDamageCoefficient = 0.7f;
 
         public const float superconductDamageCoefficient = 1f;
         public const float superconductDamageMultiplier = 1.2f;

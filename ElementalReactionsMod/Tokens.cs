@@ -50,7 +50,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_MELT_DESCRIPTION", $"{PyroText()} + {CryoText()}. Based on whether {PyroText()} or {CryoText()} is applied last, increase damage by {DamageMultiplierText(vaporizeMultiplierPyroTrigger)} or {DamageMultiplierText(vaporizeMultiplierHydroTrigger)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_NAME", "Electro-Charge");
-            LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_DESCRIPTION", $"{ElectroText()} + {HydroText()}. Create {DamageText("chain lightning")} that arcs between enemies affected by {HydroText()} for {DamageValueText(electroChargeDamageCoefficient)}.");
+            LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_DESCRIPTION", $"{ElectroText()} + {HydroText()}. Create {DamageText("chain lightning")} that arcs between enemies affected by {HydroText()} for {DamageValueText(electroChargeDamageCoefficient)} per second.");
 
             LanguageAPI.Add($"{prefix}REACTION_FROZEN_NAME", "Frozen");
             LanguageAPI.Add($"{prefix}REACTION_FROZEN_DESCRIPTION", $"{CryoText()} + {HydroText()}. Briefly {UtilityText("freeze")} the target.");
@@ -84,15 +84,29 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}ITEM_DELUSION_NAME", "Delusion");
             LanguageAPI.Add($"{prefix}ITEM_DELUSION_PICKUP", $"Resonates with a new element on pickup. {DelusionPickup("the Delusion's elemental")}");
             LanguageAPI.Add($"{prefix}ITEM_DELUSION_DESCRIPTION", $"On pickup, {UtilityText("resonate")} with a {UtilityText("random element you don't have")}. {DelusionDescription(DamageText("the Delusion's element"))}");
-            /*LanguageAPI.Add($"{prefix}ITEM_DELUSION_LORE", """
-                Usurper...
-                ---
-                ---parallel providence and heavenly principles. Unclear if pov is fatui or mithrix---
-                ---
-                I don't care what it does to me.
-                Whether I must endure bitter cold, or set myself ablaze...
-                I will do whatever it takes to see your world burn.
-                """);*/
+            LanguageAPI.Add($"{prefix}ITEM_DELUSION_LORE", """
+                Usurper. 
+                
+                I know you can hear me.
+
+                But can you hear them?
+
+                The ones you rule, who cry out in anguish.
+                
+                The heretics. The curious. The ones in the wrong place at the wrong time. All the ones you kill to keep your gilded world unblemished.
+
+                Maybe you only see the 'peace' you envision: The order you have brought to the world, built on lies and oppression. 
+                
+                Do not be fooled. Your suffocating grip on this world does not go without contempt. Their hatred festers and their will to destroy grows. They are the kindling.
+                
+                No matter how much you try to hide the past of this world, to hide <i>me</i>, there will always be those who look to the sky.
+
+                Those whose gaze pierces through the lies you've confined this world beneath. When their gaze meets mine, their grievances of your world will manifest as an unshakable resolve.
+
+                The resolve to endure bitter cold, to fight, to kill, and to die, all so they may burn your world away with them.
+
+                When there is nothing left but ashes, I will be here, ready to take my rightful place on the throne of the new world.
+                """);
             for (int i = 0; i < elements.Length; i++)
             {
                 LanguageAPI.Add($"{prefix}ITEM_DELUSION_{elements[i].ToUpper()}_NAME", $"{elements[i]} Delusion");

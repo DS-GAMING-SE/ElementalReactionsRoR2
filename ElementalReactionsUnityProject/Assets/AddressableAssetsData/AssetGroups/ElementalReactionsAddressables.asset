@@ -153,6 +153,10 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Items/InstructorsTeaCup/texInstructorsTeaCupItemIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 151966ab1f5e45043ab88e997d14ae7d
+    m_Address: Assets/ElementalReactionsAssets/Common/Buff Icons/texElectroChargeBuffIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

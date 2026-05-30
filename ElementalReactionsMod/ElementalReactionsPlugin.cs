@@ -22,6 +22,7 @@ namespace ElementalReactionsMod
     [BepInDependency(RecalculateStatsAPI.PluginGUID)]
     [BepInDependency(R2APIContentManager.PluginGUID)]
     [BepInDependency(DeployableAPI.PluginGUID)]
+    [BepInDependency(DotAPI.PluginGUID)]
     [BepInDependency(LookingGlass.PluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(RiskOfOptions.PluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
 
@@ -52,13 +53,15 @@ namespace ElementalReactionsMod
 
             Tokens.Initialize();
 
+            Buffs.Initialize();
+
+            ElectroChargedDot.Initialize();
+
             DefaultElementDefs.Initialize();
 
             DefaultElementalReactions.Initialize();
 
             DamageTypes.Initialize();
-
-            Buffs.Initialize();
 
             Items.Items.Initialize();
 
