@@ -162,7 +162,6 @@ namespace ElementalReactionsMod.Items
     }
     public class DelusionBehaviour : CharacterBody.ItemBehavior, IOnDamageDealtServerReceiver
     {
-        private bool wasActive = false;
         protected float attackCooldown;
         public List<ElementDef> delusionElements;
 

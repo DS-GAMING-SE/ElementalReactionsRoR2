@@ -82,7 +82,7 @@ namespace ElementalReactionsMod.Reactions
             vaporize.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) => 
             { 
                 EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_StunChanceOnHit.ImpactStunGrenade_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
-                addedDamage = damage.damage * (element2 == pyroElement ? vaporizeMultiplierPyroTrigger : vaporizeMultiplierHydroTrigger);
+                addedDamage += damage.damage * (element2 == pyroElement ? vaporizeMultiplierPyroTrigger - 1f : vaporizeMultiplierHydroTrigger - 1f);
             };
 
             overload = ElementalReactionDef.CreateElementalReactionDef("Overload", $"{ElementalReactionsPlugin.PREFIX}REACTION_OVERLOAD", pyroElement, electroElement);
@@ -96,15 +96,15 @@ namespace ElementalReactionsMod.Reactions
             melt.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_StunChanceOnHit.ImpactStunGrenade_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
-                addedDamage = damage.damage * (element2 == pyroElement ? vaporizeMultiplierPyroTrigger : vaporizeMultiplierHydroTrigger);
+                addedDamage += damage.damage * (element2 == pyroElement ? vaporizeMultiplierPyroTrigger - 1f : vaporizeMultiplierHydroTrigger - 1f);
             };
 
             electroCharge = ElementalReactionDef.CreateElementalReactionDef("ElectroCharge", $"{ElementalReactionsPlugin.PREFIX}REACTION_ELECTRO_CHARGE", electroElement, hydroElement);
             electroCharge.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
-                if (victim)
+                if (victim && victim.healthComponent && victim.healthComponent.alive)
                 {
-                    DotController.InflictDot(victim.gameObject, damage.attacker, damage.inflictedHurtbox, ElectroChargedDot.electroChargeDot, 5f);
+                    DotController.InflictDot(victim.gameObject, damage.attacker, damage.inflictedHurtbox, ElectroChargedDot.electroChargeDot, electroChargeDuration);
                 }
             };
 

@@ -355,6 +355,15 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<Texture> geoIcon = new("f972169ff42390a4da00e9b3eb915dbe");
             public static AssetReferenceT<Texture> dendroIcon = new("cdc71ccb0e628c74ba052480a5bc3cd4");
 
+            public static AssetReferenceT<Sprite> physicalSkillIcon = new AssetReferenceT<Sprite>("d4a1b90b0494f41468cc3891bf05e53a");
+            public static AssetReferenceT<Sprite> pyroSkillIcon = new AssetReferenceT<Sprite>("dc58e8263293feb4d800d43015d479c5");
+            public static AssetReferenceT<Sprite> hydroSkillIcon = new AssetReferenceT<Sprite>("e186d9590b77d8248abd9e77fbbd3f48");
+            public static AssetReferenceT<Sprite> electroSkillIcon = new AssetReferenceT<Sprite>("993b4bd8d5b61934f93b53275220256d");
+            public static AssetReferenceT<Sprite> cryoSkillIcon = new AssetReferenceT<Sprite>("d5fb27b74cc81cf409874d173f52e728");
+            public static AssetReferenceT<Sprite> anemoSkillIcon = new AssetReferenceT<Sprite>("7eee6493b891a1746a05e1b540b4eb4d");
+            public static AssetReferenceT<Sprite> geoSkillIcon = new AssetReferenceT<Sprite>("c88d96edd23da354696d9d9d66cd102f");
+            public static AssetReferenceT<Sprite> dendroSkillIcon = new AssetReferenceT<Sprite>("4e802f5ad484760438a8692950a15773");
+
             public static AssetReferenceT<GameObject> genericElementActivatedEffect = new("0dcaf09df2cb8ab4c838c88c6d997a39");
 
             #region Reactions

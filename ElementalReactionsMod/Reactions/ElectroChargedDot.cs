@@ -26,7 +26,6 @@ namespace ElementalReactionsMod.Reactions
                 resetTimerOnAdd = true,
                 damageColorIndex = DamageColorIndex.Default
             }, null, null, ElectroChargedFireOrb);
-            //electroChargeDot = DotAPI.RegisterDotDef(1f, StaticValues.electroChargeDamageCoefficient, 0, Buffs.electroChargeBuff, null, null, ElectroChargedFireOrb);
         }
         public static void ElectroChargedFireOrb(DotController self, DotController.PendingDamage damage)
         {
@@ -53,7 +52,7 @@ namespace ElementalReactionsMod.Reactions
                 search.RefreshCandidates();
                 search.FilterCandidatesByHurtBoxTeam(TeamMask.GetUnprotectedTeams(TeamComponent.GetObjectTeam(damage.attackerObject)));
                 search.FilterCandidatesByDistinctHurtBoxEntities();
-                HurtBox spreadTarget = search.GetHurtBoxes().FirstOrDefault(x => x != damage.hitHurtBox && x.healthComponent && x.healthComponent.alive &&
+                HurtBox spreadTarget = search.GetHurtBoxes().FirstOrDefault(x => x.healthComponent && x.healthComponent != self.victimHealthComponent && x.healthComponent.alive &&
                     x.healthComponent.body.HasBuff(DefaultElementDefs.hydroElement.buff));
                 if (spreadTarget) ElectroChargedOrb.CreateOrb(damage.hitHurtBox.transform.position, spreadTarget, damage.attackerObject, damage.totalDamage);
             }

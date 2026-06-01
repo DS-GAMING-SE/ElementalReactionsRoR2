@@ -41,9 +41,9 @@ namespace ElementalReactionsMod.Loadout
 
         private void FixedUpdate()
         {
-            if (permanentlyAppliedElement && permanentlyAppliedElement.buff)
+            if (permanentlyAppliedElement && permanentlyAppliedElement.buff && !characterBody.HasBuff(permanentlyAppliedElement.buff))
             {
-                characterBody.SetBuffCount(permanentlyAppliedElement.buff.buffIndex, 1);
+                characterBody.AddBuff(permanentlyAppliedElement.buff);
             }
         }
 

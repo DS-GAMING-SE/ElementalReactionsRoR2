@@ -47,27 +47,31 @@ namespace ElementalReactionsMod.Reactions
             addedDamage = 0;
             if (element && element != DefaultElementDefs.physicalElement && !target.HasBuff(element.cooldownBuff))
             {
-                bool reactionTriggered = false;
-                ElementDef reacting = ElementalReactionCatalog.GetFirstReactableElement(element, target);
-                if (reacting)
-                {
-                    ElementalReactionDef reaction = ElementalReactionCatalog.GetElementalReaction(element, reacting);
-                    if (reaction)
-                    {
-                        target.ClearTimedBuffs(reacting.buff.buffIndex);
-                        target.AddTimedBuff(element.cooldownBuff, StaticValues.elementRemovedICD);
-                        target.AddTimedBuff(reacting.cooldownBuff, StaticValues.elementRemovedICD);
-                        reaction.TriggerReaction(reacting, element, target, ref damageInfo, ref addedDamage);
-                        reactionTriggered = true;
-                    }
-                }
-                if (element.canPersist && !reactionTriggered)
+                if (!TryTriggerReaction(element, target, ref damageInfo, ref addedDamage) && element.canPersist)
                 {
                     target.AddTimedBuff(element.buff, 10);
                     target.AddTimedBuff(element.cooldownBuff, StaticValues.elementAppliedICD);
                 }
             }
         }
+        private static bool TryTriggerReaction(ElementDef element, CharacterBody target, ref DamageInfo damageInfo, ref float addedDamage)
+        {
+            ElementDef reacting = ElementalReactionCatalog.GetFirstReactableElement(element, target);
+            if (reacting)
+            {
+                ElementalReactionDef reaction = ElementalReactionCatalog.GetElementalReaction(element, reacting);
+                if (reaction)
+                {
+                    target.ClearTimedBuffs(reacting.buff.buffIndex);
+                    target.AddTimedBuff(element.cooldownBuff, StaticValues.elementRemovedICD);
+                    target.AddTimedBuff(reacting.cooldownBuff, StaticValues.elementRemovedICD);
+                    reaction.TriggerReaction(reacting, element, target, ref damageInfo, ref addedDamage);
+                    return true;
+                }
+            }
+            return false;
+        }
+        #region Pooling Attempts
         public static void CreatePool(ref PrefabComponentPool<ElementalReactionPooledObject> pool, GameObject prefab, int baseCap)
         {
             pool = new PrefabComponentPool<ElementalReactionPooledObject>
@@ -117,5 +121,6 @@ namespace ElementalReactionsMod.Reactions
             }
             return null;
         }
+        #endregion
     }
 }

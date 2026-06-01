@@ -157,6 +157,38 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Common/Buff Icons/texElectroChargeBuffIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 7eee6493b891a1746a05e1b540b4eb4d
+    m_Address: Assets/ElementalReactionsAssets/Common/Skill Icons/texAnemoSkillIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c88d96edd23da354696d9d9d66cd102f
+    m_Address: Assets/ElementalReactionsAssets/Common/Skill Icons/texGeoSkillIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d5fb27b74cc81cf409874d173f52e728
+    m_Address: Assets/ElementalReactionsAssets/Common/Skill Icons/texCryoSkillIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: dc58e8263293feb4d800d43015d479c5
+    m_Address: Assets/ElementalReactionsAssets/Common/Skill Icons/texPyroSkillIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d4a1b90b0494f41468cc3891bf05e53a
+    m_Address: Assets/ElementalReactionsAssets/Common/Skill Icons/texPhysicalSkillIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e186d9590b77d8248abd9e77fbbd3f48
+    m_Address: Assets/ElementalReactionsAssets/Common/Skill Icons/texHydroSkillIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 993b4bd8d5b61934f93b53275220256d
+    m_Address: Assets/ElementalReactionsAssets/Common/Skill Icons/texElectroSkillIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 4e802f5ad484760438a8692950a15773
+    m_Address: Assets/ElementalReactionsAssets/Common/Skill Icons/texDendroSkillIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

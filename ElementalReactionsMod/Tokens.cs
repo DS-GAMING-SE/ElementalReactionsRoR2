@@ -50,7 +50,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_MELT_DESCRIPTION", $"{PyroText()} + {CryoText()}. Based on whether {PyroText()} or {CryoText()} is applied last, increase damage by {DamageMultiplierText(vaporizeMultiplierPyroTrigger)} or {DamageMultiplierText(vaporizeMultiplierHydroTrigger)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_NAME", "Electro-Charge");
-            LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_DESCRIPTION", $"{ElectroText()} + {HydroText()}. Create {DamageText("chain lightning")} that arcs between enemies affected by {HydroText()} for {DamageValueText(electroChargeDamageCoefficient)} per second.");
+            LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_DESCRIPTION", $"{ElectroText()} + {HydroText()}. Create {DamageText("chain lightning")} that arcs between enemies affected by {HydroText()} for {DamageValueText(electroChargeDamageCoefficient * electroChargeDuration)} over time.");
 
             LanguageAPI.Add($"{prefix}REACTION_FROZEN_NAME", "Frozen");
             LanguageAPI.Add($"{prefix}REACTION_FROZEN_DESCRIPTION", $"{CryoText()} + {HydroText()}. Briefly {UtilityText("freeze")} the target.");
@@ -78,7 +78,7 @@ namespace ElementalReactionsMod
             #region Items
             LanguageAPI.Add($"{prefix}ITEM_SOULSEEKER_SHELL_NAME", "Soulseeker Shell");
             LanguageAPI.Add($"{prefix}ITEM_SOULSEEKER_SHELL_PICKUP", $"Your drones have a chance of attacking with one of your elements.");
-            LanguageAPI.Add($"{prefix}ITEM_SOULSEEKER_SHELL_DESCRIPTION", $"Drones gain a {DamageText("10% ") + StackingText("(+10% per stack)")} chance on hit to apply one of your {UtilityText("elemental types")}.");
+            LanguageAPI.Add($"{prefix}ITEM_SOULSEEKER_SHELL_DESCRIPTION", $"Drones gain a {DamageText("10% ") + StackingText("(+10% per stack)")} chance on hit to apply one of your {UtilityText("elements")} on hit.");
             //LanguageAPI.Add($"{prefix}ITEM_SOULSEEKER_SHELL_LORE", "");
 
             LanguageAPI.Add($"{prefix}ITEM_DELUSION_NAME", "Delusion");

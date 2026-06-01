@@ -17,10 +17,18 @@ namespace ElementalReactionsMod
     public static class Config
     {
         #region Regular Configs
-        /*public static ConfigEntry<bool> EnableLogs()
+        public static ConfigEntry<bool> CanSurvivorsUseElements()
         {
-            return ElementalReactionsPlugin.instance.Config.Bind<bool>("Survivors", "Can Use Elements", true, "Whether surviv");
-        }*/
+            return ElementalReactionsPlugin.instance.Config.Bind<bool>("Characters", "Survivors Use Elements", true, "Whether survivors are able to deal elemental damage with their skills.\nHost's config takes priority.");
+        }
+        public static ConfigEntry<bool> CanEnemiesUseElements()
+        {
+            return ElementalReactionsPlugin.instance.Config.Bind<bool>("Characters", "Enemies Use Elements", true, "Whether enemies are able to deal elemental damage with their skills.\nHost's config takes priority.");
+        }
+        public static ConfigEntry<float> EnemyReactionDamageReduction()
+        {
+            return ElementalReactionsPlugin.instance.Config.Bind<float>("Characters", "Enemy Reaction Damage", 50f, "How much damage elemental reactions triggered by enemies should do compared to ones triggered by players.\nHost's config takes priority.");
+        }
         #endregion
         #region Loadout
         /*
@@ -130,10 +138,11 @@ namespace ElementalReactionsMod
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
         public static void RiskOfOptionsSetup()
         {
-            Sprite icon = Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.expansionIcon).WaitForCompletion();
-            ModSettingsManager.SetModIcon(icon);
+            ModSettingsManager.SetModIcon(Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.expansionIcon).WaitForCompletion());
 
-            //ModSettingsManager.AddOption(new ChoiceOption(Config.EnableLogs()));
+            ModSettingsManager.AddOption(new ChoiceOption(Config.CanSurvivorsUseElements()));
+            ModSettingsManager.AddOption(new ChoiceOption(Config.CanEnemiesUseElements()));
+            ModSettingsManager.AddOption(new SliderOption(Config.EnemyReactionDamageReduction(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));
         }
         #endregion
     }
