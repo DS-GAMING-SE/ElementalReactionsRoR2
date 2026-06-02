@@ -83,7 +83,7 @@ namespace ElementalReactionsMod
             }
             if ((attackerBody && attackerBody.teamComponent && attackerBody.teamComponent.teamIndex != TeamIndex.Player) || TeamComponent.GetObjectTeam(attacker) != TeamIndex.Player)
             {
-                damage *= Config.EnemyReactionDamageReduction().Value / 100f;
+                damage *= Config.PlayerReactionResistance().Value / 100f;
             }
         }
         private static void TakeDamageHook(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)

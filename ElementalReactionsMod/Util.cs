@@ -122,6 +122,41 @@ namespace ElementalReactionsMod
             };
             return blastAttack;
         }
+        public static void ManualBlastAttack(Vector3 origin, float radius, GameObject attacker, TeamIndex attackerTeam, float damage, float damageToPlayer, bool crit, DamageTypeCombo damageType, bool friendlyFire)
+        {
+            Collider[] colliders;
+            int overlapCount = HGPhysics.OverlapSphere(out colliders, origin, radius, LayerIndex.entityPrecise.mask, QueryTriggerInteraction.Collide);
+            HealthComponent[] hitHealthComponents = new HealthComponent[overlapCount];
+            int hitCount = 0;
+            for (int i = 0; i < overlapCount; i++)
+            {
+                CharacterBody characterBody = RoR2.Util.HurtBoxColliderToBody(colliders[i]);
+                if (characterBody && characterBody.healthComponent && Array.IndexOf<HealthComponent>(hitHealthComponents, characterBody.healthComponent, 0, hitCount) == -1)
+                {
+                    if (!FriendlyFireManager.ShouldSplashHitProceed(characterBody.healthComponent, attackerTeam) && !friendlyFire)
+                    {
+                        continue;
+                    }
+                    DamageInfo damageInfo = new DamageInfo();
+                    damageInfo.attacker = attacker;
+                    damageInfo.crit = crit;
+                    damageInfo.damage = characterBody.teamComponent && characterBody.teamComponent.teamIndex == TeamIndex.Player ? damageToPlayer : damage;
+                    damageInfo.force = Vector3.zero;
+                    damageInfo.inflictor = attacker;
+                    damageInfo.position = colliders[i].transform.position;
+                    damageInfo.procCoefficient = 0f;
+                    damageInfo.damageColorIndex = DamageColorIndex.Default;
+                    damageInfo.damageType = damageType;
+                    damageInfo.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
+                    damageInfo.inflictedHurtbox = colliders[i].GetComponent<HurtBox>();
+                    characterBody.healthComponent.TakeDamage(damageInfo);
+                    GlobalEventManager.instance.OnHitEnemy(damageInfo, characterBody.gameObject);
+                    GlobalEventManager.instance.OnHitAll(damageInfo, characterBody.gameObject);
+                    hitHealthComponents[hitCount++] = characterBody.healthComponent;
+                }
+            }
+            HGPhysics.ReturnResults(colliders);
+        }
         public static void AddTimedBuffTimer(this CharacterBody body, BuffDef buff, int timer)
         {
             int num = 1;

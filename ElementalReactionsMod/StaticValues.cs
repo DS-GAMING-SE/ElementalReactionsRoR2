@@ -37,6 +37,7 @@ namespace ElementalReactionsMod
         public const float bloomDuration = 5f;
         public const float hyperBloomDamageCoefficient = 3f;
         public const float burgeonDamageCoefficient = 4f;
+        public const float burgeonRadius = 17f;
         #endregion
 
         #region Items

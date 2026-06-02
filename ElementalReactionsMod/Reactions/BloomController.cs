@@ -1,18 +1,39 @@
-﻿using RoR2;
+﻿using ElementalReactionsMod;
+using ElementalReactionsMod.Elements;
+using HG;
+using R2API;
+using RoR2;
+using RoR2.Projectile;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.Networking;
 using static ElementalReactionsMod.Util;
-using ElementalReactionsMod;
-using ElementalReactionsMod.Elements;
+using static UnityEngine.UI.Image;
 
 namespace ElementalReactionsMod.Reactions
 {
     public class BloomController : MonoBehaviour, IOnIncomingDamageServerReceiver
     {
+        public CharacterBody characterBody;
+        public ProjectileController projectileController;
+        public ProjectileDamage projectileDamage;
+        public Deployable deployable;
+
+        private bool triedExplode;
+        
         ElementalReactionPooledObject pool;
         private float timer;
+        public void Awake()
+        {
+            characterBody = GetComponent<CharacterBody>();
+            projectileController = GetComponent<ProjectileController>();
+            projectileDamage = GetComponent<ProjectileDamage>();
+            deployable = GetComponent<Deployable>();
+            deployable.onUndeploy.AddListener(Explode);
+        }
         public void Start()
         {
             pool = GetComponent<ElementalReactionPooledObject>();
@@ -23,35 +44,87 @@ namespace ElementalReactionsMod.Reactions
             if (element == DefaultElementDefs.pyroElement.index)
             {
                 Chat.AddMessage("burgeon");
-                if (pool)
-                {
-                    pool.ReturnObject();
-                }
-                else
-                {
-                    GameObject.Destroy(base.gameObject);
-                }
+                Burgeon(damageInfo.attacker);
             }
             else if (element == DefaultElementDefs.electroElement.index)
             {
                 Chat.AddMessage("hyperbloom");
-                if (pool)
-                {
-                    pool.ReturnObject();
-                }
-                else
-                {
-                    GameObject.Destroy(base.gameObject);
-                }
+                Hyperbloom(damageInfo.attacker);
             }
             damageInfo.rejected = true;
         }
         private void FixedUpdate()
         {
             timer += Time.fixedDeltaTime;
-            if (timer > StaticValues.bloomDuration)
+            if (timer > StaticValues.bloomDuration && NetworkServer.active)
             {
-                GameObject.Destroy(gameObject);
+                Explode();
+            }
+        }
+        public void Explode()
+        {
+            if (!NetworkServer.active) return;
+            // Need reference to player body for damage. Make bloom a projectile?
+            if (!triedExplode)
+            {
+                triedExplode = true;
+
+                DamageTypeCombo damageType = DamageType.AOE;
+                damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
+                damageType.SetElement(DefaultElementDefs.dendroElement.index);
+
+                float damage = StaticValues.bloomDamageCoefficient * projectileDamage.damage;
+
+                ManualBlastAttack(characterBody.corePosition, StaticValues.genericReactionExplosionRadius, projectileController.owner, projectileController.teamFilter.teamIndex,
+                    damage, damage * (Config.PlayerBloomResistance().Value / 100f), false, damageType, false);
+
+                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.ExplosionVFX_prefab).WaitForCompletion(), characterBody.corePosition, Quaternion.identity, true);
+            }
+            
+            DestroyObject();
+        }
+        public void Burgeon(GameObject attacker)
+        {
+            if (!NetworkServer.active) return;
+            // Need reference to player body for damage. Make bloom a projectile?
+            if (!triedExplode)
+            {
+                triedExplode = true;
+
+                DamageTypeCombo damageType = DamageType.AOE;
+                damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
+                damageType.SetElement(DefaultElementDefs.dendroElement.index);
+
+                float damage = StaticValues.burgeonDamageCoefficient;
+                damage *= attacker.TryGetComponent<CharacterBody>(out var attackerBody) ? attackerBody.damage : projectileDamage.damage;
+
+                ManualBlastAttack(characterBody.corePosition, StaticValues.burgeonRadius, projectileController.owner, projectileController.teamFilter.teamIndex,
+                    damage, damage * (Config.PlayerBloomResistance().Value / 100f), false, damageType, true);
+
+                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.ExplosionVFX_prefab).WaitForCompletion(), characterBody.corePosition, Quaternion.identity, true);
+            }
+            
+            DestroyObject();
+        }
+        public void Hyperbloom(GameObject attacker)
+        {
+            if (!NetworkServer.active) return;
+            if (!triedExplode)
+            {
+                triedExplode = true;
+
+            }
+            DestroyObject();
+        }
+        private void DestroyObject()
+        {
+            if (pool)
+            {
+                pool.ReturnObject();
+            }
+            else
+            {
+                GameObject.Destroy(base.gameObject);
             }
         }
     }

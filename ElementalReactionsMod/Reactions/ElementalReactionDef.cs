@@ -1,6 +1,7 @@
 ﻿using ElementalReactionsMod.Elements;
 using R2API;
 using RoR2;
+using RoR2.Projectile;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -174,10 +175,20 @@ namespace ElementalReactionsMod.Reactions
                 {
                     Util.GetRandomNode(damage.position, out var pos, 0.5f, 15f);
                     //ElementalReactionPooledObject bloom = ElementalReactionManager.CreatePooledDeployable(ElementalReactionManager.bloomPool, characterBody, ElementalReactionManager.bloomDeployableSlot, pos);
-                    GameObject bloom = GameObject.Instantiate(Assets.bloomDendroCore, pos + (1.5f * Vector3.up), Quaternion.identity);
+                    /*GameObject bloom = GameObject.Instantiate(Assets.bloomDendroCore, pos + (1.5f * Vector3.up), Quaternion.identity);
                     if (characterBody.master) characterBody.master.AddDeployable(bloom.GetComponent<Deployable>(), ElementalReactionManager.bloomDeployableSlot);
-                    //if (bloom) bloom.teamFilter.teamIndex = characterBody.teamComponent.teamIndex;
-                    NetworkServer.Spawn(bloom);
+                    bloom.GetComponent<TeamComponent>().teamIndex = characterBody.teamComponent.teamIndex;
+                    NetworkServer.Spawn(bloom);*/
+
+                    ProjectileManager.instance.FireProjectileServer(new FireProjectileInfo
+                    {
+                        projectilePrefab = Assets.bloomDendroCore,
+                        damage = characterBody.damage,
+                        crit = false,
+                        position = pos + (1.5f * Vector3.up),
+                        rotation = Quaternion.identity,
+                        owner = damage.attacker
+                    });
                 }
             };
 

@@ -26,6 +26,7 @@ namespace ElementalReactionsMod
         public static ExpansionDef elementalReactionExpansionDef;
         public static GameObject elementalReactionManagerPrefab;
 
+        // caching gameobjects here is what makes them perma loaded? experiment?
         public static GameObject bloomDendroCore;
         public static GameObject crystallizePickup;
 
@@ -119,7 +120,9 @@ namespace ElementalReactionsMod
                 characterBody.baseMaxHealth = 1f;
                 characterBody.healthComponent = healthComponent;
                 var model = x.Result.transform.GetChild(0).gameObject.AddComponent<HurtBoxGroup>();
-                x.Result.AddComponent<ModelLocator>().modelTransform = model.transform;
+                var modelLocator = x.Result.AddComponent<ModelLocator>();
+                modelLocator.modelTransform = model.transform;
+                modelLocator.dontDetatchFromParent = true;
                 model.mainHurtBox = model.transform.GetChild(0).GetChild(0).gameObject.AddComponent<HurtBox>();
                 model.hurtBoxes = [model.mainHurtBox];
                 model.mainHurtBox.healthComponent = healthComponent;
@@ -134,6 +137,10 @@ namespace ElementalReactionsMod
                 specialObjectAttributes.orientToFloor = true;
                 x.Result.AddComponent<BloomController>();
                 x.Result.AddComponent<Deployable>();
+                x.Result.AddComponent<ForceFriendlyFire>();
+                x.Result.AddComponent<ProjectileController>().cannotBeDeleted = true;
+                x.Result.AddComponent<ProjectileDamage>();
+                x.Result.AddComponent<ProjectileDeployToOwner>().deployableSlot = ElementalReactionManager.bloomDeployableSlot;
 
                 bloomDendroCore = x.Result;
                 Content.AddNetworkedObjectPrefab(x.Result);
@@ -278,7 +285,14 @@ namespace ElementalReactionsMod
         }
 
         [SystemInitializer(typeof(ElementCatalog))]
-        public static void AddElementLoadoutMenu()
+        public static void AfterElementCatalogReady()
+        {
+            AddElementLoadoutMenu();
+            var bloomSpecialObjectAttributes = bloomDendroCore.GetComponent<SpecialObjectAttributes>();
+            bloomSpecialObjectAttributes.damageTypeOverride.SetElement(DefaultElementDefs.dendroElement.index);
+            bloomSpecialObjectAttributes.damageTypeOverride.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
+        }
+        private static void AddElementLoadoutMenu()
         {
             GameObject characterSelectMenu = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_UI.CharacterSelectUIMain_prefab)).WaitForCompletion();
             CharacterSelectController characterSelectController = characterSelectMenu.GetComponent<CharacterSelectController>();

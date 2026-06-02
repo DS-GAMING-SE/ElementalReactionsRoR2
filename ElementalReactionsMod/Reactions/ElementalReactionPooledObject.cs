@@ -31,7 +31,7 @@ namespace ElementalReactionsMod.Reactions
 
         public void Start()
         {
-            if (deployable) deployable.onUndeploy.AddListener(ReturnObject);
+            //if (deployable) deployable.onUndeploy.AddListener(ReturnObject);
         }
 
         public void ReturnObject()

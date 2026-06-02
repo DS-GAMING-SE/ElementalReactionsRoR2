@@ -4,6 +4,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using RoR2;
+using System.Collections;
 
 namespace ElementalReactionsMod.Reactions
 {
@@ -11,6 +12,15 @@ namespace ElementalReactionsMod.Reactions
     {
         public TeamFilter teamFilter;
         public GameObject baseGameObject;
+        private Deployable deployable;
+        public void Awake()
+        {
+            deployable = baseGameObject.GetComponent<Deployable>();
+            if (deployable)
+            {
+                deployable.onUndeploy.AddListener(LimitReached);
+            }
+        }
         private void OnTriggerStay(Collider other)
         {
             if (NetworkServer.active && teamFilter.teamIndex == TeamIndex.None || TeamComponent.GetObjectTeam(other.gameObject) == this.teamFilter.teamIndex)
@@ -34,6 +44,18 @@ namespace ElementalReactionsMod.Reactions
                         }
                     }
                 }
+            }
+        }
+        private void LimitReached()
+        {
+            DestroyAfterTimer();
+        }
+        private IEnumerator DestroyAfterTimer()
+        {
+            yield return new WaitForSeconds(0.5f);
+            if (baseGameObject)
+            {
+                GameObject.Destroy(baseGameObject);
             }
         }
     }

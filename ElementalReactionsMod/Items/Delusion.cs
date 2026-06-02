@@ -209,7 +209,8 @@ namespace ElementalReactionsMod.Items
                         position = body.corePosition,
                         crit = false,
                         procCoefficient = 0f,
-                        inflictedHurtbox = body.mainHurtBox
+                        inflictedHurtbox = body.mainHurtBox,
+                        damageColorIndex = DamageColorIndex.Item
                     });
                     DelusionOrb.FireDelusionOrb(body, target, body.inventory.GetItemCountEffective(element.delusion), body.RollCrit(), element.index);
                     GenericElementEffectComponent.SpawnActivatedEffect(gameObject.transform, element.index, true);

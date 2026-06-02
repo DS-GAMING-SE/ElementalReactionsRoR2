@@ -71,7 +71,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_QUICKEN_DESCRIPTION", $"{DendroText()} + {ElectroText()}. Increase damage dealt by all {DendroText()} or {ElectroText()} attacks by a flat {DamageText((quickenDamageAddCoefficient * 100f).ToString()+"% base damage")}.");
 
             LanguageAPI.Add($"{prefix}REACTION_BLOOM_NAME", "Bloom");
-            LanguageAPI.Add($"{prefix}REACTION_BLOOM_DESCRIPTION", $"{DendroText()} + {HydroText()}. Create a {DendroText("Dendro Core")} which explodes for {DamageValueText(bloomDamageCoefficient)} after {UtilityText(bloomDuration+"s")}.\n{ElectroText()} converts the core into a {DamageText("homing projectile")} dealing {DamageValueText(hyperBloomDamageCoefficient)}.\n{PyroText()} causes the core to explode in a {DamageText("larger radius")}, dealing {DamageValueText(burgeonDamageCoefficient)}.");
+            LanguageAPI.Add($"{prefix}REACTION_BLOOM_DESCRIPTION", $"{DendroText()} + {HydroText()}. Create a {DendroText("Dendro Core")} which explodes for {DamageValueText(bloomDamageCoefficient)} after {UtilityText(bloomDuration+"s")}.\n{ElectroText()} converts the core into a {DamageText("homing projectile")} dealing {DamageValueText(hyperBloomDamageCoefficient)}.\n{PyroText()} causes the core to explode in a {DamageText("larger radius")}, dealing {DamageValueText(burgeonDamageCoefficient)} to ALL characters.");
             LanguageAPI.Add($"{prefix}REACTION_BLOOM_OBJECT_NAME", "Dendro Core");
             #endregion
 
