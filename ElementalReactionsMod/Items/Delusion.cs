@@ -27,7 +27,7 @@ namespace ElementalReactionsMod.Items
         {
             AssetAsyncReferenceManager<GameObject>.LoadAsset(delusionPickupModel).Completed += x =>
             {
-                x.Result.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = Assets.CreateVisionMaterial(delusionLogo, new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampDefault_png));
+                x.Result.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = Assets.CreateVisionMaterial(delusionLogo, new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampDefault_png), 0.75f);
                 AddModelPanelParameters(x.Result);
             };
             delusion = AddNewItem("Delusion", "DELUSION", true, Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.LunarTierDef_asset).WaitForCompletion(),
@@ -176,8 +176,8 @@ namespace ElementalReactionsMod.Items
         {
             if (body.skillLocator && body.skillLocator.special && body.skillLocator.special == skill)
             {
-                //body.AddTimedBuffTimer(Buffs.delusionActiveBuff, StaticValues.delusionDuration);
-                body.AddTimedBuff(Buffs.delusionActiveBuff, StaticValues.delusionDuration);
+                body.ClearTimedBuffs(Buffs.delusionActiveBuff);
+                body.AddTimedBuffTimer(Buffs.delusionActiveBuff, StaticValues.delusionDuration);
                 attackCooldown = 0;
             }
         }

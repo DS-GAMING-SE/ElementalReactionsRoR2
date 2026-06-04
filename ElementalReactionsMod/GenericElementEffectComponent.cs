@@ -20,7 +20,7 @@ namespace ElementalReactionsMod
         }
         public static void SpawnActivatedEffect(Transform parent, ElementIndex element, bool transmit)
         {
-            SpawnActivatedEffect(parent, element, 0.6f, transmit);
+            SpawnActivatedEffect(parent, element, 0.7f, transmit);
         }
         public static void SpawnActivatedEffect(Transform parent, ElementIndex element, float duration, bool transmit)
         {

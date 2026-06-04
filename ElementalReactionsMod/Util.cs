@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace ElementalReactionsMod
 {
@@ -96,25 +97,25 @@ namespace ElementalReactionsMod
                 damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                 damageType |= DamageType.AOE;
             }
-            return CreateBlastAttack(characterBody ? characterBody : null, characterBody ? characterBody.damage * damage : damage, false, radius, BlastAttack.FalloffModel.None, proc, damageType, damageInfo.position, force);
+            return CreateBlastAttack(damageInfo.attacker, characterBody, characterBody ? characterBody.damage * damage : damage, false, radius, BlastAttack.FalloffModel.None, proc, damageType, damageInfo.position, force);
         }
         public static BlastAttack CreateBlastAttack(DamageInfo damageInfo, float damage, float radius, float proc, DamageTypeCombo damageType, float force)
         {
             CharacterBody characterBody = damageInfo.attacker ? damageInfo.attacker.GetComponent<CharacterBody>() : null;
-            return CreateBlastAttack(characterBody ? characterBody : null, characterBody ? characterBody.damage * damage : damage, false, radius, BlastAttack.FalloffModel.None, proc, damageType, damageInfo.position, force);
+            return CreateBlastAttack(damageInfo.attacker, characterBody, characterBody ? characterBody.damage * damage : damage, false, radius, BlastAttack.FalloffModel.None, proc, damageType, damageInfo.position, force);
         }
-        public static BlastAttack CreateBlastAttack(CharacterBody attacker, float damage, bool crit, float radius, BlastAttack.FalloffModel falloff, float proc, DamageTypeCombo damageType, Vector3 position, float force)
+        public static BlastAttack CreateBlastAttack(GameObject attacker, CharacterBody attackerBody, float damage, bool crit, float radius, BlastAttack.FalloffModel falloff, float proc, DamageTypeCombo damageType, Vector3 position, float force)
         {
             BlastAttack blastAttack = new BlastAttack
             {
-                attacker = attacker ? attacker.gameObject : null,
-                inflictor = attacker ? attacker.gameObject : null,
+                attacker = attacker,
+                inflictor = attacker,
                 baseDamage = damage,
                 crit = crit,
                 radius = radius,
                 falloffModel = falloff,
                 procCoefficient = proc,
-                teamIndex = attacker ? attacker.teamComponent.teamIndex : TeamIndex.None,
+                teamIndex = attackerBody ? attackerBody.teamComponent.teamIndex : TeamComponent.GetObjectTeam(attacker),
                 damageType = damageType,
                 position = position,
                 baseForce = force,
@@ -144,10 +145,9 @@ namespace ElementalReactionsMod
                     damageInfo.force = Vector3.zero;
                     damageInfo.inflictor = attacker;
                     damageInfo.position = colliders[i].transform.position;
-                    damageInfo.procCoefficient = 0f;
+                    damageInfo.procCoefficient = StaticValues.genericReactionProcCoefficient;
                     damageInfo.damageColorIndex = DamageColorIndex.Default;
                     damageInfo.damageType = damageType;
-                    damageInfo.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                     damageInfo.inflictedHurtbox = colliders[i].GetComponent<HurtBox>();
                     characterBody.healthComponent.TakeDamage(damageInfo);
                     GlobalEventManager.instance.OnHitEnemy(damageInfo, characterBody.gameObject);
@@ -165,6 +165,35 @@ namespace ElementalReactionsMod
                 body.AddTimedBuff(buff, num);
                 num++;
             }
+        }
+        public static float ReduceTimedBuffDuration(this CharacterBody characterBody, BuffDef buff, float reduction)
+        {
+            float newDuration = 0;
+            if (characterBody.GetBuffCount(buff) <= 0 || !NetworkServer.active)
+            {
+                return newDuration;
+            }
+            for (int i = 0; i < characterBody.timedBuffs.Count; i++)
+            {
+                if (characterBody.timedBuffs[i].buffIndex == buff.buffIndex)
+                {
+                    if (characterBody.timedBuffs[i].timer <= reduction)
+                    {
+                        characterBody.timedBuffs.RemoveAt(i);
+                        characterBody.RemoveBuff(buff.buffIndex);
+                    }
+                    else
+                    {
+                        characterBody.timedBuffs[i].timer -= reduction;
+                        newDuration = Mathf.Max(newDuration, characterBody.timedBuffs[i].timer);
+                    }
+                }
+            }
+            if (newDuration == 0 && characterBody.GetBuffCount(buff) > 0)
+            {
+                return float.MaxValue;
+            }
+            return newDuration;
         }
 
         public static bool GetRandomNode(Vector3 origin, out Vector3 destination, float minDistance, float maxDistance)

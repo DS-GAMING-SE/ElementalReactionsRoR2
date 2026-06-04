@@ -22,7 +22,7 @@ namespace ElementalReactionsMod
         public static void Initialize()
         {
             IL.RoR2.HealthComponent.TakeDamageProcess += TakeDamageIL;
-            On.RoR2.HealthComponent.TakeDamageProcess += TakeDamageHook;
+            On.RoR2.HealthComponent.TakeDamageProcess += ApplyElementToSkillDamage;
             On.RoR2.UI.LogBook.LogBookController.CanSelectItemEntry += NoDelusionsWithElementInLogbook;
             On.RoR2.HealthComponent.Heal += HealingReceivedDebuff;
         }
@@ -86,13 +86,15 @@ namespace ElementalReactionsMod
                 damage *= Config.PlayerReactionResistance().Value / 100f;
             }
         }
-        private static void TakeDamageHook(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
+        private static void ApplyElementToSkillDamage(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
         {
             if (self && ElementalReactionManager.instance)
             {
                 ElementDef element = ElementCatalog.GetElementDef(damageInfo.damageType.GetElement());
 
-                if (element == DefaultElementDefs.physicalElement && damageInfo.attacker && damageInfo.damageType.IsDamageSourceSkillBased && damageInfo.attacker.TryGetComponent<ElementLoadoutComponent>(out var elementLoadout) && elementLoadout.isActiveAndEnabled)
+                if (element == DefaultElementDefs.physicalElement && damageInfo.attacker && damageInfo.damageType.IsDamageSourceSkillBased && 
+                    damageInfo.attacker.TryGetComponent<ElementLoadoutComponent>(out var elementLoadout) && elementLoadout.isActiveAndEnabled
+                    && ((elementLoadout.team == TeamIndex.Player && Config.CanSurvivorsUseElements().Value) || (elementLoadout.team != TeamIndex.Player && Config.CanEnemiesUseElements().Value)))
                 {
                     element = elementLoadout.GetElement(damageInfo.damageType.damageSource);
                     if (element) damageInfo.damageType.SetElement(element.index);

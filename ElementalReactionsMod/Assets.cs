@@ -26,9 +26,15 @@ namespace ElementalReactionsMod
         public static ExpansionDef elementalReactionExpansionDef;
         public static GameObject elementalReactionManagerPrefab;
 
+        public static GameObject elementLoadoutRowUI;
+
         // caching gameobjects here is what makes them perma loaded? experiment?
+        public static GameObject swirlEffect;
+        public static GameObject overloadEffect;
         public static GameObject bloomDendroCore;
         public static GameObject crystallizePickup;
+
+        public static Material electroTrailMaterial;
 
         public static GameObject genericElementActivatedEffect;
         public static Material genericElementEffectMaterial;
@@ -78,9 +84,9 @@ namespace ElementalReactionsMod
                 component.icon = x.Result.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
                 component.particlesToRecolor = [iconParticle, rayParticle, glowParticle];
                 component.scaleDuration = true;
-                x.Result.AddComponent<DestroyOnParticleEnd>().trackedParticleSystem = glowParticle;
+                x.Result.AddComponent<DestroyOnParticleEnd>().trackedParticleSystem = iconParticle;
                 var scale = x.Result.AddComponent<ScaleParticleSystemDuration>();
-                scale.initialDuration = 0.6f;
+                scale.initialDuration = 0.7f;
                 scale.particleSystems = [iconParticle, rayParticle, glowParticle];
                 component.particleDuration = scale;
                 AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser3_mat)).Completed += y =>
@@ -92,6 +98,72 @@ namespace ElementalReactionsMod
             };
 
             #region Reactions
+            electroTrailMaterial = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matPrimeDevastatorChargeVFX2_mat)).WaitForCompletion());
+            electroTrailMaterial.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTeslaCoil_png)).WaitForCompletion());
+
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.overloadEffect).Completed += x =>
+            {
+                EffectComponent effect = x.Result.AddComponent<EffectComponent>();
+                effect.positionAtReferencedTransform = true;
+                effect.parentToReferencedTransform = false;
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Medium;
+                vfx.DoNotPool = false;
+                x.Result.AddComponent<NetworkIdentity>();
+                ParticleSystemRenderer ringParticleRenderer = x.Result.transform.Find("OverloadRing").GetComponent<ParticleSystemRenderer>();
+                ringParticleRenderer.mesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.mdlVFXDonut1_fbx_donut1Mesh_)).WaitForCompletion();
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusAmalgamator.matSolusAmalgamatorTrackingBombRing_mat)).Completed += y =>
+                {
+                    Material ringMat = new Material(y.Result);
+                    ringMat.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTeslaCoil_png)).WaitForCompletion());
+                    ringParticleRenderer.sharedMaterial = ringMat;
+                };
+                var flash = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
+                x.Result.transform.Find("OverloadSmallFlash").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
+                x.Result.transform.Find("OverloadFlash").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
+                x.Result.transform.Find("OverloadSparks").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
+                x.Result.transform.Find("OverloadDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matDistortionFaded_mat)).WaitForCompletion();
+                x.Result.transform.Find("OverloadElectricity").GetComponent<ParticleSystemRenderer>().trailMaterial = electroTrailMaterial;
+                x.Result.transform.Find("OverloadFire").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Gravekeeper.matOmniExplosion1ArchWisp_mat)).WaitForCompletion();
+                var light = x.Result.transform.Find("OverloadLight");
+                vfx.optionalLights = [light.GetComponent<Light>()];
+                var lightCurve = light.gameObject.AddComponent<LightIntensityCurve>();
+                lightCurve.timeMax = 0.4f;
+                lightCurve.curve = AnimationCurve.EaseInOut(0, 1, 1, 0);
+                x.Result.AddComponent<DestroyOnTimer>().duration = 0.7f;
+
+                overloadEffect = x.Result;
+                AddNewEffectDef(x.Result, "Play_LuminousShot_Explosion");
+            };
+
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.swirlEffect).Completed += x =>
+            {
+                EffectComponent effect = x.Result.AddComponent<EffectComponent>();
+                effect.positionAtReferencedTransform = true;
+                effect.parentToReferencedTransform = false;
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+                vfx.DoNotPool = false;
+                x.Result.AddComponent<NetworkIdentity>();
+                GenericElementEffectComponent component = x.Result.AddComponent<GenericElementEffectComponent>();
+                ParticleSystemRenderer swirlRingParticleRenderer = x.Result.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
+                component.particlesToRecolor = [swirlRingParticleRenderer.GetComponent<ParticleSystem>()];
+                swirlRingParticleRenderer.mesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.mdlVFXDonut2_fbx_donut2Mesh_)).WaitForCompletion();
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BFG.matBeamSphereBeam_mat)).Completed += y =>
+                {
+                    Material swirlMat = new Material(y.Result);
+                    swirlMat.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTritoneSmoothed_png)).WaitForCompletion());
+                    swirlMat.EnableKeyword("VERTEXCOLOR");
+                    swirlRingParticleRenderer.sharedMaterial = swirlMat;
+                };
+                x.Result.AddComponent<DestroyOnTimer>().duration = 0.4f;
+
+                swirlEffect = x.Result;
+                AddNewEffectDef(x.Result, "Play_item_proc_moveSpeedOnKill");
+            };
+
             AssetAsyncReferenceManager<Material>.LoadAsset(AssetReferences.bloomMaterial).Completed += x =>
             {
                 x.Result.SetHopooMaterial();
@@ -114,6 +186,10 @@ namespace ElementalReactionsMod
                 var characterBody = x.Result.AddComponent<CharacterBody>();
                 characterBody.baseNameToken = $"{ElementalReactionsPlugin.PREFIX}REACTION_BLOOM_OBJECT_NAME";
                 characterBody.bodyFlags = CharacterBody.BodyFlags.Masterless | CharacterBody.BodyFlags.HasBackstabImmunity;
+                AssetAsyncReferenceManager<Sprite>.LoadAsset(AssetReferences.bloomIcon).Completed += x =>
+                {
+                    characterBody.portraitIcon = x.Result.texture;
+                };
                 var healthComponent = x.Result.AddComponent<HealthComponent>();
                 healthComponent.dontShowHealthbar = true;
                 healthComponent.body = characterBody;
@@ -123,13 +199,12 @@ namespace ElementalReactionsMod
                 var modelLocator = x.Result.AddComponent<ModelLocator>();
                 modelLocator.modelTransform = model.transform;
                 modelLocator.dontDetatchFromParent = true;
-                model.mainHurtBox = model.transform.GetChild(0).GetChild(0).gameObject.AddComponent<HurtBox>();
+                model.mainHurtBox = model.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.AddComponent<HurtBox>();
                 model.hurtBoxes = [model.mainHurtBox];
                 model.mainHurtBox.healthComponent = healthComponent;
                 model.mainHurtBox.isBullseye = true;
-                var rotate = model.transform.GetChild(0).gameObject.AddComponent<RotateItem>();
+                var rotate = model.transform.GetChild(0).GetChild(0).gameObject.AddComponent<RotateItem>();
                 rotate.spinSpeed = 80f;
-                rotate.offsetVector = new Vector3(0, 1.3f, 0);
                 var specialObjectAttributes = x.Result.AddComponent<SpecialObjectAttributes>();
                 specialObjectAttributes.grabbable = true;
                 specialObjectAttributes.massOverride = 0;
@@ -224,7 +299,7 @@ namespace ElementalReactionsMod
             #endregion
         }
 
-        public static Material CreateVisionMaterial(AssetReferenceT<Texture> icon, AssetReferenceT<Texture> remapTex)
+        public static Material CreateVisionMaterial(AssetReferenceT<Texture> icon, AssetReferenceT<Texture> remapTex, float alphaBoost = 1f)
         {
             Material vision = new Material(Addressables.LoadAssetAsync<Shader>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Shaders.HGOpaqueCloudRemap_shader).WaitForCompletion());
             vision.name = "ElementalReactionsVision";
@@ -253,7 +328,7 @@ namespace ElementalReactionsMod
                 vision.SetTexture("_RemapTex", x.Result);
             };
             vision.SetVector("_CutoffScroll", new Vector4(0, -1.5f, 0, 0));
-            vision.SetFloat("_AlphaBoost", 0.75f);
+            vision.SetFloat("_AlphaBoost", alphaBoost);
             vision.SetFloat("_Cutoff", 0f);
             vision.Specular(0.7f, 9f, false);
             vision.SetFloat("_RampInfo", 1);
@@ -328,6 +403,17 @@ namespace ElementalReactionsMod
                 AreConsolePlatformsSupported = true,
                 isPrimaryPlayerOnly = false
             });
+            // not enough vertical room in the menu for this to look good I guess
+            elementLoadoutRowUI = PrefabAPI.InstantiateClone(AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_UI.Row_prefab)).WaitForCompletion(), "ElementLoadoutRow", false);
+            elementLoadoutRowUI.GetComponent<LayoutElement>().preferredHeight = 116;
+            var buttonContainer = elementLoadoutRowUI.transform.GetChild(0);
+            GameObject.DestroyImmediate(buttonContainer.gameObject.GetComponent<HorizontalLayoutGroup>());
+            var buttonGrid = buttonContainer.gameObject.AddComponent<GridLayoutGroup>();
+            buttonGrid.cellSize = new Vector2(56f, 56f);
+            buttonGrid.childAlignment = TextAnchor.MiddleLeft;
+            buttonGrid.padding.left = 128;
+            buttonGrid.spacing = new Vector2(0f, 0f);
+            GameObject.Destroy(buttonContainer.GetChild(0).gameObject);
         }
         private static void AddNewEffectDef(GameObject effectPrefab)
         {
@@ -381,8 +467,12 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<GameObject> genericElementActivatedEffect = new("0dcaf09df2cb8ab4c838c88c6d997a39");
 
             #region Reactions
+            public static AssetReferenceT<GameObject> overloadEffect = new("a7c7911aead178a499a9803ee81dd5a3");
+            public static AssetReferenceT<GameObject> swirlEffect = new("7afc921af72c23941980c334193ee394");
+
             public static AssetReferenceT<GameObject> crystallizePickup = new("677d6b93d9a81fa44b68adbcd2288857");
 
+            public static AssetReferenceT<Sprite> bloomIcon = new("cd5c3c5b432da044d8ab88e45c4ca562");
             public static AssetReferenceT<GameObject> bloomObject = new("3208908270e8db14489bfb68079f0dcd");
             public static AssetReferenceT<Material> bloomMaterial = new("c74a8fba09c05e843afab90abce26e10");
             public static AssetReferenceT<Texture> bloomFresnelMask = new("77d939fda7dde4048a33fccac924a029");
@@ -409,6 +499,7 @@ namespace ElementalReactionsMod
             #endregion
             #region Moonwheel
             public static AssetReferenceT<GameObject> moonwheelPickupModel = new AssetReferenceT<GameObject>("7e50ea908069f874fac56c93f70a328d");
+            public static AssetReferenceT<Sprite> lunarBloomBuffIcon = new("b14c2afa0ea1ba6449927fb72cbbd016");
             #endregion
             #endregion
         }

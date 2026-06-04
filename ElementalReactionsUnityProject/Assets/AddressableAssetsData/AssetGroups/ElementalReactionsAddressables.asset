@@ -189,6 +189,22 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Common/Skill Icons/texDendroSkillIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: b14c2afa0ea1ba6449927fb72cbbd016
+    m_Address: Assets/ElementalReactionsAssets/Items/Moonwheel/texLunarBloomIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: cd5c3c5b432da044d8ab88e45c4ca562
+    m_Address: Assets/ElementalReactionsAssets/Reactions/Bloom/texBloomIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 7afc921af72c23941980c334193ee394
+    m_Address: Assets/ElementalReactionsAssets/Reactions/SwirlEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a7c7911aead178a499a9803ee81dd5a3
+    m_Address: Assets/ElementalReactionsAssets/Reactions/OverloadEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

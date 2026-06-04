@@ -1,5 +1,6 @@
 ﻿using ElementalReactionsMod;
 using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Orbs;
 using HG;
 using R2API;
 using RoR2;
@@ -64,7 +65,6 @@ namespace ElementalReactionsMod.Reactions
         public void Explode()
         {
             if (!NetworkServer.active) return;
-            // Need reference to player body for damage. Make bloom a projectile?
             if (!triedExplode)
             {
                 triedExplode = true;
@@ -76,9 +76,9 @@ namespace ElementalReactionsMod.Reactions
                 float damage = StaticValues.bloomDamageCoefficient * projectileDamage.damage;
 
                 ManualBlastAttack(characterBody.corePosition, StaticValues.genericReactionExplosionRadius, projectileController.owner, projectileController.teamFilter.teamIndex,
-                    damage, damage * (Config.PlayerBloomResistance().Value / 100f), false, damageType, false);
+                    damage, damage * (Config.PlayerBloomResistance().Value / 100f), false, damageType, true);
 
-                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.ExplosionVFX_prefab).WaitForCompletion(), characterBody.corePosition, Quaternion.identity, true);
+                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Treebot.OmniExplosionVFXTreebot_prefab).WaitForCompletion(), characterBody.corePosition, Quaternion.identity, true);
             }
             
             DestroyObject();
@@ -86,7 +86,6 @@ namespace ElementalReactionsMod.Reactions
         public void Burgeon(GameObject attacker)
         {
             if (!NetworkServer.active) return;
-            // Need reference to player body for damage. Make bloom a projectile?
             if (!triedExplode)
             {
                 triedExplode = true;
@@ -101,7 +100,7 @@ namespace ElementalReactionsMod.Reactions
                 ManualBlastAttack(characterBody.corePosition, StaticValues.burgeonRadius, projectileController.owner, projectileController.teamFilter.teamIndex,
                     damage, damage * (Config.PlayerBloomResistance().Value / 100f), false, damageType, true);
 
-                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.ExplosionVFX_prefab).WaitForCompletion(), characterBody.corePosition, Quaternion.identity, true);
+                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Treebot.OmniExplosionVFXTreebot_prefab).WaitForCompletion(), characterBody.corePosition, Quaternion.identity, true);
             }
             
             DestroyObject();
@@ -112,7 +111,10 @@ namespace ElementalReactionsMod.Reactions
             if (!triedExplode)
             {
                 triedExplode = true;
-
+                float damage = StaticValues.hyperBloomDamageCoefficient;
+                damage *= attacker.TryGetComponent<CharacterBody>(out var attackerBody) ? attackerBody.damage : projectileDamage.damage;
+                TeamIndex team = TeamComponent.GetObjectTeam(attacker);
+                HyperbloomOrb.FireHyperbloomOrb(attacker, team == TeamIndex.None ? team : projectileController.teamFilter.teamIndex, characterBody.corePosition, damage);
             }
             DestroyObject();
         }

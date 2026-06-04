@@ -22,6 +22,7 @@ namespace ElementalReactionsMod.Loadout
         public ElementDef permanentlyAppliedElement;
 
         public CharacterBody characterBody;
+        public TeamIndex team;
         private void Awake()
         {
             if (!ElementalReactionManager.instance)
@@ -33,6 +34,10 @@ namespace ElementalReactionsMod.Loadout
 
         private void Start()
         {
+            if (characterBody.teamComponent)
+            {
+                team = characterBody.teamComponent.teamIndex;
+            }
             if (!NetworkServer.active && characterBody.isPlayerControlled)
             {
                 new NetworkElementLoadout(characterBody.netId, primaryElement.index, secondaryElement.index, utilityElement.index, specialElement.index).Send(R2API.Networking.NetworkDestination.Server);

@@ -34,22 +34,23 @@ namespace ElementalReactionsMod.Reactions
             SingletonHelper.Unassign(ref instance, this);
         }
 
-        public static void ApplyElement(ElementDef element, CharacterBody target)
+        public static void ApplyElement(ElementDef element, CharacterBody target, float procCoefficient = 1f)
         {
             if (element && target)
             {
                 DamageInfo empty = new DamageInfo();
+                empty.procCoefficient = procCoefficient;
                 ApplyElement(element, target, ref empty, out _);
             }
         }
         public static void ApplyElement(ElementDef element, CharacterBody target, ref DamageInfo damageInfo, out float addedDamage)
         {
             addedDamage = 0;
-            if (element && element != DefaultElementDefs.physicalElement && !target.HasBuff(element.cooldownBuff))
+            if (element && element != DefaultElementDefs.physicalElement && !target.HasBuff(element.cooldownBuff) && damageInfo.procCoefficient != 0)
             {
                 if (!TryTriggerReaction(element, target, ref damageInfo, ref addedDamage) && element.canPersist)
                 {
-                    target.AddTimedBuff(element.buff, 10);
+                    target.AddTimedBuff(element.buff, StaticValues.elementAppliedDuration * damageInfo.procCoefficient * StaticValues.elementAppliedTaxMultiplier);
                     target.AddTimedBuff(element.cooldownBuff, StaticValues.elementAppliedICD);
                 }
             }
@@ -62,9 +63,6 @@ namespace ElementalReactionsMod.Reactions
                 ElementalReactionDef reaction = ElementalReactionCatalog.GetElementalReaction(element, reacting);
                 if (reaction)
                 {
-                    target.ClearTimedBuffs(reacting.buff.buffIndex);
-                    target.AddTimedBuff(element.cooldownBuff, StaticValues.elementRemovedICD);
-                    target.AddTimedBuff(reacting.cooldownBuff, StaticValues.elementRemovedICD);
                     reaction.TriggerReaction(reacting, element, target, ref damageInfo, ref addedDamage);
                     return true;
                 }

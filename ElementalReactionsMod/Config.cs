@@ -27,11 +27,11 @@ namespace ElementalReactionsMod
         }
         public static ConfigEntry<float> PlayerReactionResistance()
         {
-            return ElementalReactionsPlugin.instance.Config.Bind<float>("Characters", "Player Reaction Resistance", 50f, "The percent of the normal elemental reaction damage that will be done to players.\nHost's config takes priority.");
+            return ElementalReactionsPlugin.instance.Config.Bind<float>("Characters", "Player Reaction Resistance", 50f, "The percent of the normal elemental reaction damage that will be dealt when hitting players.\nHost's config takes priority.");
         }
         public static ConfigEntry<float> PlayerBloomResistance()
         {
-            return ElementalReactionsPlugin.instance.Config.Bind<float>("Characters", "Player Bloom Resistance", 10f, "The percent of the normal Bloom and pyro Bloom reaction damage that will be done to players. This is applied on top of the Enemy Reaction Damage config.\nHost's config takes priority.");
+            return ElementalReactionsPlugin.instance.Config.Bind<float>("Characters", "Player Bloom Resistance", 20f, "The percent of the normal Bloom reaction damage that will be dealt when hitting players. This is applied on top of the Enemy Reaction Damage config.\nHost's config takes priority.");
         }
         #endregion
         #region Loadout
@@ -144,8 +144,8 @@ namespace ElementalReactionsMod
         {
             ModSettingsManager.SetModIcon(Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.expansionIcon).WaitForCompletion());
 
-            ModSettingsManager.AddOption(new ChoiceOption(Config.CanSurvivorsUseElements()));
-            ModSettingsManager.AddOption(new ChoiceOption(Config.CanEnemiesUseElements()));
+            ModSettingsManager.AddOption(new CheckBoxOption(Config.CanSurvivorsUseElements()));
+            ModSettingsManager.AddOption(new CheckBoxOption(Config.CanEnemiesUseElements()));
             ModSettingsManager.AddOption(new SliderOption(Config.PlayerReactionResistance(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));
             ModSettingsManager.AddOption(new SliderOption(Config.PlayerBloomResistance(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));
         }

@@ -40,14 +40,11 @@ namespace ElementalReactionsMod
             #endregion
 
             #region Reactions
-            LanguageAPI.Add($"{prefix}REACTION_VAPORIZE_NAME", "Vaporize");
-            LanguageAPI.Add($"{prefix}REACTION_VAPORIZE_DESCRIPTION", $"{PyroText()} + {HydroText()}. Based on whether {PyroText()} or {HydroText()} is applied last, increase damage by {DamageMultiplierText(vaporizeMultiplierPyroTrigger)} or {DamageMultiplierText(vaporizeMultiplierHydroTrigger)}.");
+            LanguageAPI.Add($"{prefix}REACTION_VAPORIZE_NAME", "Vaporize / Melt");
+            LanguageAPI.Add($"{prefix}REACTION_VAPORIZE_DESCRIPTION", $"{PyroText()} + {HydroText()}/{CryoText()}. Based on whether {PyroText()} is applied first or last, increase damage by {DamageMultiplierText(vaporizeMultiplierHydroTrigger)} or {DamageMultiplierText(vaporizeMultiplierPyroTrigger)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_OVERLOAD_NAME", "Overload");
             LanguageAPI.Add($"{prefix}REACTION_OVERLOAD_DESCRIPTION", $"{PyroText()} + {ElectroText()}. Create an explosion of {PyroText()} dealing {DamageValueText(overloadDamageCoefficient)}.");
-
-            LanguageAPI.Add($"{prefix}REACTION_MELT_NAME", "Melt");
-            LanguageAPI.Add($"{prefix}REACTION_MELT_DESCRIPTION", $"{PyroText()} + {CryoText()}. Based on whether {PyroText()} or {CryoText()} is applied last, increase damage by {DamageMultiplierText(vaporizeMultiplierPyroTrigger)} or {DamageMultiplierText(vaporizeMultiplierHydroTrigger)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_NAME", "Electro-Charge");
             LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_DESCRIPTION", $"{ElectroText()} + {HydroText()}. Create {DamageText("chain lightning")} that arcs between enemies affected by {HydroText()} for {DamageValueText(electroChargeDamageCoefficient * electroChargeDuration)} over time.");
@@ -71,7 +68,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_QUICKEN_DESCRIPTION", $"{DendroText()} + {ElectroText()}. Increase damage dealt by all {DendroText()} or {ElectroText()} attacks by a flat {DamageText((quickenDamageAddCoefficient * 100f).ToString()+"% base damage")}.");
 
             LanguageAPI.Add($"{prefix}REACTION_BLOOM_NAME", "Bloom");
-            LanguageAPI.Add($"{prefix}REACTION_BLOOM_DESCRIPTION", $"{DendroText()} + {HydroText()}. Create a {DendroText("Dendro Core")} which explodes for {DamageValueText(bloomDamageCoefficient)} after {UtilityText(bloomDuration+"s")}.\n{ElectroText()} converts the core into a {DamageText("homing projectile")} dealing {DamageValueText(hyperBloomDamageCoefficient)}.\n{PyroText()} causes the core to explode in a {DamageText("larger radius")}, dealing {DamageValueText(burgeonDamageCoefficient)} to ALL characters.");
+            LanguageAPI.Add($"{prefix}REACTION_BLOOM_DESCRIPTION", $"{DendroText()} + {HydroText()}. Create a {DendroText("Dendro Core")} which explodes after {UtilityText(bloomDuration+"s")} dealing {DamageValueText(bloomDamageCoefficient)} to ALL characters.\n{ElectroText()} converts the core into a {DamageText("homing projectile")} dealing {DamageValueText(hyperBloomDamageCoefficient)}.\n{PyroText()} causes the core to explode in a {DamageText("larger radius")}, dealing {DamageValueText(burgeonDamageCoefficient)} to ALL characters.");
             LanguageAPI.Add($"{prefix}REACTION_BLOOM_OBJECT_NAME", "Dendro Core");
             #endregion
 

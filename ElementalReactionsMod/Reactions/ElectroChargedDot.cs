@@ -46,7 +46,7 @@ namespace ElementalReactionsMod.Reactions
                 self.victimHealthComponent.TakeDamage(damageInfo);
 
                 SphereSearch search = new SphereSearch();
-                search.radius = StaticValues.genericReactionExplosionRadius;
+                search.radius = StaticValues.electroChargedRadius;
                 search.origin = damage.hitHurtBox.transform.position;
                 search.mask = LayerIndex.entityPrecise.mask;
                 search.RefreshCandidates();

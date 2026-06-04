@@ -116,9 +116,7 @@ namespace ElementalReactionsMod.Loadout
             {
                 this.owner = owner;
                 //this.rowPanelTransform = (RectTransform)GameObject.Instantiate(LoadoutPanelController.rowPrefab, (RectTransform)owner.transform).transform;
-                this.rowPanelTransform = (RectTransform)GameObject.Instantiate(
-                    AssetAsyncReferenceManager<GameObject>.LoadAsset(new UnityEngine.AddressableAssets.AssetReferenceT<GameObject>
-                    (RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_UI.Row_prefab)).WaitForCompletion(), (RectTransform)owner.transform).transform;
+                this.rowPanelTransform = (RectTransform)GameObject.Instantiate(Assets.elementLoadoutRowUI, (RectTransform)owner.transform).transform;
                 this.buttonContainerTransform = (RectTransform)rowPanelTransform.Find("ButtonContainer");
                 this.choiceHighlightRect = (RectTransform)rowPanelTransform.Find("ButtonSelectionHighlight, Checkbox");
                 this.rowPanelTransform.Find("SlotLabel").GetComponent<LanguageTextMeshController>().token = titleToken;
