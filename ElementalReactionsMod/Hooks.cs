@@ -60,11 +60,11 @@ namespace ElementalReactionsMod
                         if (damage.damageType.HasModdedDamageType(DamageTypes.elementalReactionDamageType))
                         {
                             damage.damage += damageIncreaseFromReactions;
-                            ModifyElementalReactionDamage(damage.attacker, attackerBody, ref damage.damage);
+                            ModifyElementalReactionDamage(self, damage.attacker, attackerBody, ref damage.damage);
                         }
                         else
                         {
-                            ModifyElementalReactionDamage(damage.attacker, attackerBody, ref damageIncreaseFromReactions);
+                            ModifyElementalReactionDamage(self, damage.attacker, attackerBody, ref damageIncreaseFromReactions);
                             damage.damage += damageIncreaseFromReactions;
                         }
                     }
@@ -75,13 +75,13 @@ namespace ElementalReactionsMod
                 Log.Error($"{il.Method.Name} IL FAILED");
             }
         }
-        private static void ModifyElementalReactionDamage(GameObject attacker, CharacterBody attackerBody, ref float damage)
+        private static void ModifyElementalReactionDamage(HealthComponent victim, GameObject attacker, CharacterBody attackerBody, ref float damage)
         {
             if (attackerBody && attackerBody.inventory)
             {
                 damage *= 1 + (StaticValues.instructorsTeaCupDamageMultiplier * attackerBody.inventory.GetItemCountEffective(Items.Items.instructorsTeaCup));
             }
-            if ((attackerBody && attackerBody.teamComponent && attackerBody.teamComponent.teamIndex != TeamIndex.Player) || TeamComponent.GetObjectTeam(attacker) != TeamIndex.Player)
+            if (victim.body.teamComponent && victim.body.teamComponent.teamIndex == TeamIndex.Player)
             {
                 damage *= Config.PlayerReactionResistance().Value / 100f;
             }

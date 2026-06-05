@@ -28,7 +28,7 @@ namespace ElementalReactionsMod
         public const float electroChargedRadius = 15f;
 
         public const float superconductDamageCoefficient = 1f;
-        public const float superconductDamageMultiplier = 1.2f;
+        public const float superconductDamageMultiplier = 1.3f;
 
         public const float swirlDamageCoefficient = 2f;
 

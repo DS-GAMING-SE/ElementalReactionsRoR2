@@ -47,14 +47,14 @@ namespace ElementalReactionsMod.Reactions
 
                 SphereSearch search = new SphereSearch();
                 search.radius = StaticValues.electroChargedRadius;
-                search.origin = damage.hitHurtBox.transform.position;
+                search.origin = damage.hitHurtBox ? damage.hitHurtBox.transform.position : self.victimBody.corePosition;
                 search.mask = LayerIndex.entityPrecise.mask;
                 search.RefreshCandidates();
                 search.FilterCandidatesByHurtBoxTeam(TeamMask.GetUnprotectedTeams(TeamComponent.GetObjectTeam(damage.attackerObject)));
                 search.FilterCandidatesByDistinctHurtBoxEntities();
                 HurtBox spreadTarget = search.GetHurtBoxes().FirstOrDefault(x => x.healthComponent && x.healthComponent != self.victimHealthComponent && x.healthComponent.alive &&
                     x.healthComponent.body.HasBuff(DefaultElementDefs.hydroElement.buff));
-                if (spreadTarget) ElectroChargedOrb.CreateOrb(damage.hitHurtBox.transform.position, spreadTarget, damage.attackerObject, damage.totalDamage);
+                if (spreadTarget) ElectroChargedOrb.CreateOrb(search.origin, spreadTarget, damage.attackerObject, damage.totalDamage);
             }
         }
     }

@@ -15,12 +15,22 @@ namespace ElementalReactionsMod.Items
     {
         public static ItemDef delusion;
         public static ItemDef instructorsTeaCup;
+        public static ItemDef moonWheel;
 
         public static void Initialize()
         {
             instructorsTeaCup = AddNewItem("InstructorsTeaCup", "INSTRUCTORS_TEA_CUP", true,
                 Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.Tier1Def_asset).WaitForCompletion(),
                 instructorsTeaCupItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), instructorsTeaCupPickupModel, ItemTag.Damage, ItemTag.CanBeTemporary);
+
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(moonWheelPickupModel).Completed += x =>
+            {
+                x.Result.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = Assets.CreateVisionMaterial(moonWheelVisionIcon, moonWheelVisionRamp, 1.5f);
+                AddModelPanelParameters(x.Result);
+            };
+            moonWheel = AddNewItem("MoonWheel", "MOON_WHEEL", true,
+                Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.Tier3Def_asset).WaitForCompletion(),
+                moonWheelItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), moonWheelPickupModel, ItemTag.Damage, ItemTag.CanBeTemporary);
         }
         internal static GameObject AddModelPanelParameters(GameObject item)
         {

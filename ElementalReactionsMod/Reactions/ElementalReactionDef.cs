@@ -10,6 +10,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 using static ElementalReactionsMod.Elements.DefaultElementDefs;
 using static ElementalReactionsMod.StaticValues;
+using static ElementalReactionsMod.Reactions.ElementalReactionManager;
 
 namespace ElementalReactionsMod.Reactions
 {
@@ -97,7 +98,7 @@ namespace ElementalReactionsMod.Reactions
             overload = ElementalReactionDef.CreateElementalReactionDef("Overload", $"{ElementalReactionsPlugin.PREFIX}REACTION_OVERLOAD", pyroElement, electroElement);
             overload.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
-                EffectManager.SimpleEffect(Assets.overloadEffect, damage.position, Quaternion.identity, true);
+                EffectManager.SimpleEffect(overloadEffect.WaitForCompletion(), damage.position, Quaternion.identity, true);
                 Util.CreateBlastAttack(damage, overloadDamageCoefficient, genericReactionExplosionRadius, genericReactionProcCoefficient, pyroElement.index, true, 1500f).Fire();
             };
 
@@ -134,7 +135,7 @@ namespace ElementalReactionsMod.Reactions
             swirl.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 ElementDef swirledElement = element1 == anemoElement ? element2 : element1;
-                EffectManager.SpawnEffect(Assets.swirlEffect, new EffectData
+                EffectManager.SpawnEffect(swirlEffect.WaitForCompletion(), new EffectData
                 {
                     origin = damage.position,
                     rotation = Quaternion.identity,
@@ -155,7 +156,7 @@ namespace ElementalReactionsMod.Reactions
                 {
                     Util.GetRandomNode(damage.position, out var pos, 0.5f, 15f);
                     //ElementalReactionPooledObject crystallize = ElementalReactionManager.CreatePooledDeployable(ElementalReactionManager.crystallizePool, characterBody, ElementalReactionManager.crystallizeDeployableSlot, pos);
-                    GameObject crystallize = GameObject.Instantiate(Assets.crystallizePickup, pos + (1.5f * Vector3.up), Quaternion.identity);
+                    GameObject crystallize = GameObject.Instantiate(crystallizePickup.WaitForCompletion(), pos + (1.5f * Vector3.up), Quaternion.identity);
                     if (characterBody.master) characterBody.master.AddDeployable(crystallize.GetComponent<Deployable>(), ElementalReactionManager.crystallizeDeployableSlot);
                     if (crystallize) crystallize.GetComponent<TeamFilter>().teamIndex = characterBody.teamComponent.teamIndex;
                     NetworkServer.Spawn(crystallize);
@@ -190,7 +191,7 @@ namespace ElementalReactionsMod.Reactions
 
                     ProjectileManager.instance.FireProjectileServer(new FireProjectileInfo
                     {
-                        projectilePrefab = Assets.bloomDendroCore,
+                        projectilePrefab = bloomCore.WaitForCompletion(),
                         damage = characterBody.damage,
                         crit = false,
                         position = pos + (1.5f * Vector3.up),

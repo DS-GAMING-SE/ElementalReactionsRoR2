@@ -9,21 +9,28 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace ElementalReactionsMod.Reactions
 {
     public class ElementalReactionManager : MonoBehaviour
     {
         public static ElementalReactionManager instance;
-        // how do you network pools?
-        public static DeployableSlot bloomDeployableSlot;
-        //public static PrefabComponentPool<ElementalReactionPooledObject> bloomPool;
 
+        public static AsyncOperationHandle<GameObject> overloadEffect;
+        public static AsyncOperationHandle<GameObject> electroChargedTempVisualEffect;
+        public static AsyncOperationHandle<GameObject> swirlEffect;
+        public static AsyncOperationHandle<GameObject> crystallizePickup;
         public static DeployableSlot crystallizeDeployableSlot;
         //public static PrefabComponentPool<ElementalReactionPooledObject> crystallizePool;
+        public static AsyncOperationHandle<GameObject> quickenTempVisualEffect;
+        public static AsyncOperationHandle<GameObject> bloomCore;
+        public static DeployableSlot bloomDeployableSlot;
+        //public static PrefabComponentPool<ElementalReactionPooledObject> bloomPool;
         public void OnEnable()
         {
             SingletonHelper.Assign(ref instance, this);
+            PreloadAssets();
             //if (bloomPool == null) CreatePool(ref bloomPool, AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.bloomObject, AsyncReferenceHandleUnloadType.OnRunEnd).WaitForCompletion(), StaticValues.bloomCap);
             //if (crystallizePool == null) CreatePool(ref crystallizePool, AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.crystallizePickup, AsyncReferenceHandleUnloadType.OnRunEnd).WaitForCompletion(), StaticValues.crystallizeCap);
         }
@@ -31,6 +38,7 @@ namespace ElementalReactionsMod.Reactions
         {
             //bloomPool.Kill();
             //crystallizePool.Kill();
+            UnloadAssets();
             SingletonHelper.Unassign(ref instance, this);
         }
 
@@ -68,6 +76,25 @@ namespace ElementalReactionsMod.Reactions
                 }
             }
             return false;
+        }
+
+        private static void PreloadAssets()
+        {
+            overloadEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.overloadEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
+            electroChargedTempVisualEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.electroChargeTempVisualEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
+            swirlEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.swirlEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
+            crystallizePickup = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.crystallizePickup, AsyncReferenceHandleUnloadType.OnRunEnd);
+            quickenTempVisualEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.quickenTempVisualEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
+            bloomCore = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.bloomObject, AsyncReferenceHandleUnloadType.OnRunEnd);
+        }
+        private static void UnloadAssets()
+        {
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.overloadEffect);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.electroChargeTempVisualEffect);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.swirlEffect);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.crystallizePickup);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.quickenTempVisualEffect);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.bloomObject);
         }
         #region Pooling Attempts
         public static void CreatePool(ref PrefabComponentPool<ElementalReactionPooledObject> pool, GameObject prefab, int baseCap)

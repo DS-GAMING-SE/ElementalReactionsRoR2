@@ -44,12 +44,10 @@ namespace ElementalReactionsMod.Reactions
             ElementIndex element = damageInfo.damageType.GetElement();
             if (element == DefaultElementDefs.pyroElement.index)
             {
-                Chat.AddMessage("burgeon");
                 Burgeon(damageInfo.attacker);
             }
             else if (element == DefaultElementDefs.electroElement.index)
             {
-                Chat.AddMessage("hyperbloom");
                 Hyperbloom(damageInfo.attacker);
             }
             damageInfo.rejected = true;

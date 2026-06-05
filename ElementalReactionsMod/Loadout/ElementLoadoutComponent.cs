@@ -46,7 +46,7 @@ namespace ElementalReactionsMod.Loadout
 
         private void FixedUpdate()
         {
-            if (permanentlyAppliedElement && permanentlyAppliedElement.buff && !characterBody.HasBuff(permanentlyAppliedElement.buff))
+            if (Config.CanEnemiesBeElemental().Value && permanentlyAppliedElement && permanentlyAppliedElement.buff && !characterBody.HasBuff(permanentlyAppliedElement.buff))
             {
                 characterBody.AddBuff(permanentlyAppliedElement.buff);
             }

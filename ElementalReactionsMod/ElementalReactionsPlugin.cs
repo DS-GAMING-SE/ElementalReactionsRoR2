@@ -19,10 +19,10 @@ namespace ElementalReactionsMod
     [BepInDependency(LanguageAPI.PluginGUID)]
     [BepInDependency(PrefabAPI.PluginGUID)]
     [BepInDependency(DamageAPI.PluginGUID)]
-    [BepInDependency(RecalculateStatsAPI.PluginGUID)]
     [BepInDependency(R2APIContentManager.PluginGUID)]
     [BepInDependency(DeployableAPI.PluginGUID)]
     [BepInDependency(DotAPI.PluginGUID)]
+    [BepInDependency(TempVisualEffectAPI.PluginGUID)]
     [BepInDependency(LookingGlass.PluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(RiskOfOptions.PluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
 
@@ -46,14 +46,14 @@ namespace ElementalReactionsMod
 
             Assets.Initialize();
 
+            Buffs.Initialize();
+
             ElementalReactionManager.bloomDeployableSlot = DeployableAPI.RegisterDeployableSlot((self, deployableCountMultiplier) => { return StaticValues.bloomCap; });
             ElementalReactionManager.crystallizeDeployableSlot = DeployableAPI.RegisterDeployableSlot((self, deployableCountMultiplier) => { return StaticValues.crystallizeCap; });
 
             DelusionManager.Initialize();
 
             Tokens.Initialize();
-
-            Buffs.Initialize();
 
             ElectroChargedDot.Initialize();
 

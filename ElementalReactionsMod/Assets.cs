@@ -28,13 +28,10 @@ namespace ElementalReactionsMod
 
         public static GameObject elementLoadoutRowUI;
 
-        // caching gameobjects here is what makes them perma loaded? experiment?
-        public static GameObject swirlEffect;
-        public static GameObject overloadEffect;
-        public static GameObject bloomDendroCore;
-        public static GameObject crystallizePickup;
-
         public static Material electroTrailMaterial;
+        public static Material darkElectricTrailMaterial;
+
+        public static Material dendroElectricTrailMaterial;
 
         public static GameObject genericElementActivatedEffect;
         public static Material genericElementEffectMaterial;
@@ -100,6 +97,51 @@ namespace ElementalReactionsMod
             #region Reactions
             electroTrailMaterial = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matPrimeDevastatorChargeVFX2_mat)).WaitForCompletion());
             electroTrailMaterial.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTeslaCoil_png)).WaitForCompletion());
+            electroTrailMaterial.SetFloat("_Boost", 2f);
+
+            darkElectricTrailMaterial = new Material(electroTrailMaterial);
+            darkElectricTrailMaterial.SetColor("_TintColor", Color.black);
+            darkElectricTrailMaterial.SetInt("_DstBlend", 10);
+
+            dendroElectricTrailMaterial = new Material(electroTrailMaterial);
+            dendroElectricTrailMaterial.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampOrbitalLaser_png)).WaitForCompletion());
+            dendroElectricTrailMaterial.SetColor("_TintColor", new Color(0.5f, 1f, 0f));
+            dendroElectricTrailMaterial.SetFloat("_Boost", 4f);
+
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.electroChargeTempVisualEffect).Completed += x =>
+            {
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+                vfx.DoNotPool = false;
+                var vfxContainer = x.Result.transform.GetChild(0);
+                vfxContainer.GetComponent<ParticleSystemRenderer>().trailMaterial = electroTrailMaterial;
+                vfxContainer.GetChild(0).GetComponent<ParticleSystemRenderer>().trailMaterial = darkElectricTrailMaterial;
+                var destroyOnTimer = x.Result.AddComponent<DestroyOnTimer>();
+                destroyOnTimer.duration = 0.25f;
+                TemporaryVisualEffect tempVisualEffect = x.Result.AddComponent<TemporaryVisualEffect>();
+                tempVisualEffect.exitComponents = [destroyOnTimer];
+                tempVisualEffect.visualTransform = vfxContainer;
+
+                TempVisualEffectAPI.AddTemporaryVisualEffect(x.Result, (body) => { return body.HasBuff(Buffs.electroChargeBuff); });
+            };
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.quickenTempVisualEffect).Completed += x =>
+            {
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+                vfx.DoNotPool = false;
+                var vfxContainer = x.Result.transform.GetChild(0);
+                vfxContainer.GetComponent<ParticleSystemRenderer>().trailMaterial = dendroElectricTrailMaterial;
+                vfxContainer.GetChild(0).GetComponent<ParticleSystemRenderer>().trailMaterial = darkElectricTrailMaterial;
+                var destroyOnTimer = x.Result.AddComponent<DestroyOnTimer>();
+                destroyOnTimer.duration = 0.25f;
+                TemporaryVisualEffect tempVisualEffect = x.Result.AddComponent<TemporaryVisualEffect>();
+                tempVisualEffect.exitComponents = [destroyOnTimer];
+                tempVisualEffect.visualTransform = vfxContainer;
+
+                TempVisualEffectAPI.AddTemporaryVisualEffect(x.Result, (body) => { return body.HasBuff(Buffs.quickenBuff); });
+            };
 
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.overloadEffect).Completed += x =>
             {
@@ -125,6 +167,7 @@ namespace ElementalReactionsMod
                 x.Result.transform.Find("OverloadSparks").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
                 x.Result.transform.Find("OverloadDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matDistortionFaded_mat)).WaitForCompletion();
                 x.Result.transform.Find("OverloadElectricity").GetComponent<ParticleSystemRenderer>().trailMaterial = electroTrailMaterial;
+                x.Result.transform.Find("OverloadElectricityDark").GetComponent<ParticleSystemRenderer>().trailMaterial = darkElectricTrailMaterial;
                 x.Result.transform.Find("OverloadFire").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Gravekeeper.matOmniExplosion1ArchWisp_mat)).WaitForCompletion();
                 var light = x.Result.transform.Find("OverloadLight");
                 vfx.optionalLights = [light.GetComponent<Light>()];
@@ -133,7 +176,6 @@ namespace ElementalReactionsMod
                 lightCurve.curve = AnimationCurve.EaseInOut(0, 1, 1, 0);
                 x.Result.AddComponent<DestroyOnTimer>().duration = 0.7f;
 
-                overloadEffect = x.Result;
                 AddNewEffectDef(x.Result, "Play_LuminousShot_Explosion");
             };
 
@@ -160,8 +202,7 @@ namespace ElementalReactionsMod
                 };
                 x.Result.AddComponent<DestroyOnTimer>().duration = 0.4f;
 
-                swirlEffect = x.Result;
-                AddNewEffectDef(x.Result, "Play_item_proc_moveSpeedOnKill");
+                AddNewEffectDef(x.Result);
             };
 
             AssetAsyncReferenceManager<Material>.LoadAsset(AssetReferences.bloomMaterial).Completed += x =>
@@ -171,10 +212,7 @@ namespace ElementalReactionsMod
                 {
                     x.Result.SetTexture("_FresnelMask", y.Result);
                 };
-                AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampOrbitalLaser_png)).Completed += y =>
-                {
-                    x.Result.SetTexture("_FresnelRamp", y.Result);
-                };
+                x.Result.SetTexture("_FresnelRamp", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampOrbitalLaser_png)).WaitForCompletion());
                 x.Result.EnableKeyword("FRESNEL_EMISSION");
                 x.Result.SetFloat("_FresnelBoost", 7f);
                 x.Result.SetFloat("_FresnelPower", 1.6f);
@@ -217,7 +255,6 @@ namespace ElementalReactionsMod
                 x.Result.AddComponent<ProjectileDamage>();
                 x.Result.AddComponent<ProjectileDeployToOwner>().deployableSlot = ElementalReactionManager.bloomDeployableSlot;
 
-                bloomDendroCore = x.Result;
                 Content.AddNetworkedObjectPrefab(x.Result);
             };
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.crystallizePickup).Completed += x =>
@@ -263,7 +300,6 @@ namespace ElementalReactionsMod
                     model.GetComponent<MeshRenderer>().sharedMaterial = crystallizeMat;
                 };
 
-                crystallizePickup = x.Result;
                 Content.AddNetworkedObjectPrefab(x.Result);
             };
             #endregion
@@ -363,7 +399,7 @@ namespace ElementalReactionsMod
         public static void AfterElementCatalogReady()
         {
             AddElementLoadoutMenu();
-            var bloomSpecialObjectAttributes = bloomDendroCore.GetComponent<SpecialObjectAttributes>();
+            var bloomSpecialObjectAttributes = Assets.AssetReferences.bloomObject.LoadAssetAsync<GameObject>().WaitForCompletion().GetComponent<SpecialObjectAttributes>();
             bloomSpecialObjectAttributes.damageTypeOverride.SetElement(DefaultElementDefs.dendroElement.index);
             bloomSpecialObjectAttributes.damageTypeOverride.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
         }
@@ -467,6 +503,9 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<GameObject> genericElementActivatedEffect = new("0dcaf09df2cb8ab4c838c88c6d997a39");
 
             #region Reactions
+            public static AssetReferenceT<GameObject> electroChargeTempVisualEffect = new("11147caefb6967a41ab27574e55d2a88");
+            public static AssetReferenceT<GameObject> quickenTempVisualEffect = new("8c00cd5f2a1b86c4ba23ceab51149285");
+
             public static AssetReferenceT<GameObject> overloadEffect = new("a7c7911aead178a499a9803ee81dd5a3");
             public static AssetReferenceT<GameObject> swirlEffect = new("7afc921af72c23941980c334193ee394");
 
@@ -498,7 +537,10 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<Sprite> instructorsTeaCupItemIcon = new("371e6f4214277484c90a8755fa3e42e1");
             #endregion
             #region Moonwheel
-            public static AssetReferenceT<GameObject> moonwheelPickupModel = new AssetReferenceT<GameObject>("7e50ea908069f874fac56c93f70a328d");
+            public static AssetReferenceT<GameObject> moonWheelPickupModel = new AssetReferenceT<GameObject>("7e50ea908069f874fac56c93f70a328d");
+            public static AssetReferenceT<Texture> moonWheelVisionIcon = new("af83aeca078a68443bf1583507eab088");
+            public static AssetReferenceT<Texture> moonWheelVisionRamp = new("1f819082df45cdf44b5b8f019b4a90b5");
+            public static AssetReferenceT<Sprite> moonWheelItemIcon = new("00f1f0088ad92dc4eb41b80b7aef67f2");
             public static AssetReferenceT<Sprite> lunarBloomBuffIcon = new("b14c2afa0ea1ba6449927fb72cbbd016");
             #endregion
             #endregion
