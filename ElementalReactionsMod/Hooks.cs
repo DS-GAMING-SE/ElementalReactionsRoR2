@@ -25,6 +25,8 @@ namespace ElementalReactionsMod
             On.RoR2.HealthComponent.TakeDamageProcess += ApplyElementToSkillDamage;
             On.RoR2.UI.LogBook.LogBookController.CanSelectItemEntry += NoDelusionsWithElementInLogbook;
             On.RoR2.HealthComponent.Heal += HealingReceivedDebuff;
+            On.RoR2.OverheatSystem.BodyOverheatInfo.AddChanneledBuff += AddOverheatPyro;
+            IL.RoR2.CharacterBody.AddTimedBuff_BuffDef_float += SolusWingCoolingCryo;
         }
         // Right after IOnincomingDamageReceiver does its thing, since that's where many things (including bloom dendro cores) reject damage
         private static void TakeDamageIL(ILContext il)
@@ -94,7 +96,10 @@ namespace ElementalReactionsMod
 
                 if (element == DefaultElementDefs.physicalElement && damageInfo.attacker && damageInfo.damageType.IsDamageSourceSkillBased && 
                     damageInfo.attacker.TryGetComponent<ElementLoadoutComponent>(out var elementLoadout) && elementLoadout.isActiveAndEnabled
-                    && ((elementLoadout.team == TeamIndex.Player && Config.CanSurvivorsUseElements().Value) || (elementLoadout.team != TeamIndex.Player && Config.CanEnemiesUseElements().Value)))
+                    && ((elementLoadout.team == TeamIndex.Player && 
+                        (elementLoadout.characterBody.isPlayerControlled && Config.CanSurvivorsUseElements().Value) || 
+                        (!elementLoadout.characterBody.isPlayerControlled && Config.CanAlliesUseElements().Value)) || 
+                    (elementLoadout.team != TeamIndex.Player && Config.CanEnemiesUseElements().Value)))
                 {
                     element = elementLoadout.GetElement(damageInfo.damageType.damageSource);
                     if (element) damageInfo.damageType.SetElement(element.index);
@@ -115,6 +120,36 @@ namespace ElementalReactionsMod
                 amount *= Mathf.Max(0, 1 - (DelusionManager.GetDelusionCount(self.body.inventory) * StaticValues.delusionHealingReceivedReduction));
             }
             return orig(self, amount, proc, nonRegen);
+        }
+
+        private static void AddOverheatPyro(On.RoR2.OverheatSystem.BodyOverheatInfo.orig_AddChanneledBuff orig, OverheatSystem.BodyOverheatInfo self)
+        {
+            orig(self);
+            if (ElementalReactionManager.instance && self.characterBody)
+            {
+                ElementalReactionManager.ApplyElement(DefaultElementDefs.pyroElement, self.characterBody, 0.3f);
+            }
+        }
+        private static void SolusWingCoolingCryo(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            if (c.TryGotoNext(x => x.MatchLdsfld(typeof(DLC3Content.Buffs), nameof(DLC3Content.Buffs.Brittle))) &&
+                c.TryGotoNext(MoveType.After, x => x.MatchBrfalse(out ILLabel falseBranch)))
+            {
+                c.Emit(OpCodes.Ldarg_0); // characterBody
+                c.Emit(OpCodes.Ldarg_2); // duration
+                c.EmitDelegate<Action<CharacterBody, float>>((self, duration) =>
+                {
+                    if (ElementalReactionManager.instance)
+                    {
+                        ElementalReactionManager.ApplyElement(DefaultElementDefs.cryoElement, self, 1f);
+                    }
+                });
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
         }
     }
 }

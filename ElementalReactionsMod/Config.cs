@@ -25,6 +25,10 @@ namespace ElementalReactionsMod
         {
             return ElementalReactionsPlugin.instance.Config.Bind<bool>("Characters", "Enemies Use Elements", true, "Whether enemies are able to deal elemental damage with their skills.\nHost's config takes priority.");
         }
+        public static ConfigEntry<bool> CanAlliesUseElements()
+        {
+            return ElementalReactionsPlugin.instance.Config.Bind<bool>("Characters", "Allies Use Elements", false, "Whether your non-player allies are able to deal elemental damage with their skills.\nHost's config takes priority.");
+        }
         public static ConfigEntry<bool> CanEnemiesBeElemental()
         {
             return ElementalReactionsPlugin.instance.Config.Bind<bool>("Characters", "Elemental Characters", true, "Whether certain characters will naturally have an element permanently applied to them. (Eg. Wisps always have Pyro applied to them).\nHost's config takes priority.");
@@ -150,6 +154,7 @@ namespace ElementalReactionsMod
 
             ModSettingsManager.AddOption(new CheckBoxOption(Config.CanSurvivorsUseElements()));
             ModSettingsManager.AddOption(new CheckBoxOption(Config.CanEnemiesUseElements()));
+            ModSettingsManager.AddOption(new CheckBoxOption(Config.CanAlliesUseElements()));
             ModSettingsManager.AddOption(new CheckBoxOption(Config.CanEnemiesBeElemental()));
             ModSettingsManager.AddOption(new SliderOption(Config.PlayerReactionResistance(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));
             ModSettingsManager.AddOption(new SliderOption(Config.PlayerBloomResistance(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));

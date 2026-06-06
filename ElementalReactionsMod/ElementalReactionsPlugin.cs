@@ -65,6 +65,8 @@ namespace ElementalReactionsMod
 
             Items.Items.Initialize();
 
+            Crafting.Initialize();
+
             Hooks.Initialize();
 
             NetworkingAPI.RegisterMessageType<NetworkElementLoadout>();

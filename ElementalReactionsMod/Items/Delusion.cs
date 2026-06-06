@@ -2,6 +2,7 @@
 using ElementalReactionsMod.Loadout;
 using ElementalReactionsMod.Orbs;
 using HG;
+using R2API;
 using RoR2;
 using RoR2.ContentManagement;
 using RoR2.Items;
@@ -21,23 +22,27 @@ namespace ElementalReactionsMod.Items
 {
     public static class DelusionManager
     {
+        public static ItemTag delusionItemTag;
         public static Dictionary<ItemDef, ElementDef> delusionToElement = new Dictionary<ItemDef, ElementDef>();
 
         public static void Initialize()
         {
+            delusionItemTag = ItemAPI.AddItemTag("ElementalReactionsDelusion");
             AssetAsyncReferenceManager<GameObject>.LoadAsset(delusionPickupModel).Completed += x =>
             {
                 x.Result.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = Assets.CreateVisionMaterial(delusionLogo, new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampDefault_png), 0.75f);
                 AddModelPanelParameters(x.Result);
             };
             delusion = AddNewItem("Delusion", "DELUSION", true, Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.LunarTierDef_asset).WaitForCompletion(),
-                Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, ItemTag.Damage);
+                Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, ItemTag.Damage, ItemTag.AllowedForUseAsCraftingIngredient);
+            ItemAPI.ApplyTagToItem(delusionItemTag, delusion);
             CharacterBody.onBodyInventoryChangedGlobal += AddDelusionBehaviour;
         }
         public static ItemDef CreateNewDelusion(ElementDef element)
         {
             ItemDef delusion = AddNewItem($"Delusion{element.cachedName}", $"DELUSION_{element.cachedName.ToUpper()}", true, Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.LunarTierDef_asset).WaitForCompletion(),
-                Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, ItemTag.Damage, ItemTag.WorldUnique);
+                Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, ItemTag.Damage, ItemTag.WorldUnique, ItemTag.AllowedForUseAsCraftingIngredient);
+            ItemAPI.ApplyTagToItem(delusionItemTag, delusion);
             delusionToElement.Add(delusion, element);
             return delusion;
         }

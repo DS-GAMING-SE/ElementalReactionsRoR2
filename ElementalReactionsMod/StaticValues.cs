@@ -37,6 +37,8 @@ namespace ElementalReactionsMod
         public const int crystallizeCap = 3;
         public const float crystallizeBarrierPercent = 0.1f;
         public const float crystallizeMaxBarrierPercent = 0.3f;
+        public const float crystallizePlayerGravitateRange = 3f;
+        public const float crystallizeEnemyGravitateRange = 6f;
 
         public const int bloomCap = 5;
         public const float bloomDamageCoefficient = 2f;

@@ -99,7 +99,7 @@ namespace ElementalReactionsMod.Reactions
             overload.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 EffectManager.SimpleEffect(overloadEffect.WaitForCompletion(), damage.position, Quaternion.identity, true);
-                Util.CreateBlastAttack(damage, overloadDamageCoefficient, genericReactionExplosionRadius, genericReactionProcCoefficient, pyroElement.index, true, 1500f).Fire();
+                Util.CreateBlastAttack(damage, overloadDamageCoefficient * damage.procCoefficient, genericReactionExplosionRadius, genericReactionProcCoefficient, pyroElement.index, true, 1000f).Fire();
             };
 
             electroCharge = ElementalReactionDef.CreateElementalReactionDef("ElectroCharge", $"{ElementalReactionsPlugin.PREFIX}REACTION_ELECTRO_CHARGE", electroElement, hydroElement);
@@ -128,7 +128,7 @@ namespace ElementalReactionsMod.Reactions
                 damageType.SetElement(cryoElement.index);
                 damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                 damageType.AddModdedDamageType(DamageTypes.superconductDamageType);
-                Util.CreateBlastAttack(damage, superconductDamageCoefficient, genericReactionExplosionRadius, genericReactionProcCoefficient, damageType, 0f).Fire();
+                Util.CreateBlastAttack(damage, superconductDamageCoefficient * damage.procCoefficient, genericReactionExplosionRadius, genericReactionProcCoefficient, damageType, 0f).Fire();
             };
 
             swirl = ElementalReactionDef.CreateElementalReactionDef("Swirl", $"{ElementalReactionsPlugin.PREFIX}REACTION_SWIRL", anemoElement, [pyroElement, hydroElement, electroElement, cryoElement]);
@@ -144,7 +144,7 @@ namespace ElementalReactionsMod.Reactions
                 DamageTypeCombo damageType = DamageType.AOE;
                 damageType.SetElement(swirledElement.index);
                 damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
-                Util.CreateBlastAttack(damage, swirlDamageCoefficient, genericReactionExplosionRadius, genericReactionProcCoefficient, damageType, 200f).Fire();
+                Util.CreateBlastAttack(damage, swirlDamageCoefficient * damage.procCoefficient, genericReactionExplosionRadius, genericReactionProcCoefficient, damageType, 200f).Fire();
             };
             swirl.baseFirstReactionCoefficient = 0.5f;
             swirl.baseLastReactionCoefficient = 0.5f;

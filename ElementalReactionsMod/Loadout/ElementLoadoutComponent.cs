@@ -42,6 +42,10 @@ namespace ElementalReactionsMod.Loadout
             {
                 new NetworkElementLoadout(characterBody.netId, primaryElement.index, secondaryElement.index, utilityElement.index, specialElement.index).Send(R2API.Networking.NetworkDestination.Server);
             }
+            if (Config.CanEnemiesBeElemental().Value && permanentlyAppliedElement && TryGetComponent<SpecialObjectAttributes>(out var specialObjectAttributes))
+            {
+                specialObjectAttributes.damageTypeOverride.SetElement(permanentlyAppliedElement.index);
+            }
         }
 
         private void FixedUpdate()
@@ -95,6 +99,7 @@ namespace ElementalReactionsMod.Loadout
                     loadout.ApplyElementLoadout(config);
                 }
             }
+            EnemyElementLoadouts.Initialize();
         }
     }
 }

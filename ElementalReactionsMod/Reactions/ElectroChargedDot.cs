@@ -40,7 +40,7 @@ namespace ElementalReactionsMod.Reactions
                 damageInfo.position = self.victimBody.corePosition;
                 damageInfo.procCoefficient = 0f;
                 damageInfo.damageColorIndex = DamageColorIndex.Default;
-                damageInfo.damageType = DamageType.DoT;
+                damageInfo.damageType = new DamageTypeCombo(DamageType.DoT, DamageTypeExtended.Electrical, DamageSource.NoneSpecified);
                 damageInfo.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                 damageInfo.inflictedHurtbox = damage.hitHurtBox;
                 self.victimHealthComponent.TakeDamage(damageInfo);

@@ -12,6 +12,7 @@ namespace ElementalReactionsMod.Reactions
     {
         public TeamFilter teamFilter;
         public GameObject baseGameObject;
+        public SphereCollider gravitateCollider;
         private Deployable deployable;
         public void Awake()
         {
@@ -19,6 +20,13 @@ namespace ElementalReactionsMod.Reactions
             if (deployable)
             {
                 deployable.onUndeploy.AddListener(LimitReached);
+            }
+        }
+        private void Start()
+        {
+            if (NetworkServer.active)
+            {
+                gravitateCollider.radius = teamFilter.teamIndex == TeamIndex.Player ? StaticValues.crystallizePlayerGravitateRange : StaticValues.crystallizeEnemyGravitateRange;
             }
         }
         private void OnTriggerStay(Collider other)

@@ -112,8 +112,8 @@ namespace ElementalReactionsMod
             }
 
             LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_NAME", "Instructor's Tea Cup");
-            LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_PICKUP", "Deal bonus damage from elemental reactions");
-            LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_DESCRIPTION", $"Increase {UtilityText("elemental reaction")} damage by {DamageText($"{instructorsTeaCupDamageMultiplier * 100f}%")} {StackingText($"(+{instructorsTeaCupDamageMultiplier * 100f}% per stack)")}.");
+            LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_PICKUP", "Deal bonus damage from elemental reactions.");
+            LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_DESCRIPTION", $"Increases {UtilityText("elemental reaction")} damage by {DamageText($"{instructorsTeaCupDamageMultiplier * 100f}%")} {StackingText($"(+{instructorsTeaCupDamageMultiplier * 100f}% per stack)")}.");
             LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_LORE", """"""
                 Every military student knows that the so-called "free training time" could not have anything less to do with freedom.
                 
@@ -125,8 +125,8 @@ namespace ElementalReactionsMod
                 """""");
 
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_NAME", "Moon Wheel");
-            LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_PICKUP", "Upgrades the Hydro reactions between Electro, Geo, and Dendro into powerful Lunar Reactions.");
-            LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_DESCRIPTION", $"Upgrades the {ElectroText("Electro-Charged")}, {DendroText("Bloom")}, and {GeoText("Hydro-Crystallize")} reactions into {DamageText("Lunar Reactions")} that can {DamageText("critically strike")} Increases {DamageText("Lunar Reaction damage")} by {DamageText("0%")} {StackingText("(+50% per stack)")}.\n\n{ElectroText("Lunar-Charged")}: Create a {ElectroText("thundercloud")} that continuously strikes {HydroText()} afflicted enemies with lightning, dealing {DamageText("0% ") + ElectroText() + DamageText(" damage")}.\n{DendroText("Lunar-Bloom")}: Create a {DendroText("Dendro Core")} and gain a {UtilityText("Verdant Dew")}, up to {UtilityText("3")}. Dealing {DendroText()} {UtilityText("skill")} damage will consume the {UtilityText("Verdant Dews")} and increase the damage dealt by {DamageText("0%")}.\n{GeoText("Lunar-Crystallize")}: Create three {GeoText("Moondrifts")}. Triggering the {GeoText("Lunar-Crystallize")} reaction {UtilityText("3")} times causes the {GeoText("Moondrifts")} to deal {DamageText("0% Geo damage")}.");
+            LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_PICKUP", "Upgrades the Hydro reactions between Electro, Dendro, and Geo into powerful Lunar Reactions.");
+            LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_DESCRIPTION", $"Upgrades the {ElectroText("Electro-Charged")}, {DendroText("Bloom")}, and {GeoText("Hydro-Crystallize")} reactions into {DamageText("Lunar Reactions")} that can {DamageText("critically strike")}. Increases {DamageText("Lunar Reaction damage")} by {DamageText("0%")} {StackingText("(+50% per stack)")}.\n\n{ElectroText("Lunar-Charged")}: Create a {ElectroText("thundercloud")} that continuously strikes {HydroText()} afflicted enemies with lightning, dealing {DamageText("0% ") + ElectroText() + DamageText(" damage")}.\n{DendroText("Lunar-Bloom")}: Create a {DendroText("Dendro Core")} and gain a {UtilityText("Verdant Dew")}, up to {UtilityText("3")}. Dealing {DendroText()} {UtilityText("skill")} damage will consume the {UtilityText("Verdant Dews")} and increase the damage dealt by {DamageText("0%")}.\n{GeoText("Lunar-Crystallize")}: Create three {GeoText("Moondrifts")}. Triggering the {GeoText("Lunar-Crystallize")} reaction {UtilityText("3")} times causes the {GeoText("Moondrifts")} to deal {DamageText("0% Geo damage")}.");
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_LORE", """"""
                 Awaken, awaken, new moon, even if all that remains is torment.
 

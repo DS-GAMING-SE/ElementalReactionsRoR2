@@ -48,6 +48,8 @@ namespace ElementalReactionsMod
             
             elementalReactionManagerPrefab = PrefabAPI.CreateEmptyPrefab("ElementalReactionManager");
             elementalReactionManagerPrefab.AddComponent<ElementalReactionManager>();
+            AddAkBank(elementalReactionManagerPrefab, RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSon.FalseSonBody_prefab);
+            AddAkBank(elementalReactionManagerPrefab, RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Bandit2.Bandit2Body_prefab);
 
             elementalReactionExpansionDef = ScriptableObject.CreateInstance<ExpansionDef>();
             elementalReactionExpansionDef.name = "ElementalReactionExpansionDef";
@@ -176,7 +178,7 @@ namespace ElementalReactionsMod
                 lightCurve.curve = AnimationCurve.EaseInOut(0, 1, 1, 0);
                 x.Result.AddComponent<DestroyOnTimer>().duration = 0.7f;
 
-                AddNewEffectDef(x.Result, "Play_LuminousShot_Explosion");
+                AddNewEffectDef(x.Result, "Play_FalseSon_MeridianWill_Lightning_Initial");
             };
 
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.swirlEffect).Completed += x =>
@@ -202,7 +204,7 @@ namespace ElementalReactionsMod
                 };
                 x.Result.AddComponent<DestroyOnTimer>().duration = 0.4f;
 
-                AddNewEffectDef(x.Result);
+                AddNewEffectDef(x.Result, "Play_bandit2_shift_enter");
             };
 
             AssetAsyncReferenceManager<Material>.LoadAsset(AssetReferences.bloomMaterial).Completed += x =>
@@ -282,6 +284,7 @@ namespace ElementalReactionsMod
                 var controller = x.Result.transform.Find("PickupTrigger").gameObject.AddComponent<CrystallizeController>();
                 controller.teamFilter = teamFilter;
                 controller.baseGameObject = x.Result;
+                controller.gravitateCollider = gravitate.GetComponent<SphereCollider>();
                 x.Result.AddComponent<Deployable>();
                 //x.Result.AddComponent<ElementalReactionPooledObject>().gravitatePickup = gravitate;
 
@@ -393,6 +396,19 @@ namespace ElementalReactionsMod
             Material newMat = new Material(genericElementEffectMaterial);
             newMat.SetTexture("_MainTex", icon);
             return newMat;
+        }
+
+        private static void AddAkBank(GameObject prefab, string bodyGUID)
+        {
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(bodyGUID)).Completed += x =>
+            {
+                AkBank bank = prefab.AddComponent<AkBank>();
+                AkBank sourceBank = x.Result.GetComponent<AkBank>();
+                if (sourceBank)
+                {
+                    bank.data.WwiseObjectReference = sourceBank.data.WwiseObjectReference;
+                }
+            };
         }
 
         [SystemInitializer(typeof(ElementCatalog))]

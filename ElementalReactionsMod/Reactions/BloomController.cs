@@ -112,7 +112,7 @@ namespace ElementalReactionsMod.Reactions
                 float damage = StaticValues.hyperBloomDamageCoefficient;
                 damage *= attacker.TryGetComponent<CharacterBody>(out var attackerBody) ? attackerBody.damage : projectileDamage.damage;
                 TeamIndex team = TeamComponent.GetObjectTeam(attacker);
-                HyperbloomOrb.FireHyperbloomOrb(attacker, team == TeamIndex.None ? team : projectileController.teamFilter.teamIndex, characterBody.corePosition, damage);
+                HyperbloomOrb.FireHyperbloomOrb(attacker, team == TeamIndex.None ? projectileController.teamFilter.teamIndex : team, characterBody.corePosition, damage);
             }
             DestroyObject();
         }

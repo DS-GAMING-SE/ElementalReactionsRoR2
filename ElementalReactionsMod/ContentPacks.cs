@@ -8,8 +8,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using SceneDirector = On.RoR2.SceneDirector;
 using RoR2.ExpansionManagement;
+using R2API;
 
-// Copied this from the old Henry tutorial
+// Apparently this dumb ass content packs class doesn't work and I can't figure out why, so I'm just gutting it and replacing stuff with R2API.ContentAddition
 namespace ElementalReactionsMod
 {
     internal class ContentPacks : IContentPackProvider
@@ -39,6 +40,8 @@ namespace ElementalReactionsMod
         public static List<NetworkSoundEventDef> networkSoundEventDefs = new List<NetworkSoundEventDef>();
 
         public static ExpansionDef expansionDef;
+
+        public static List<CraftableDef> craftableDefs = new List<CraftableDef>();
 
         public void Initialize()
         {
@@ -78,6 +81,8 @@ namespace ElementalReactionsMod
 
             contentPack.expansionDefs.Add([expansionDef]);
 
+            contentPack.craftableDefs.Add(craftableDefs.ToArray());
+
             args.ReportProgress(1f);
             yield break;
         }
@@ -115,7 +120,8 @@ namespace ElementalReactionsMod
 
         public static void AddNetworkedObjectPrefab(GameObject prefab)
         {
-            ContentPacks.networkedObjectPrefabs.Add(prefab);
+            //ContentPacks.networkedObjectPrefabs.Add(prefab);
+            ContentAddition.AddNetworkedObject(prefab);
         }
 
         public static void AddSurvivorDef(SurvivorDef survivorDef)
@@ -171,6 +177,11 @@ namespace ElementalReactionsMod
         public static void AddExpansionDef(ExpansionDef expansion)
         {
             ContentPacks.expansionDef = expansion;
+        }
+
+        public static void AddCraftableDef(CraftableDef craftable)
+        {
+            ContentPacks.craftableDefs.Add(craftable);
         }
     }
 }
