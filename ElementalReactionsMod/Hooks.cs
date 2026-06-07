@@ -41,9 +41,24 @@ namespace ElementalReactionsMod
                 {
                     if (!damage.rejected && ElementalReactionManager.instance)
                     {
+                        
                         ElementDef element = ElementCatalog.GetElementDef(damage.damageType.GetElement());
-                        ElementalReactionManager.ApplyElement(element, self.body, ref damage, out float damageIncreaseFromReactions);
                         CharacterBody attackerBody = damage.attacker ? damage.attacker.GetComponent<CharacterBody>() : null;
+
+                        bool lunarBloomProcced = false;
+                        if (damage.damage > 0 && attackerBody && attackerBody.GetBuffCount(Buffs.lunarBloomBuff) > 0 && element == DefaultElementDefs.dendroElement && damage.damageType.IsSkillOrDelusionDamage())
+                        {
+                            attackerBody.RemoveBuff(Buffs.lunarBloomBuff);
+                            lunarBloomProcced = true;
+                            damage.damageType.AddModdedDamageType(DamageTypes.lunarDamageType);
+                        }
+
+                        ElementalReactionManager.ApplyElement(element, self.body, ref damage, out float damageIncreaseFromReactions);
+
+                        if (lunarBloomProcced)
+                        {
+                            damageIncreaseFromReactions += damage.damage * StaticValues.lunarBloomDamageMultiplier;
+                        }
 
                         if (self.body.HasBuff(Buffs.superconductBuff) && element == DefaultElementDefs.physicalElement)
                         {
@@ -72,7 +87,7 @@ namespace ElementalReactionsMod
 
                         if (attackerBody && attackerBody.inventory && damage.damageType.HasModdedDamageType(DamageTypes.lunarDamageType))
                         {
-                            damage.damage *= 1 + ((attackerBody.inventory.GetItemCountEffective(Items.Items.moonWheel) - 1) * StaticValues.moonWheelLunarDamagePerStack);
+                            damage.damage *= 1 + (Math.Max(attackerBody.inventory.GetItemCountEffective(Items.Items.moonWheel) - 1, 0) * StaticValues.moonWheelLunarDamagePerStack);
                         }
                     }
                 });

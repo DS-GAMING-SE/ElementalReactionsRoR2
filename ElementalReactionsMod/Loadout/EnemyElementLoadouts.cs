@@ -38,8 +38,10 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("JellyfishBody", null, electroElement);
             CreateLoadout("WispBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
             CreateLoadout("WispSoulBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
-            //AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_LunarExploder.LunarExploderProjectileDotZone_prefab, dendroElement);
-            // lunar chimeras
+            CreateLoadout("LunarWisp", dendroElement, dendroElement, dendroElement, dendroElement, pyroElement);
+            CreateLoadout("LunarGolem", geoElement, geoElement, geoElement, geoElement);
+            CreateLoadout("LunarExploder", electroElement, electroElement, electroElement, electroElement);
+            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_LunarExploder.LunarExploderProjectileDotZone_prefab, electroElement);
             CreateLoadout("MiniMushroomBody", dendroElement, dendroElement, dendroElement, dendroElement);
             CreateLoadout("ScorchlingBody", physicalElement, pyroElement);
             CreateLoadout("DefectiveUnitBody", electroElement, electroElement, electroElement, electroElement);
@@ -83,7 +85,7 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("FalseSonBossBodyLunarShard", geoElement, electroElement, electroElement, geoElement);
             CreateLoadout("FalseSonBossBodyBrokenLunarShard", geoElement, electroElement, electroElement, electroElement);
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.PrimeDevastatorProjectile_prefab, electroElement);
-            // manually make Mithrix projectiles and spinny pyro
+            CreateLoadout("BrotherBody", physicalElement, cryoElement, physicalElement, physicalElement);
             CreateLoadout("BrotherHurtBody", physicalElement, pyroElement);
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherUltLineProjectileRotateLeft_prefab, pyroElement);
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherUltLineProjectileRotateRight_prefab, pyroElement);

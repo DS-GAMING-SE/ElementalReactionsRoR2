@@ -21,6 +21,8 @@ namespace ElementalReactionsMod.Reactions
 
         public static AsyncOperationHandle<GameObject> overloadEffect;
         public static AsyncOperationHandle<GameObject> electroChargedTempVisualEffect;
+        public static AsyncOperationHandle<GameObject> superconductEffect;
+        public static AsyncOperationHandle<GameObject> superconductTempVisualEffect;
         public static AsyncOperationHandle<GameObject> swirlEffect;
         public static AsyncOperationHandle<GameObject> crystallizePickup;
         public static DeployableSlot crystallizeDeployableSlot;
@@ -29,6 +31,7 @@ namespace ElementalReactionsMod.Reactions
         public static AsyncOperationHandle<GameObject> bloomCore;
         public static DeployableSlot bloomDeployableSlot;
         //public static PrefabComponentPool<ElementalReactionPooledObject> bloomPool;
+        public static AsyncOperationHandle<GameObject> lunarChargedEffect;
         public delegate void PreElementalReactionDelegate(ref ElementalReactionDef reaction, ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo);
         public static event PreElementalReactionDelegate onPreElementalReactionTriggered;
         public void OnEnable()
@@ -111,19 +114,25 @@ namespace ElementalReactionsMod.Reactions
         {
             overloadEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.overloadEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             electroChargedTempVisualEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.electroChargeTempVisualEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
+            superconductEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.superconductEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
+            superconductTempVisualEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.superconductTempVisualEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             swirlEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.swirlEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             crystallizePickup = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.crystallizePickup, AsyncReferenceHandleUnloadType.OnRunEnd);
             quickenTempVisualEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.quickenTempVisualEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             bloomCore = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.bloomObject, AsyncReferenceHandleUnloadType.OnRunEnd);
+            lunarChargedEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarChargedLightningEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
         }
         private static void UnloadAssets()
         {
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.overloadEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.electroChargeTempVisualEffect);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.superconductEffect);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.superconductTempVisualEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.swirlEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.crystallizePickup);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.quickenTempVisualEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.bloomObject);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarChargedLightningEffect);
         }
         #region Async Hydro Rain
         public static bool raining;

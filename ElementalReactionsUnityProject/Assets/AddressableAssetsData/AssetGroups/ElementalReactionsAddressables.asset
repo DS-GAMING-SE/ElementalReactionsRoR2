@@ -233,6 +233,14 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Items/Moonwheel/texLunarVFXSymbol.png
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: b2ee9cb3889cd7c4bb620fd72233099a
+    m_Address: Assets/ElementalReactionsAssets/Reactions/SuperconductEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: b46ea4e21788bdc418384e2de927414e
+    m_Address: Assets/ElementalReactionsAssets/Reactions/SuperconductTempVisualEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

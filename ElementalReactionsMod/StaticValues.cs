@@ -77,7 +77,7 @@ namespace ElementalReactionsMod
         public const float lunarChargeRadius = 6f;
 
         public const int lunarBloomVerdantDewCap = 3;
-        public const float lunarBloomDamageMultiplier = 2f;
+        public const float lunarBloomDamageMultiplier = 1f;
 
         public const int lunarCrystallizeTriggersToAttack = 3;
         public const float lunarCrystallizeDamageCoefficient = 3f;

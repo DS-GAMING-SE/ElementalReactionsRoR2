@@ -126,7 +126,7 @@ namespace ElementalReactionsMod
 
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_NAME", "Moon Wheel");
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_PICKUP", "Upgrades the Hydro reactions between Electro, Dendro, and Geo into powerful Lunar Reactions.");
-            LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_DESCRIPTION", $"Upgrades the {ElectroText("Electro-Charge")}, {DendroText("Bloom")}, and {GeoText("Hydro-Crystallize")} reactions into {DamageText("Lunar Reactions")} that can {DamageText("critically strike")}. Increases {DamageText("Lunar Reaction damage")} by {DamageText("0%")} {StackingText("(+"+moonWheelLunarDamagePerStack * 100f+"% per stack)")}.\n\n{ElectroText("Lunar-Charge")}: Continuously strike the target with lightning, dealing {DamageValueTextRepeat(lunarChargeDamageCoefficient, lunarChargeAttacksPerDot)}.\n{DendroText("Lunar-Bloom")}: Create a {DendroText("Dendro Core")} and gain a {UtilityText("Verdant Dew")}, up to {UtilityText(lunarBloomVerdantDewCap.ToString())}. Dealing {DendroText()} {UtilityText("skill")} damage will consume a {UtilityText("Verdant Dew")} and increase the damage dealt by {DamageText(((lunarBloomDamageMultiplier - 1) * 100)+"%")}.\n{GeoText("Lunar-Crystallize")}: Create three Moondrifts. Triggering the {GeoText("Lunar-Crystallize")} reaction {UtilityText(lunarCrystallizeTriggersToAttack.ToString())} times causes the Moondrifts to deal {DamageValueTextRepeat(lunarCrystallizeDamageCoefficient * 100f, 3)}.");
+            LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_DESCRIPTION", $"Upgrades the {ElectroText("Electro-Charge")}, {DendroText("Bloom")}, and {GeoText("Hydro-Crystallize")} reactions into {DamageText("Lunar Reactions")} that can {DamageText("critically strike")}. Increases {DamageText("Lunar Reaction damage")} by {DamageText("0%")} {StackingText("(+"+moonWheelLunarDamagePerStack * 100f+"% per stack)")}.\n\n{ElectroText("Lunar-Charge")}: Continuously strike the target with lightning, dealing {DamageValueTextRepeat(lunarChargeDamageCoefficient, lunarChargeAttacksPerDot)}.\n{DendroText("Lunar-Bloom")}: Create a {DendroText("Dendro Core")} and gain a {UtilityText("Verdant Dew")}, up to {UtilityText(lunarBloomVerdantDewCap.ToString())}. Dealing {DendroText()} {UtilityText("skill")} damage will consume a {UtilityText("Verdant Dew")} and increase the damage dealt by {DamageText((lunarBloomDamageMultiplier * 100)+"%")}.\n{GeoText("Lunar-Crystallize")}: Create three Moondrifts. For every {UtilityText(lunarCrystallizeTriggersToAttack.ToString())} times the reaction is triggered, the Moondrifts will deal {DamageValueTextRepeat(lunarCrystallizeDamageCoefficient, 3)}.");
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_LORE", """"""
                 Awaken, awaken, new moon, even if all that remains is torment.
 
@@ -172,7 +172,7 @@ namespace ElementalReactionsMod
         }
         public static string DamageValueTextRepeat(float value, int repeat)
         {
-            return $"<style=cIsDamage>{repeat * 100}x{value * 100}% damage</style>";
+            return $"<style=cIsDamage>{repeat}x{value * 100}% damage</style>";
         }
         public static string UtilityText(string text)
         {

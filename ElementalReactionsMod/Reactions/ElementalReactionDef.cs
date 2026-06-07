@@ -121,7 +121,7 @@ namespace ElementalReactionsMod.Reactions
             superconduct = ElementalReactionDef.CreateElementalReactionDef("Superconduct", $"{ElementalReactionsPlugin.PREFIX}REACTION_SUPERCONDUCT", cryoElement, electroElement);
             superconduct.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
-                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.ChefIceBoxExplosionVFX_prefab).WaitForCompletion(), damage.position, Quaternion.identity, true);
+                EffectManager.SimpleEffect(superconductEffect.WaitForCompletion(), damage.position, Quaternion.identity, true);
                 DamageTypeCombo damageType = DamageType.AOE;
                 damageType.SetElement(cryoElement.index);
                 damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);

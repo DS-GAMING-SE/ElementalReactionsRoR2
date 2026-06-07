@@ -6,6 +6,7 @@ using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using ElementalReactionsMod.Elements;
+using R2API;
 
 namespace ElementalReactionsMod.Orbs
 {
@@ -25,6 +26,7 @@ namespace ElementalReactionsMod.Orbs
                 teamIndex = attacker.teamComponent.teamIndex
             };
             delusionOrb.damageType.SetElement(element);
+            delusionOrb.damageType.AddModdedDamageType(DamageTypes.delusionDamageType);
             OrbManager.instance.AddOrb(delusionOrb);
         }
         public override GameObject GetOrbEffect()

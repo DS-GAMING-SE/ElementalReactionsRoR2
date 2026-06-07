@@ -53,6 +53,10 @@ namespace ElementalReactionsMod
         {
             return damageTypeCombo.HasModdedDamageType(DamageTypes.elementalReactionDamageType);
         }
+        public static bool IsSkillOrDelusionDamage(this DamageTypeCombo damageTypeCombo)
+        {
+            return damageTypeCombo.IsDamageSourceSkillBased || damageTypeCombo.HasModdedDamageType(DamageTypes.delusionDamageType);
+        }
 
         public static int GetDamageTypeIndex(DamageTypeCombo damageTypeCombo, DamageAPI.ModdedDamageType[] damageTypes)
         {

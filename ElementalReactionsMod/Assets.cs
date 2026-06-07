@@ -181,6 +181,41 @@ namespace ElementalReactionsMod
                 AddNewEffectDef(x.Result, "Play_FalseSon_MeridianWill_Lightning_Initial");
             };
 
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.superconductEffect).Completed += x =>
+            {
+                EffectComponent effect = x.Result.AddComponent<EffectComponent>();
+                effect.positionAtReferencedTransform = true;
+                effect.parentToReferencedTransform = false;
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Medium;
+                vfx.DoNotPool = false;
+                x.Result.AddComponent<NetworkIdentity>();
+                x.Result.AddComponent<DestroyOnTimer>().duration = 0.7f;
+
+                x.Result.transform.Find("SuperconductSphere").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_EliteIce.matAffixWhiteSphereIndicator_mat)).WaitForCompletion();
+                x.Result.transform.Find("SuperconductMist").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.matChefSecondaryFrostVFX_mat)).WaitForCompletion();
+                x.Result.transform.Find("SuperconductSnowflakes").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.matChefSecondarySnowflakeVFX_mat)).WaitForCompletion();
+
+                AddNewEffectDef(x.Result, "Play_freezeDrone_impact");
+            };
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.superconductTempVisualEffect).Completed += x =>
+            {
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+                vfx.DoNotPool = false;
+                var vfxContainer = x.Result.transform.GetChild(0);
+                vfxContainer.GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.matChefSecondaryFrostVFX_mat)).WaitForCompletion();
+                var destroyOnTimer = x.Result.AddComponent<DestroyOnTimer>();
+                destroyOnTimer.duration = 0.6f;
+                TemporaryVisualEffect tempVisualEffect = x.Result.AddComponent<TemporaryVisualEffect>();
+                tempVisualEffect.exitComponents = [destroyOnTimer];
+                tempVisualEffect.visualTransform = vfxContainer;
+
+                TempVisualEffectAPI.AddTemporaryVisualEffect(x.Result, (body) => { return body.HasBuff(Buffs.superconductBuff); });
+            };
+
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.swirlEffect).Completed += x =>
             {
                 EffectComponent effect = x.Result.AddComponent<EffectComponent>();
@@ -342,7 +377,6 @@ namespace ElementalReactionsMod
             lunarVFXSymbol.SetTexture("_MainTex", AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.lunarVFXSymbol).WaitForCompletion());
             lunarVFXSymbol.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTritoneSmoothed_png)).WaitForCompletion());
             lunarVFXSymbol.SetFloat("_AlphaBoost", 4.5f);
-            lunarVFXSymbol.SetFloat("_AlphaBias", 0.2f);
             lunarVFXSymbol.SetFloat("_DepthOffset", -3f);
             lunarVFXSymbol.SetFloat("_InvFade", 0.35f);
             lunarVFXSymbol.SetFloat("_ZTest", 8f);
@@ -600,6 +634,10 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<GameObject> quickenTempVisualEffect = new("8c00cd5f2a1b86c4ba23ceab51149285");
 
             public static AssetReferenceT<GameObject> overloadEffect = new("a7c7911aead178a499a9803ee81dd5a3");
+
+            public static AssetReferenceT<GameObject> superconductEffect = new("b2ee9cb3889cd7c4bb620fd72233099a");
+            public static AssetReferenceT<GameObject> superconductTempVisualEffect = new("b46ea4e21788bdc418384e2de927414e");
+
             public static AssetReferenceT<GameObject> swirlEffect = new("7afc921af72c23941980c334193ee394");
 
             public static AssetReferenceT<GameObject> crystallizePickup = new("677d6b93d9a81fa44b68adbcd2288857");

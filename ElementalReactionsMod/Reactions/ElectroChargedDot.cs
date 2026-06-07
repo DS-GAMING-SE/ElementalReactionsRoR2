@@ -25,7 +25,7 @@ namespace ElementalReactionsMod.Reactions
                 damageCoefficient = StaticValues.electroChargeDamageCoefficient,
                 interval = 1f,
                 associatedBuff = Buffs.electroChargeBuff,
-                resetTimerOnAdd = true,
+                resetTimerOnAdd = false,
                 damageColorIndex = DamageColorIndex.Default
             }, null, null, ElectroChargedFireOrb);
             lunarChargeDot = DotAPI.RegisterDotDef(new DotController.DotDef
@@ -33,7 +33,7 @@ namespace ElementalReactionsMod.Reactions
                 damageCoefficient = StaticValues.lunarChargeDamageCoefficient,
                 interval = StaticValues.lunarChargeTimeBetweenAttacks,
                 associatedBuff = Buffs.lunarChargeBuff,
-                resetTimerOnAdd = true,
+                resetTimerOnAdd = false,
                 damageColorIndex = DamageColorIndex.Default
             }, null, null, LunarChargedLightning);
         }
@@ -76,7 +76,7 @@ namespace ElementalReactionsMod.Reactions
                 damageType.AddModdedDamageType(DamageTypes.lunarDamageType);
                 CharacterBody attackerBody = damage.attackerObject ? damage.attackerObject.GetComponent<CharacterBody>() : null;
                 Vector3 damagePosition = damage.hitHurtBox ? damage.hitHurtBox.transform.position : self.victimBody.corePosition;
-                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(Assets.AssetReferences.lunarChargedLightningEffect).WaitForCompletion(), damagePosition, Quaternion.identity, true);
+                EffectManager.SimpleEffect(ElementalReactionManager.lunarChargedEffect.WaitForCompletion(), damagePosition, Quaternion.identity, true);
 
                 BlastAttack blast = Util.CreateBlastAttack(damage.attackerObject, TeamComponent.GetObjectTeam(damage.attackerObject), damage.totalDamage, attackerBody ? attackerBody.RollCrit() : false, StaticValues.lunarChargeRadius, BlastAttack.FalloffModel.None, 1f, damageType, damagePosition, 0f);
                 blast.bonusForce = new Vector3(0f, -500f, 0f);
