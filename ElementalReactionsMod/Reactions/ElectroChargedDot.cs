@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using static RoR2.DotController;
 
 namespace ElementalReactionsMod.Reactions
@@ -15,7 +16,8 @@ namespace ElementalReactionsMod.Reactions
     public static class ElectroChargedDot
     {
         public static DotController.DotIndex electroChargeDot;
-        
+        public static DotController.DotIndex lunarChargeDot;
+
         public static void Initialize()
         {
             electroChargeDot = DotAPI.RegisterDotDef(new DotController.DotDef
@@ -26,6 +28,14 @@ namespace ElementalReactionsMod.Reactions
                 resetTimerOnAdd = true,
                 damageColorIndex = DamageColorIndex.Default
             }, null, null, ElectroChargedFireOrb);
+            lunarChargeDot = DotAPI.RegisterDotDef(new DotController.DotDef
+            {
+                damageCoefficient = StaticValues.lunarChargeDamageCoefficient,
+                interval = StaticValues.lunarChargeTimeBetweenAttacks,
+                associatedBuff = Buffs.lunarChargeBuff,
+                resetTimerOnAdd = true,
+                damageColorIndex = DamageColorIndex.Default
+            }, null, null, LunarChargedLightning);
         }
         public static void ElectroChargedFireOrb(DotController self, DotController.PendingDamage damage)
         {
@@ -46,7 +56,7 @@ namespace ElementalReactionsMod.Reactions
                 self.victimHealthComponent.TakeDamage(damageInfo);
 
                 SphereSearch search = new SphereSearch();
-                search.radius = StaticValues.electroChargedRadius;
+                search.radius = StaticValues.electroChargeRadius;
                 search.origin = damage.hitHurtBox ? damage.hitHurtBox.transform.position : self.victimBody.corePosition;
                 search.mask = LayerIndex.entityPrecise.mask;
                 search.RefreshCandidates();
@@ -55,6 +65,22 @@ namespace ElementalReactionsMod.Reactions
                 HurtBox spreadTarget = search.GetHurtBoxes().FirstOrDefault(x => x.healthComponent && x.healthComponent != self.victimHealthComponent && x.healthComponent.alive &&
                     x.healthComponent.body.HasBuff(DefaultElementDefs.hydroElement.buff));
                 if (spreadTarget) ElectroChargedOrb.CreateOrb(search.origin, spreadTarget, damage.attackerObject, damage.totalDamage);
+            }
+        }
+        public static void LunarChargedLightning(DotController self, PendingDamage damage)
+        {
+            if (!Mathf.Approximately(damage.totalDamage, 0f) && self.victimHealthComponent.alive)
+            {
+                DamageTypeCombo damageType = new DamageTypeCombo(DamageType.DoT, DamageTypeExtended.Electrical, DamageSource.NoneSpecified);
+                damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
+                damageType.AddModdedDamageType(DamageTypes.lunarDamageType);
+                CharacterBody attackerBody = damage.attackerObject ? damage.attackerObject.GetComponent<CharacterBody>() : null;
+                Vector3 damagePosition = damage.hitHurtBox ? damage.hitHurtBox.transform.position : self.victimBody.corePosition;
+                EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(Assets.AssetReferences.lunarChargedLightningEffect).WaitForCompletion(), damagePosition, Quaternion.identity, true);
+
+                BlastAttack blast = Util.CreateBlastAttack(damage.attackerObject, TeamComponent.GetObjectTeam(damage.attackerObject), damage.totalDamage, attackerBody ? attackerBody.RollCrit() : false, StaticValues.lunarChargeRadius, BlastAttack.FalloffModel.None, 1f, damageType, damagePosition, 0f);
+                blast.bonusForce = new Vector3(0f, -500f, 0f);
+                blast.Fire();
             }
         }
     }

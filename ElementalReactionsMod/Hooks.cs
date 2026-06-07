@@ -69,6 +69,11 @@ namespace ElementalReactionsMod
                             ModifyElementalReactionDamage(self, damage.attacker, attackerBody, ref damageIncreaseFromReactions);
                             damage.damage += damageIncreaseFromReactions;
                         }
+
+                        if (attackerBody && attackerBody.inventory && damage.damageType.HasModdedDamageType(DamageTypes.lunarDamageType))
+                        {
+                            damage.damage *= 1 + ((attackerBody.inventory.GetItemCountEffective(Items.Items.moonWheel) - 1) * StaticValues.moonWheelLunarDamagePerStack);
+                        }
                     }
                 });
             }
@@ -137,8 +142,7 @@ namespace ElementalReactionsMod
                 c.TryGotoNext(MoveType.After, x => x.MatchBrfalse(out ILLabel falseBranch)))
             {
                 c.Emit(OpCodes.Ldarg_0); // characterBody
-                c.Emit(OpCodes.Ldarg_2); // duration
-                c.EmitDelegate<Action<CharacterBody, float>>((self, duration) =>
+                c.EmitDelegate<Action<CharacterBody>>((self) =>
                 {
                     if (ElementalReactionManager.instance)
                     {

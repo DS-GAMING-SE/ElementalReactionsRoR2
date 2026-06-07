@@ -9,13 +9,13 @@ namespace ElementalReactionsMod
     {
         public static DamageAPI.ModdedDamageType elementalReactionDamageType;
         public static DamageAPI.ModdedDamageType superconductDamageType;
-        public static DamageAPI.ModdedDamageType lunarReactionDamageType;
+        public static DamageAPI.ModdedDamageType lunarDamageType;
 
         public static void Initialize()
         {
             elementalReactionDamageType = DamageAPI.ReserveDamageType();
             superconductDamageType = DamageAPI.ReserveDamageType();
-            lunarReactionDamageType = DamageAPI.ReserveDamageType();
+            lunarDamageType = DamageAPI.ReserveDamageType();
         }
     }
 }

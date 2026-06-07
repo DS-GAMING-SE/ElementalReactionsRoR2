@@ -2,7 +2,7 @@
 
 Adds the Elemental Reaction system from Genshin Impact to the game. In the character select screen, you can select what elements you want each of your skills to be. Hit enemies to apply the element to them. **Applying multiple elements at once will cause a reaction, which can have a variety of effects based on the elements its made of.**
 
-This mod relies on characters having Damage Sources implemented. **If you're playing a modded survivor who can't use items like Luminous Shot or Breaching Fin, they won't be able to use the elements either.**
+This mod relies on characters having Damage Sources implemented. **Modded survivors who can't use items like Luminous Shot or Breaching Fin won't be able to use the elements either.**
 
 *picture of element select menu*
 
@@ -19,6 +19,12 @@ This mod also adds a few new items that all interact with the elements.
 
 | Icon | Item |
 | ---- | ----------- |
-| <img src="https://github.com/DS-GAMING-SE/ElementalReactionsRoR2/blob/master/ElementalReactionsUnityProject/Assets/ElementalReactionsAssets/Items/InstructorsTeaCup/texInstructorsTeaCupItemIcon.png?raw=true" width="128"> | **Common - Instructor's Tea Cup**<br>*Deal bonus damage from elemental reactions.*<br><br>Increase elemental reaction damage by 20% (+20% per stack). |
-| <img src="https://github.com/DS-GAMING-SE/ElementalReactionsRoR2/blob/master/ElementalReactionsUnityProject/Assets/ElementalReactionsAssets/Items/MoonWheel/texMoonWheelItemIcon.png?raw=true" width="128"> | **Legendary - Moon Wheel**<br>*Upgrades the Hydro reactions between Electro, Dendro, and Geo into powerful Lunar Reactions*<br><br>moon wheel desc. |
+| <img src="https://github.com/DS-GAMING-SE/ElementalReactionsRoR2/blob/master/ElementalReactionsUnityProject/Assets/ElementalReactionsAssets/Items/InstructorsTeaCup/texInstructorsTeaCupItemIcon.png?raw=true" width="128"> | **Common - Instructor's Tea Cup**<br>*Deal bonus damage from elemental reactions.*<br><br>Increases elemental reaction damage by 20% (+20% per stack). |
+| <img src="https://github.com/DS-GAMING-SE/ElementalReactionsRoR2/blob/master/ElementalReactionsUnityProject/Assets/ElementalReactionsAssets/Items/Moonwheel/texMoonWheelItemIcon.png?raw=true" width="128"> | **Legendary - Moon Wheel**<br>*Upgrades the Hydro reactions between Electro, Dendro, and Geo into powerful Lunar Reactions*<br><br>moon wheel desc. |
 | <img src="https://github.com/DS-GAMING-SE/ElementalReactionsRoR2/blob/master/ElementalReactionsUnityProject/Assets/ElementalReactionsAssets/Items/Delusion/texDelusionItemIcon.png?raw=true" width="128"> | **Lunar - Delusion**<br>*Resonates with a new element on pickup. Activating your Special skill will make any skill damage fire attacks of the Delusion's elemental damage...* **BUT at the cost of your health**.<br><br>delusion desc. |
+
+## Supported Mods
+- [LookingGlass](https://thunderstore.io/package/DropPod/LookingGlass/)
+- [RiskOfOptions](https://thunderstore.io/package/Rune580/Risk_Of_Options/)
+- [EnemiesReturns](https://thunderstore.io/package/Risky_Sleeps/EnemiesReturns/)
+- [Starstorm 2](https://thunderstore.io/package/TeamMoonstorm/Starstorm2/)

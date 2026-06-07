@@ -14,6 +14,9 @@ namespace ElementalReactionsMod
         public static BuffDef electroChargeBuff;
 
         public static BuffDef delusionActiveBuff;
+
+        public static BuffDef lunarChargeBuff;
+        public static BuffDef lunarBloomBuff;
         
         public static void Initialize()
         {
@@ -25,7 +28,12 @@ namespace ElementalReactionsMod
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.electroChargeBuffIcon).WaitForCompletion(), Color.white, false, true);
 
             delusionActiveBuff = Util.AddNewBuff("DelusionActive",
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionActiveBuffIcon).WaitForCompletion(), Color.white, false, false);
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionActiveBuffIcon).WaitForCompletion(), Color.white, true, false);
+
+            lunarChargeBuff = Util.AddNewBuff("LunarChargeReaction",
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.electroChargeBuffIcon).WaitForCompletion(), Color.white, false, true);
+            lunarBloomBuff = Util.AddNewBuff("LunarBloomVerdantDew",
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.lunarBloomBuffIcon).WaitForCompletion(), Color.white, true, false);
         }
     }
 }

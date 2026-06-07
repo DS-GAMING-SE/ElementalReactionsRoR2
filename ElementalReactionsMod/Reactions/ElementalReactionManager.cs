@@ -7,9 +7,11 @@ using RoR2.ContentManagement;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Unity.Collections;
 
 namespace ElementalReactionsMod.Reactions
 {
@@ -27,6 +29,8 @@ namespace ElementalReactionsMod.Reactions
         public static AsyncOperationHandle<GameObject> bloomCore;
         public static DeployableSlot bloomDeployableSlot;
         //public static PrefabComponentPool<ElementalReactionPooledObject> bloomPool;
+        public delegate void PreElementalReactionDelegate(ref ElementalReactionDef reaction, ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo);
+        public static event PreElementalReactionDelegate onPreElementalReactionTriggered;
         public void OnEnable()
         {
             SingletonHelper.Assign(ref instance, this);
@@ -38,8 +42,14 @@ namespace ElementalReactionsMod.Reactions
         {
             //bloomPool.Kill();
             //crystallizePool.Kill();
+            CancelRaycastJob();
             UnloadAssets();
             SingletonHelper.Unassign(ref instance, this);
+        }
+        public void OnDestroy()
+        {
+            rainRaycastCommands.Dispose();
+            rainRaycastHitBuffer.Dispose();
         }
 
         public static void ApplyElement(ElementDef element, CharacterBody target, float procCoefficient = 1f)
@@ -58,7 +68,14 @@ namespace ElementalReactionsMod.Reactions
             {
                 if (!TryTriggerReaction(element, target, ref damageInfo, ref addedDamage) && element.canPersist)
                 {
-                    target.AddTimedBuff(element.buff, StaticValues.elementAppliedDuration * damageInfo.procCoefficient * StaticValues.elementAppliedTaxMultiplier);
+                    if (damageInfo.procCoefficient == float.MaxValue)
+                    {
+                        target.AddBuff(element.buff);
+                    }
+                    else
+                    {
+                        target.AddTimedBuff(element.buff, StaticValues.elementAppliedDuration * damageInfo.procCoefficient * StaticValues.elementAppliedTaxMultiplier);
+                    }
                     target.AddTimedBuff(element.cooldownBuff, StaticValues.elementAppliedICD);
                 }
             }
@@ -71,6 +88,18 @@ namespace ElementalReactionsMod.Reactions
                 ElementalReactionDef reaction = ElementalReactionCatalog.GetElementalReaction(element, reacting);
                 if (reaction)
                 {
+                    float remainingElementDuration = target.ReduceTimedBuffDuration(reacting.buff, StaticValues.elementAppliedDuration * damageInfo.procCoefficient * (reacting == reaction.baseElement ? reaction.baseFirstReactionCoefficient : reaction.baseLastReactionCoefficient));
+                    if (remainingElementDuration == float.MaxValue)
+                    {
+                        target.RemoveBuff(reacting.buff);
+                        target.AddTimedBuff(reacting.cooldownBuff, StaticValues.permanentElementICD);
+                    }
+                    if (remainingElementDuration == 0)
+                    {
+                        target.AddTimedBuff(reacting.cooldownBuff, StaticValues.elementRemovedICD);
+                    }
+                    target.AddTimedBuff(element.cooldownBuff, StaticValues.elementAppliedICD);
+                    onPreElementalReactionTriggered.Invoke(ref reaction, reacting, element, target, ref damageInfo);
                     reaction.TriggerReaction(reacting, element, target, ref damageInfo, ref addedDamage);
                     return true;
                 }
@@ -96,6 +125,55 @@ namespace ElementalReactionsMod.Reactions
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.quickenTempVisualEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.bloomObject);
         }
+        #region Async Hydro Rain
+        public static bool raining;
+
+        private float rainStopwatch;
+        private const float rainInterval = 0.1f;
+        private JobHandle? rainRaycastJob;
+        private NativeList<RaycastCommand> rainRaycastCommands;
+        private NativeList<RaycastHit> rainRaycastHitBuffer;
+        private void Awake()
+        {
+            this.rainRaycastCommands = new NativeList<RaycastCommand>(Allocator.Persistent);
+            this.rainRaycastHitBuffer = new NativeList<RaycastHit>(Allocator.Persistent);
+        }
+        private void FixedUpdate()
+        {
+            if (raining)
+            {
+                if (this.rainRaycastJob != null)
+                {
+                    this.rainRaycastJob.Value.Complete();
+                    this.rainRaycastJob = null;
+                    // apply elements?
+                }
+                if (NetworkServer.active)
+                {
+                    this.rainStopwatch += Time.fixedDeltaTime;
+                    if (this.rainStopwatch >= rainInterval)
+                    {
+                        this.rainStopwatch = Mathf.Min(this.rainStopwatch - rainInterval, 0f);
+                        this.ScheduleRaycastJob();
+                    }
+                }
+            }
+        }
+        private void ScheduleRaycastJob()
+        {
+            CancelRaycastJob();
+
+            rainRaycastJob = new JobHandle?(RaycastCommand.ScheduleBatch(this.rainRaycastCommands, this.rainRaycastHitBuffer, 8));
+        }
+        private void CancelRaycastJob()
+        {
+            if (this.rainRaycastJob != null)
+            {
+                this.rainRaycastJob.GetValueOrDefault().Complete();
+            }
+            this.rainRaycastJob = null;
+        }
+        #endregion
         #region Pooling Attempts
         public static void CreatePool(ref PrefabComponentPool<ElementalReactionPooledObject> pool, GameObject prefab, int baseCap)
         {

@@ -335,6 +335,83 @@ namespace ElementalReactionsMod
                     x.Result.SetTexture("_FresnelRamp", y.Result);
                 };
             };
+
+            #region Lunar Reactions
+            // redo lunarvfxsymbol texture so it isn't touching the edge
+            Material lunarVFXSymbol = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matOmniRing1Generic_mat)).WaitForCompletion());
+            lunarVFXSymbol.SetTexture("_MainTex", AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.lunarVFXSymbol).WaitForCompletion());
+            lunarVFXSymbol.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTritoneSmoothed_png)).WaitForCompletion());
+            lunarVFXSymbol.SetFloat("_AlphaBoost", 4.5f);
+            lunarVFXSymbol.SetFloat("_AlphaBias", 0.2f);
+            lunarVFXSymbol.SetFloat("_DepthOffset", -3f);
+            lunarVFXSymbol.SetFloat("_InvFade", 0.35f);
+            lunarVFXSymbol.SetFloat("_ZTest", 8f);
+            Material kuuvahkiTrail = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Huntress.matHuntressArrowTrailColossus_mat)).WaitForCompletion());
+            kuuvahkiTrail.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampThermite2_png)).WaitForCompletion());
+            kuuvahkiTrail.SetTextureScale("_MainTex", new Vector2(0f, 0.3f));
+            kuuvahkiTrail.SetTextureOffset("_MainTex", new Vector2(0f, 0.85f));
+            kuuvahkiTrail.SetFloat("_AlphaBias", 0.2f);
+            kuuvahkiTrail.SetInt("_DstBlend", 1);
+            Material lunarLineMaterial = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Elites_EliteBead.matEliteBeadSpikeGrowthRing_mat)).WaitForCompletion());
+            lunarLineMaterial.SetTexture("_RemapTex", lunarVFXSymbol.GetTexture("_RemapTex"));
+            lunarLineMaterial.SetTextureScale("_MainTex", new Vector2(10f, -0.1f));
+            lunarLineMaterial.EnableKeyword("VERTEXCOLOR");
+            Mesh lunarLineMesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.mdlVFXDonut1_fbx_donut1Mesh_)).WaitForCompletion();
+
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.lunarChargedLightningEffect).Completed += x =>
+            {
+                EffectComponent effect = x.Result.AddComponent<EffectComponent>();
+                effect.positionAtReferencedTransform = true;
+                effect.parentToReferencedTransform = false;
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Medium;
+                vfx.DoNotPool = false;
+                x.Result.AddComponent<NetworkIdentity>();
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matPrimeDevastatorChargeVFX1_mat)).Completed += y =>
+                {
+                    Material lightningMat = new Material(y.Result);
+                    lightningMat.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTeslaCoil_png)).WaitForCompletion());
+                    lightningMat.SetColor("_TintColor", Color.white);
+                    lightningMat.SetInt("_DstBlend", 10);
+                    x.Result.transform.Find("LunarChargedLightning").GetComponent<ParticleSystemRenderer>().trailMaterial = lightningMat;
+                };
+                ParticleSystemRenderer donutParticleRenderer = x.Result.transform.Find("LunarChargedDonut5").GetComponent<ParticleSystemRenderer>();
+                donutParticleRenderer.mesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.mdlVFXDonut5_fbx_donut5Mesh_)).WaitForCompletion();
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_MealPrep.matMealPrepUIFlames2_mat)).Completed += y =>
+                {
+                    Material donutMat = new Material(y.Result);
+                    donutMat.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2.texRampTritoneHShrine_png)).WaitForCompletion());
+                    donutParticleRenderer.sharedMaterial = donutMat;
+                };
+                var flash = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
+                x.Result.transform.Find("LunarChargedFlash").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
+                x.Result.transform.Find("LunarChargedSparks").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
+                x.Result.transform.Find("LunarChargedDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matInverseDistortion_mat)).WaitForCompletion();
+                x.Result.transform.Find("LunarChargedElectricity").GetComponent<ParticleSystemRenderer>().trailMaterial = electroTrailMaterial;
+                x.Result.transform.Find("LunarChargedElectricityDark").GetComponent<ParticleSystemRenderer>().trailMaterial = darkElectricTrailMaterial;
+                x.Result.transform.Find("LunarChargedLunarSymbol").GetComponent<ParticleSystemRenderer>().sharedMaterial = lunarVFXSymbol;
+                var lunarLines = x.Result.transform.Find("LunarChargedLunarLines").GetComponent<ParticleSystemRenderer>();
+                lunarLines.sharedMaterial = lunarLineMaterial;
+                lunarLines.mesh = lunarLineMesh;
+                var kuuvahkiRise = x.Result.transform.Find("LunarChargedKuuvahkiRise");
+                kuuvahkiRise.GetComponent<ParticleSystemRenderer>().trailMaterial = kuuvahkiTrail;
+                var kuuvahkiRiseRotate = kuuvahkiRise.gameObject.AddComponent<RotateObject>();
+                kuuvahkiRiseRotate.rotationSpeed = new Vector3(0, 40, 0);
+                var kuuvahkiRing = x.Result.transform.Find("LunarChargedKuuvahkiRing");
+                kuuvahkiRing.GetComponent<ParticleSystemRenderer>().trailMaterial = kuuvahkiTrail;
+                var kuuvahkiRingRotate = kuuvahkiRing.gameObject.AddComponent<RotateObject>();
+                kuuvahkiRingRotate.rotationSpeed = new Vector3(0, 100, 0);
+                var light = x.Result.transform.Find("LunarChargedLight");
+                vfx.optionalLights = [light.GetComponent<Light>()];
+                var lightCurve = light.gameObject.AddComponent<LightIntensityCurve>();
+                lightCurve.timeMax = 0.4f;
+                lightCurve.curve = AnimationCurve.EaseInOut(0, 1, 1, 0);
+                x.Result.AddComponent<DestroyOnTimer>().duration = 0.75f;
+
+                AddNewEffectDef(x.Result, "Play_item_use_lighningArm");
+            };
+            #endregion
             #endregion
         }
 
@@ -557,6 +634,11 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<Texture> moonWheelVisionIcon = new("af83aeca078a68443bf1583507eab088");
             public static AssetReferenceT<Texture> moonWheelVisionRamp = new("1f819082df45cdf44b5b8f019b4a90b5");
             public static AssetReferenceT<Sprite> moonWheelItemIcon = new("00f1f0088ad92dc4eb41b80b7aef67f2");
+
+            public static AssetReferenceT<Texture> lunarVFXSymbol = new("044f325621315c64a8a6b0b7277ff9b3");
+
+            public static AssetReferenceT<GameObject> lunarChargedLightningEffect = new("558b1898670f29e4f8aba548a3357090");
+
             public static AssetReferenceT<Sprite> lunarBloomBuffIcon = new("b14c2afa0ea1ba6449927fb72cbbd016");
             #endregion
             #endregion

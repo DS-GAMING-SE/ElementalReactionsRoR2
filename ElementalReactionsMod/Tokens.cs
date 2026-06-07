@@ -47,7 +47,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_OVERLOAD_DESCRIPTION", $"{PyroText()} + {ElectroText()}. Create an explosion of {PyroText()} dealing {DamageValueText(overloadDamageCoefficient)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_NAME", "Electro-Charge");
-            LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_DESCRIPTION", $"{ElectroText()} + {HydroText()}. Create {DamageText("chain lightning")} that arcs between enemies affected by {HydroText()} for {DamageValueText(electroChargeDamageCoefficient * electroChargeDuration)} over time.");
+            LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_DESCRIPTION", $"{ElectroText()} + {HydroText()}. Create {DamageText("chain lightning")} that arcs between enemies affected by {HydroText()} for {DamageValueTextRepeat(electroChargeDamageCoefficient, Mathf.FloorToInt(electroChargeDuration))} over time.");
 
             LanguageAPI.Add($"{prefix}REACTION_FROZEN_NAME", "Frozen");
             LanguageAPI.Add($"{prefix}REACTION_FROZEN_DESCRIPTION", $"{CryoText()} + {HydroText()}. Briefly {UtilityText("freeze")} the target.");
@@ -126,7 +126,7 @@ namespace ElementalReactionsMod
 
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_NAME", "Moon Wheel");
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_PICKUP", "Upgrades the Hydro reactions between Electro, Dendro, and Geo into powerful Lunar Reactions.");
-            LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_DESCRIPTION", $"Upgrades the {ElectroText("Electro-Charged")}, {DendroText("Bloom")}, and {GeoText("Hydro-Crystallize")} reactions into {DamageText("Lunar Reactions")} that can {DamageText("critically strike")}. Increases {DamageText("Lunar Reaction damage")} by {DamageText("0%")} {StackingText("(+50% per stack)")}.\n\n{ElectroText("Lunar-Charged")}: Create a {ElectroText("thundercloud")} that continuously strikes {HydroText()} afflicted enemies with lightning, dealing {DamageText("0% ") + ElectroText() + DamageText(" damage")}.\n{DendroText("Lunar-Bloom")}: Create a {DendroText("Dendro Core")} and gain a {UtilityText("Verdant Dew")}, up to {UtilityText("3")}. Dealing {DendroText()} {UtilityText("skill")} damage will consume the {UtilityText("Verdant Dews")} and increase the damage dealt by {DamageText("0%")}.\n{GeoText("Lunar-Crystallize")}: Create three {GeoText("Moondrifts")}. Triggering the {GeoText("Lunar-Crystallize")} reaction {UtilityText("3")} times causes the {GeoText("Moondrifts")} to deal {DamageText("0% Geo damage")}.");
+            LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_DESCRIPTION", $"Upgrades the {ElectroText("Electro-Charge")}, {DendroText("Bloom")}, and {GeoText("Hydro-Crystallize")} reactions into {DamageText("Lunar Reactions")} that can {DamageText("critically strike")}. Increases {DamageText("Lunar Reaction damage")} by {DamageText("0%")} {StackingText("(+"+moonWheelLunarDamagePerStack * 100f+"% per stack)")}.\n\n{ElectroText("Lunar-Charge")}: Continuously strike the target with lightning, dealing {DamageValueTextRepeat(lunarChargeDamageCoefficient, lunarChargeAttacksPerDot)}.\n{DendroText("Lunar-Bloom")}: Create a {DendroText("Dendro Core")} and gain a {UtilityText("Verdant Dew")}, up to {UtilityText(lunarBloomVerdantDewCap.ToString())}. Dealing {DendroText()} {UtilityText("skill")} damage will consume a {UtilityText("Verdant Dew")} and increase the damage dealt by {DamageText(((lunarBloomDamageMultiplier - 1) * 100)+"%")}.\n{GeoText("Lunar-Crystallize")}: Create three Moondrifts. Triggering the {GeoText("Lunar-Crystallize")} reaction {UtilityText(lunarCrystallizeTriggersToAttack.ToString())} times causes the Moondrifts to deal {DamageValueTextRepeat(lunarCrystallizeDamageCoefficient * 100f, 3)}.");
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_LORE", """"""
                 Awaken, awaken, new moon, even if all that remains is torment.
 
@@ -169,6 +169,10 @@ namespace ElementalReactionsMod
         public static string DamageValueText(float value, float value2)
         {
             return $"<style=cIsDamage>{value * 100}%-{value2 * 100}% damage</style>";
+        }
+        public static string DamageValueTextRepeat(float value, int repeat)
+        {
+            return $"<style=cIsDamage>{repeat * 100}x{value * 100}% damage</style>";
         }
         public static string UtilityText(string text)
         {

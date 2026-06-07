@@ -20,6 +20,8 @@ namespace ElementalReactionsMod.Loadout
         public ElementDef specialElement;
 
         public ElementDef permanentlyAppliedElement;
+        public bool permanentElementWasApplied;
+        private float permanentElementStopwatch;
 
         public CharacterBody characterBody;
         public TeamIndex team;
@@ -50,9 +52,25 @@ namespace ElementalReactionsMod.Loadout
 
         private void FixedUpdate()
         {
-            if (Config.CanEnemiesBeElemental().Value && permanentlyAppliedElement && permanentlyAppliedElement.buff && !characterBody.HasBuff(permanentlyAppliedElement.buff))
+            if (NetworkServer.active && Config.CanEnemiesBeElemental().Value && permanentlyAppliedElement && permanentlyAppliedElement.buff)
             {
-                characterBody.AddBuff(permanentlyAppliedElement.buff);
+                if (characterBody.HasBuff(permanentlyAppliedElement.buff))
+                {
+                    permanentElementWasApplied = true;
+                }
+                else
+                {
+                    if (permanentElementWasApplied)
+                    {
+                        permanentElementStopwatch = 0;
+                        permanentElementWasApplied = false;
+                    }
+                    permanentElementStopwatch += Time.fixedDeltaTime;
+                    if (permanentElementStopwatch >= StaticValues.permanentElementICD)
+                    {
+                        ElementalReactionManager.ApplyElement(permanentlyAppliedElement, characterBody, float.MaxValue);
+                    }
+                }
             }
         }
 

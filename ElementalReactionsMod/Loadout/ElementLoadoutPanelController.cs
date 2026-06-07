@@ -1,5 +1,6 @@
 ﻿using BepInEx.Configuration;
 using ElementalReactionsMod.Elements;
+using HG;
 using RoR2;
 using RoR2.ContentManagement;
 using RoR2.UI;
@@ -8,8 +9,8 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
-using HG;
 
 namespace ElementalReactionsMod.Loadout
 {
@@ -26,6 +27,8 @@ namespace ElementalReactionsMod.Loadout
         public BodyIndex bodyIndex;
         public string bodyName;
         public ElementLoadoutComponent bodyElementLoadout;
+
+        public UserProfile userProfile;
 
         private bool startRan;
 
@@ -56,12 +59,14 @@ namespace ElementalReactionsMod.Loadout
         {
             MPEventSystem eventSystem = this.eventSystemLocator.eventSystem;
             NetworkUser networkUser = null;
+            userProfile = null;
             if (eventSystem != null)
             {
                 LocalUser localUser = eventSystem.localUser;
                 if (localUser != null)
                 {
                     networkUser = localUser.currentNetworkUser;
+                    userProfile = localUser.userProfile;
                 }
             }
             BodyIndex bodyIndex = networkUser ? networkUser.bodyIndexPreference : BodyIndex.None;
@@ -100,6 +105,8 @@ namespace ElementalReactionsMod.Loadout
         {
             public ElementLoadoutPanelController owner;
 
+            private UserProfile userProfile;
+
             public RectTransform rowPanelTransform;
 
             public RectTransform buttonContainerTransform;
@@ -115,6 +122,7 @@ namespace ElementalReactionsMod.Loadout
             private Row(ElementLoadoutPanelController owner, string titleToken, SkillSlot skillSlot)
             {
                 this.owner = owner;
+                this.userProfile = owner.userProfile;
                 //this.rowPanelTransform = (RectTransform)GameObject.Instantiate(LoadoutPanelController.rowPrefab, (RectTransform)owner.transform).transform;
                 this.rowPanelTransform = (RectTransform)GameObject.Instantiate(Assets.elementLoadoutRowUI, (RectTransform)owner.transform).transform;
                 this.buttonContainerTransform = (RectTransform)rowPanelTransform.Find("ButtonContainer");
@@ -164,6 +172,7 @@ namespace ElementalReactionsMod.Loadout
                     this.primaryColor = bodyPrefabBodyComponent.bodyColor;
                 }
                 this.rowPanelTransform.Find("SlotLabel").GetComponent<HGTextMeshProUGUI>().color = this.primaryColor;
+                this.userProfile = owner.userProfile;
                 OnLoadoutChanged(null, null);
             }
             private void SetButtonColorMultiplier(int i, float f)
@@ -176,6 +185,8 @@ namespace ElementalReactionsMod.Loadout
 
             public void OnLoadoutChanged(object obj, EventArgs args)
             {
+                if (this.userProfile != owner.userProfile) return;
+                
                 ElementDef[] loadout = Config.GetElementLoadoutFromConfig(owner.bodyName, out _);
                 if (owner.bodyElementLoadout)
                 {

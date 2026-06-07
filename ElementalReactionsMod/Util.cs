@@ -97,14 +97,14 @@ namespace ElementalReactionsMod
                 damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                 damageType |= DamageType.AOE;
             }
-            return CreateBlastAttack(damageInfo.attacker, characterBody, characterBody ? characterBody.damage * damage : damage, false, radius, BlastAttack.FalloffModel.None, proc, damageType, damageInfo.position, force);
+            return CreateBlastAttack(damageInfo.attacker, characterBody ? characterBody.teamComponent.teamIndex : TeamComponent.GetObjectTeam(damageInfo.attacker), characterBody ? characterBody.damage * damage : damage, false, radius, BlastAttack.FalloffModel.None, proc, damageType, damageInfo.position, force);
         }
         public static BlastAttack CreateBlastAttack(DamageInfo damageInfo, float damage, float radius, float proc, DamageTypeCombo damageType, float force)
         {
             CharacterBody characterBody = damageInfo.attacker ? damageInfo.attacker.GetComponent<CharacterBody>() : null;
-            return CreateBlastAttack(damageInfo.attacker, characterBody, characterBody ? characterBody.damage * damage : damage, false, radius, BlastAttack.FalloffModel.None, proc, damageType, damageInfo.position, force);
+            return CreateBlastAttack(damageInfo.attacker, characterBody ? characterBody.teamComponent.teamIndex : TeamComponent.GetObjectTeam(damageInfo.attacker), characterBody ? characterBody.damage * damage : damage, false, radius, BlastAttack.FalloffModel.None, proc, damageType, damageInfo.position, force);
         }
-        public static BlastAttack CreateBlastAttack(GameObject attacker, CharacterBody attackerBody, float damage, bool crit, float radius, BlastAttack.FalloffModel falloff, float proc, DamageTypeCombo damageType, Vector3 position, float force)
+        public static BlastAttack CreateBlastAttack(GameObject attacker, TeamIndex team, float damage, bool crit, float radius, BlastAttack.FalloffModel falloff, float proc, DamageTypeCombo damageType, Vector3 position, float force)
         {
             BlastAttack blastAttack = new BlastAttack
             {
@@ -115,7 +115,7 @@ namespace ElementalReactionsMod
                 radius = radius,
                 falloffModel = falloff,
                 procCoefficient = proc,
-                teamIndex = attackerBody ? attackerBody.teamComponent.teamIndex : TeamComponent.GetObjectTeam(attacker),
+                teamIndex = team,
                 damageType = damageType,
                 position = position,
                 baseForce = force,

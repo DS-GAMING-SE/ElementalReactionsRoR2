@@ -9,6 +9,7 @@ namespace ElementalReactionsMod
         #region Elements
         public const float elementAppliedICD = 0.3f;
         public const float elementRemovedICD = 0.15f;
+        public const float permanentElementICD = 0.75f;
 
         public const float elementAppliedDuration = 10f;
         public const float elementAppliedTaxMultiplier = 0.8f;
@@ -25,7 +26,7 @@ namespace ElementalReactionsMod
 
         public const float electroChargeDamageCoefficient = 0.7f;
         public const float electroChargeDuration = 5f;
-        public const float electroChargedRadius = 15f;
+        public const float electroChargeRadius = 15f;
 
         public const float superconductDamageCoefficient = 1f;
         public const float superconductDamageMultiplier = 1.3f;
@@ -59,6 +60,28 @@ namespace ElementalReactionsMod
         public const float delusionHealingReceivedReduction = 0.3f;
 
         public const float instructorsTeaCupDamageMultiplier = 0.2f;
+
+        #region Moon Wheel / Lunar Reactions
+        /* 
+         * Columbina's 4th passive could make for good Quality Moon Wheel
+         * Lunar Charged has a 33% chance of striking lightning an additional time
+         * Lunar Bloom, basically, increases Verdant Dew cap
+         * Lunar Crystallize, each Moondrift has a 33% chance of attacking an extra time
+         */
+        public const float moonWheelLunarDamagePerStack = 0.5f;
+
+        public const float lunarChargeDamageCoefficient = 5f;
+        public const float lunarChargeTimeBetweenAttacks = 1.5f;
+        public const int lunarChargeAttacksPerDot = 4;
+        public const float lunarChargeDotDuration = lunarChargeTimeBetweenAttacks * lunarChargeAttacksPerDot;
+        public const float lunarChargeRadius = 6f;
+
+        public const int lunarBloomVerdantDewCap = 3;
+        public const float lunarBloomDamageMultiplier = 2f;
+
+        public const int lunarCrystallizeTriggersToAttack = 3;
+        public const float lunarCrystallizeDamageCoefficient = 3f;
+        #endregion
         #endregion
     }
 }

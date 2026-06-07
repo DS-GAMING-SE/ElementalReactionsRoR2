@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ElementalReactionsMod.Reactions;
 using R2API;
 using RoR2;
 using RoR2.ContentManagement;
@@ -31,6 +32,20 @@ namespace ElementalReactionsMod.Items
             moonWheel = AddNewItem("MoonWheel", "MOON_WHEEL", true,
                 Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.Tier3Def_asset).WaitForCompletion(),
                 moonWheelItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), moonWheelPickupModel, ItemTag.Damage, ItemTag.CanBeTemporary);
+            ElementalReactionManager.onPreElementalReactionTriggered += (ref reaction, element1, element2, victim, ref damage) =>
+            {
+                if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var attackerBody) && attackerBody.inventory && attackerBody.inventory.GetItemCountEffective(moonWheel) > 0)
+                {
+                    if (reaction == DefaultElementalReactions.electroCharge)
+                    {
+                        reaction = DefaultElementalReactions.lunarCharge;
+                    }
+                    else if (reaction == DefaultElementalReactions.bloom)
+                    {
+                        reaction = DefaultElementalReactions.lunarBloom;
+                    }
+                }
+            };
         }
         internal static GameObject AddModelPanelParameters(GameObject item)
         {

@@ -36,11 +36,6 @@ namespace ElementalReactionsMod.Reactions
         }
         public void TriggerReaction(ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo, ref float addedDamage)
         {
-            if (victim.ReduceTimedBuffDuration(firstElement.buff, elementAppliedDuration * damageInfo.procCoefficient * (firstElement == baseElement ? baseFirstReactionCoefficient : baseLastReactionCoefficient)) == 0)
-            {
-                victim.AddTimedBuff(firstElement.cooldownBuff, elementRemovedICD);
-            }
-            victim.AddTimedBuff(secondElement.cooldownBuff, elementAppliedICD);
             onElementalReactionTriggered?.Invoke(firstElement, secondElement, victim, ref damageInfo, ref addedDamage);
         }
         public override string ToString()
@@ -83,6 +78,9 @@ namespace ElementalReactionsMod.Reactions
         public static ElementalReactionDef quicken;
         public static ElementalReactionDef bloom;
         // bloom and burgeon are an IOnIncomingDamageServerReceiver on the bloom cores, so not using an ElementalReactionDef
+        public static ElementalReactionDef lunarCharge;
+        public static ElementalReactionDef lunarBloom;
+        public static ElementalReactionDef lunarCrystallize;
 
         public static void Initialize()
         {
@@ -203,8 +201,32 @@ namespace ElementalReactionsMod.Reactions
             bloom.baseFirstReactionCoefficient = 0.5f;
             bloom.baseLastReactionCoefficient = 2f;
 
+            #region Lunar Reactions
+            lunarCharge = ElementalReactionDef.CreateElementalReactionDef("LunarCharge", $"{ElementalReactionsPlugin.PREFIX}REACTION_LUNAR_CHARGE", electroElement, hydroElement);
+            lunarCharge.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
+            {
+                if (victim && victim.healthComponent && victim.healthComponent.alive)
+                {
+                    DotController.InflictDot(victim.gameObject, damage.attacker, damage.inflictedHurtbox, ElectroChargedDot.lunarChargeDot, lunarChargeDotDuration);
+                }
+            };
+            lunarCharge.showInLoadoutMenu = false;
 
-            ElementalReactionCatalog.AddElementalReactionDefs([vaporizeMelt, overload, electroCharge, frozen, superconduct, swirl, crystallize, burning, quicken, bloom]);
+            lunarBloom = ElementalReactionDef.CreateElementalReactionDef("LunarBloom", $"{ElementalReactionsPlugin.PREFIX}REACTION_LUNAR_BLOOM", dendroElement, hydroElement);
+            lunarBloom.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
+            {
+                bloom.TriggerReaction(element1, element2, victim, ref damage, ref addedDamage);
+                if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var attackerBody) && attackerBody.GetBuffCount(Buffs.lunarBloomBuff) < lunarBloomVerdantDewCap)
+                {
+                    attackerBody.AddBuff(Buffs.lunarBloomBuff);
+                }
+            };
+            lunarBloom.baseFirstReactionCoefficient = 0.5f;
+            lunarBloom.baseLastReactionCoefficient = 2f;
+            lunarBloom.showInLoadoutMenu = false;
+            #endregion
+
+            ElementalReactionCatalog.AddElementalReactionDefs([vaporizeMelt, overload, electroCharge, frozen, superconduct, swirl, crystallize, burning, quicken, bloom, lunarCharge, lunarBloom]);
         }
     }
 }

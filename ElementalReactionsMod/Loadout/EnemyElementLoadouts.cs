@@ -13,8 +13,10 @@ namespace ElementalReactionsMod.Loadout
 {
     public static class EnemyElementLoadouts
     {
+        public static int[] uniqueEnemiesWithElement;
         public static void Initialize()
         {
+            uniqueEnemiesWithElement = new int[ElementCatalog.elementCatalog.Length];
             CreateLoadout("VultureBody", anemoElement);
             CreateLoadout("BeetleGuardBody", geoElement, geoElement);
             CreateLoadout("BeetleGuardAllyBody", geoElement, geoElement);
@@ -22,6 +24,7 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("ChildBody", null, null, null, null, pyroElement);
             //CreateLoadout("ClayGrenadierBody", DefaultElementDefs.hydroElement, DefaultElementDefs.hydroElement);
             //CreateLoadout("ClayBruiserBody", DefaultElementDefs.physicalElement, DefaultElementDefs.hydroElement);
+            //CreateLoadout("ClayBossBody", pyroElement, pyroElement);
             CreateLoadout("DevotedLemurianBruiserBody", pyroElement, pyroElement);
             CreateLoadout("LemurianBruiserBody", pyroElement, pyroElement);
             CreateLoadout("DevotedLemurianBody", pyroElement);
@@ -38,8 +41,9 @@ namespace ElementalReactionsMod.Loadout
             //AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_LunarExploder.LunarExploderProjectileDotZone_prefab, dendroElement);
             // lunar chimeras
             CreateLoadout("MiniMushroomBody", dendroElement, dendroElement, dendroElement, dendroElement);
-            CreateLoadout("ScorchlingBody", geoElement, pyroElement);
+            CreateLoadout("ScorchlingBody", physicalElement, pyroElement);
             CreateLoadout("DefectiveUnitBody", electroElement, electroElement, electroElement, electroElement);
+            CreateLoadout("FriendUnitBody", electroElement, electroElement, electroElement, electroElement); // Ally
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Collective.CollectiveDeathProjectile_prefab, electroElement);
             CreateLoadout("RoboBallMiniBody", electroElement);
             CreateLoadout("RoboBallGreenBuddyBody", electroElement, electroElement, electroElement, electroElement); // ally
@@ -47,14 +51,13 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("TankerBody", pyroElement);
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Tanker.TankerAccelerantProjectile_prefab, pyroElement);
             // grease puddles
-            CreateLoadout("IronHaulerBody", electroElement, electroElement, electroElement, electroElement);
+            CreateLoadout("IronHaulerBody", anemoElement, anemoElement, anemoElement, anemoElement);
             CreateLoadout("GolemBody", geoElement, electroElement);
             CreateLoadout("VoidBarnacleBody", hydroElement);
             CreateLoadout("VoidJailerBody", hydroElement, hydroElement);
             CreateLoadout("VoidJailerAllyBody", hydroElement, hydroElement); // ally
             CreateLoadout("NullifierBody", hydroElement);
             CreateLoadout("NullifierAllyBody", hydroElement); // ally
-            CreateLoadout("ClayBossBody", pyroElement, pyroElement);
             CreateLoadout("GrandParentBody", geoElement, null, null, null, pyroElement);
             CreateLoadout("GravekeeperBody", pyroElement);
             CreateLoadout("MagmaWormBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
@@ -131,6 +134,8 @@ namespace ElementalReactionsMod.Loadout
                 CreateLoadout("LampBody", pyroElement, pyroElement, pyroElement, pyroElement);
                 CreateLoadout("LampBossBody", pyroElement, pyroElement, pyroElement, pyroElement);
             }
+
+            LogEnemyElementStats();
         }
 
         public static void CreateLoadout(string bodyName, ElementDef primary = null, ElementDef secondary = null, ElementDef utility = null, ElementDef special = null, ElementDef applied = null)
@@ -142,6 +147,12 @@ namespace ElementalReactionsMod.Loadout
                 ElementLoadoutComponent loadoutComponent = body.EnsureComponent<ElementLoadoutComponent>();
                 loadoutComponent.ApplyElementLoadout(loadout);
                 loadoutComponent.permanentlyAppliedElement = applied;
+                List<ElementDef> duplicateElementDef = new List<ElementDef>();
+                foreach (var item in loadout)
+                {
+                    if (!duplicateElementDef.Contains(item)) uniqueEnemiesWithElement[(int)item.index] += 1;
+                    duplicateElementDef.Add(item);
+                }
             }
         }
         public static void AddElementToProjectile(string projectilePrefab, ElementDef element)
@@ -154,6 +165,14 @@ namespace ElementalReactionsMod.Loadout
                     damage.damageType.SetElement(element.index);
                 }
             };
+        }
+        internal static void LogEnemyElementStats()
+        {
+            Log.Message("Elemental Reactions Enemy Element Stats ----");
+            for (int i = 1; i < uniqueEnemiesWithElement.Length; i++)
+            {
+                Log.Message(Language.GetString(ElementCatalog.elementCatalog[i].nameToken) + ": " + uniqueEnemiesWithElement[i]);
+            }
         }
     }
 }
