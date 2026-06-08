@@ -11,7 +11,6 @@ using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using Unity.Collections;
 
 namespace ElementalReactionsMod.Reactions
 {
@@ -32,6 +31,7 @@ namespace ElementalReactionsMod.Reactions
         public static DeployableSlot bloomDeployableSlot;
         //public static PrefabComponentPool<ElementalReactionPooledObject> bloomPool;
         public static AsyncOperationHandle<GameObject> lunarChargedEffect;
+        public static AsyncOperationHandle<GameObject> lunarBloomEffect;
         public delegate void PreElementalReactionDelegate(ref ElementalReactionDef reaction, ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo);
         public static event PreElementalReactionDelegate onPreElementalReactionTriggered;
         public void OnEnable()
@@ -45,14 +45,8 @@ namespace ElementalReactionsMod.Reactions
         {
             //bloomPool.Kill();
             //crystallizePool.Kill();
-            CancelRaycastJob();
             UnloadAssets();
             SingletonHelper.Unassign(ref instance, this);
-        }
-        public void OnDestroy()
-        {
-            rainRaycastCommands.Dispose();
-            rainRaycastHitBuffer.Dispose();
         }
 
         public static void ApplyElement(ElementDef element, CharacterBody target, float procCoefficient = 1f)
@@ -121,6 +115,7 @@ namespace ElementalReactionsMod.Reactions
             quickenTempVisualEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.quickenTempVisualEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             bloomCore = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.bloomObject, AsyncReferenceHandleUnloadType.OnRunEnd);
             lunarChargedEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarChargedLightningEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
+            lunarBloomEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarBloomEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
         }
         private static void UnloadAssets()
         {
@@ -133,56 +128,8 @@ namespace ElementalReactionsMod.Reactions
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.quickenTempVisualEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.bloomObject);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarChargedLightningEffect);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarBloomEffect);
         }
-        #region Async Hydro Rain
-        public static bool raining;
-
-        private float rainStopwatch;
-        private const float rainInterval = 0.1f;
-        private JobHandle? rainRaycastJob;
-        private NativeList<RaycastCommand> rainRaycastCommands;
-        private NativeList<RaycastHit> rainRaycastHitBuffer;
-        private void Awake()
-        {
-            this.rainRaycastCommands = new NativeList<RaycastCommand>(Allocator.Persistent);
-            this.rainRaycastHitBuffer = new NativeList<RaycastHit>(Allocator.Persistent);
-        }
-        private void FixedUpdate()
-        {
-            if (raining)
-            {
-                if (this.rainRaycastJob != null)
-                {
-                    this.rainRaycastJob.Value.Complete();
-                    this.rainRaycastJob = null;
-                    // apply elements?
-                }
-                if (NetworkServer.active)
-                {
-                    this.rainStopwatch += Time.fixedDeltaTime;
-                    if (this.rainStopwatch >= rainInterval)
-                    {
-                        this.rainStopwatch = Mathf.Min(this.rainStopwatch - rainInterval, 0f);
-                        this.ScheduleRaycastJob();
-                    }
-                }
-            }
-        }
-        private void ScheduleRaycastJob()
-        {
-            CancelRaycastJob();
-
-            rainRaycastJob = new JobHandle?(RaycastCommand.ScheduleBatch(this.rainRaycastCommands, this.rainRaycastHitBuffer, 8));
-        }
-        private void CancelRaycastJob()
-        {
-            if (this.rainRaycastJob != null)
-            {
-                this.rainRaycastJob.GetValueOrDefault().Complete();
-            }
-            this.rainRaycastJob = null;
-        }
-        #endregion
         #region Pooling Attempts
         public static void CreatePool(ref PrefabComponentPool<ElementalReactionPooledObject> pool, GameObject prefab, int baseCap)
         {

@@ -46,9 +46,9 @@ namespace ElementalReactionsMod
                         CharacterBody attackerBody = damage.attacker ? damage.attacker.GetComponent<CharacterBody>() : null;
 
                         bool lunarBloomProcced = false;
-                        if (damage.damage > 0 && attackerBody && attackerBody.GetBuffCount(Buffs.lunarBloomBuff) > 0 && element == DefaultElementDefs.dendroElement && damage.damageType.IsSkillOrDelusionDamage())
+                        if (damage.damage > 0 && attackerBody && attackerBody.GetBuffCount(Buffs.lunarBloomBuff) >= 3 && element == DefaultElementDefs.dendroElement && damage.damageType.IsSkillOrDelusionDamage())
                         {
-                            attackerBody.RemoveBuff(Buffs.lunarBloomBuff);
+                            attackerBody.SetBuffCount(Buffs.lunarBloomBuff.buffIndex, attackerBody.GetBuffCount(Buffs.lunarBloomBuff) - 3);
                             lunarBloomProcced = true;
                             damage.damageType.AddModdedDamageType(DamageTypes.lunarDamageType);
                         }
@@ -58,13 +58,14 @@ namespace ElementalReactionsMod
                         if (lunarBloomProcced)
                         {
                             damageIncreaseFromReactions += damage.damage * StaticValues.lunarBloomDamageMultiplier;
+                            EffectManager.SimpleEffect(ElementalReactionManager.lunarBloomEffect.WaitForCompletion(), damage.inflictedHurtbox ? damage.inflictedHurtbox.transform.position : self.body.corePosition, Quaternion.identity, true);
                         }
 
                         if (self.body.HasBuff(Buffs.superconductBuff) && element == DefaultElementDefs.physicalElement)
                         {
                             damageIncreaseFromReactions += damage.damage * StaticValues.superconductDamageMultiplier;
                         }
-                        else if (damage.damage > 0 && self.body.HasBuff(Buffs.quickenBuff) && attackerBody && element == DefaultElementDefs.dendroElement || element == DefaultElementDefs.electroElement)
+                        else if (damage.damage > 0 && self.body.HasBuff(Buffs.quickenBuff) && attackerBody && (element == DefaultElementDefs.dendroElement || element == DefaultElementDefs.electroElement))
                         {
                             damageIncreaseFromReactions += (StaticValues.quickenDamageAddCoefficient * damage.procCoefficient * attackerBody.damage);
                         }

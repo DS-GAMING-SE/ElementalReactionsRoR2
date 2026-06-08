@@ -38,9 +38,9 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("JellyfishBody", null, electroElement);
             CreateLoadout("WispBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
             CreateLoadout("WispSoulBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
-            CreateLoadout("LunarWisp", dendroElement, dendroElement, dendroElement, dendroElement, pyroElement);
-            CreateLoadout("LunarGolem", geoElement, geoElement, geoElement, geoElement);
-            CreateLoadout("LunarExploder", electroElement, electroElement, electroElement, electroElement);
+            CreateLoadout("LunarWispBody", dendroElement, dendroElement, dendroElement, dendroElement, pyroElement);
+            CreateLoadout("LunarGolemBody", geoElement, geoElement, geoElement, geoElement);
+            CreateLoadout("LunarExploderBody", electroElement, electroElement, electroElement, electroElement);
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_LunarExploder.LunarExploderProjectileDotZone_prefab, electroElement);
             CreateLoadout("MiniMushroomBody", dendroElement, dendroElement, dendroElement, dendroElement);
             CreateLoadout("ScorchlingBody", physicalElement, pyroElement);
@@ -85,10 +85,17 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("FalseSonBossBodyLunarShard", geoElement, electroElement, electroElement, geoElement);
             CreateLoadout("FalseSonBossBodyBrokenLunarShard", geoElement, electroElement, electroElement, electroElement);
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.PrimeDevastatorProjectile_prefab, electroElement);
+            RoR2.ContentManagement.AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_meridian_DisableSkillsLightning.LightningStrikeInstance_prefab)).Completed += x =>
+            {
+                if (x.Result.TryGetComponent<LightningStrikeInstance>(out var lightning))
+                {
+                    lightning.blastDamageType.SetElement(electroElement.index);
+                }
+            };
             CreateLoadout("BrotherBody", physicalElement, cryoElement, physicalElement, physicalElement);
             CreateLoadout("BrotherHurtBody", physicalElement, pyroElement);
-            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherUltLineProjectileRotateLeft_prefab, pyroElement);
-            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherUltLineProjectileRotateRight_prefab, pyroElement);
+            //AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherUltLineProjectileRotateLeft_prefab, pyroElement);
+            //AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherUltLineProjectileRotateRight_prefab, pyroElement);
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherFirePillar_prefab, pyroElement);
             CreateLoadout("SolusHeartBody", electroElement, electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("SolusWingBody", electroElement, electroElement, electroElement, electroElement);

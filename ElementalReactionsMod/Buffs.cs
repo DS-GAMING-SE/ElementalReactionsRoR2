@@ -28,10 +28,10 @@ namespace ElementalReactionsMod
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.electroChargeBuffIcon).WaitForCompletion(), Color.white, false, true);
 
             delusionActiveBuff = Util.AddNewBuff("DelusionActive",
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionActiveBuffIcon).WaitForCompletion(), Color.white, true, false);
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionBuffIcon).WaitForCompletion(), Color.white, true, false);
 
             lunarChargeBuff = Util.AddNewBuff("LunarChargeReaction",
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.electroChargeBuffIcon).WaitForCompletion(), Color.white, false, true);
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.lunarChargeBuffIcon).WaitForCompletion(), Color.white, false, true);
             lunarBloomBuff = Util.AddNewBuff("LunarBloomVerdantDew",
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.lunarBloomBuffIcon).WaitForCompletion(), Color.white, true, false);
         }

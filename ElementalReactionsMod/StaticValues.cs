@@ -9,7 +9,7 @@ namespace ElementalReactionsMod
         #region Elements
         public const float elementAppliedICD = 0.3f;
         public const float elementRemovedICD = 0.15f;
-        public const float permanentElementICD = 0.75f;
+        public const float permanentElementICD = 1f;
 
         public const float elementAppliedDuration = 10f;
         public const float elementAppliedTaxMultiplier = 0.8f;
@@ -77,7 +77,7 @@ namespace ElementalReactionsMod
         public const float lunarChargeRadius = 6f;
 
         public const int lunarBloomVerdantDewCap = 3;
-        public const float lunarBloomDamageMultiplier = 1f;
+        public const float lunarBloomDamageMultiplier = 1.5f;
 
         public const int lunarCrystallizeTriggersToAttack = 3;
         public const float lunarCrystallizeDamageCoefficient = 3f;

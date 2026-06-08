@@ -25,7 +25,7 @@ namespace ElementalReactionsMod
                 RegisterLookingGlassBuff(en, Buffs.quickenBuff, "Quicken", $"Increases {Tokens.ElectroText("Electro")} and {Tokens.DendroText("Dendro")} base damage by {StaticValues.quickenDamageAddCoefficient * 100f}%.");
                 RegisterLookingGlassBuff(en, Buffs.superconductBuff, "Superconduct", $"Increases non-elemental damage by {(StaticValues.superconductDamageMultiplier - 1f) * 100f}%.");
                 RegisterLookingGlassBuff(en, Buffs.delusionActiveBuff, "Delusion Activated", $"Decreases healing received by {HealthText(delusionHealingReceivedReduction * 100f + "%")}.");
-                RegisterLookingGlassBuff(en, Buffs.lunarBloomBuff, "Verdant Dew", $"Increases your next hit of {DendroText()} skill damage by {DamageText(lunarBloomDamageMultiplier * 100f + "%")}.");
+                RegisterLookingGlassBuff(en, Buffs.lunarBloomBuff, "Verdant Dew", $"Consume three of this buff to increase your next hit of {DendroText()} skill damage by {DamageText(lunarBloomDamageMultiplier * 100f + "%")}.");
             }
 
             ItemStatsDef teaCupStatsDef = new ItemStatsDef();

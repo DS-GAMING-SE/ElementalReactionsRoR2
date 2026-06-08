@@ -44,6 +44,10 @@ namespace ElementalReactionsMod.Items
                     {
                         reaction = DefaultElementalReactions.lunarBloom;
                     }
+                    else if (reaction == DefaultElementalReactions.crystallize)
+                    {
+                        reaction = DefaultElementalReactions.lunarCrystallize;
+                    }
                 }
             };
         }

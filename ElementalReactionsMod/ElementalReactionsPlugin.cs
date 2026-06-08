@@ -69,6 +69,8 @@ namespace ElementalReactionsMod
 
             Hooks.Initialize();
 
+            ElementalRain.Initialize();
+
             NetworkingAPI.RegisterMessageType<NetworkElementLoadout>();
             //NetworkingAPI.RegisterMessageType<NetworkPooledObjectSetActive>();
 
