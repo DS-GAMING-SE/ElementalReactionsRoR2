@@ -32,8 +32,12 @@ namespace ElementalReactionsMod.Reactions
         //public static PrefabComponentPool<ElementalReactionPooledObject> bloomPool;
         public static AsyncOperationHandle<GameObject> lunarChargedEffect;
         public static AsyncOperationHandle<GameObject> lunarBloomEffect;
+
         public delegate void PreElementalReactionDelegate(ref ElementalReactionDef reaction, ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo);
         public static event PreElementalReactionDelegate onPreElementalReactionTriggered;
+
+        public delegate void ElementalReactionDelegate(ElementalReactionDef reaction, ElementDef firstElement, ElementDef secondElement, CharacterBody victim, GameObject attacker);
+        public static event ElementalReactionDelegate onElementalReactionTriggered;
         public void OnEnable()
         {
             SingletonHelper.Assign(ref instance, this);
@@ -96,8 +100,9 @@ namespace ElementalReactionsMod.Reactions
                         target.AddTimedBuff(reacting.cooldownBuff, StaticValues.elementRemovedICD);
                     }
                     target.AddTimedBuff(element.cooldownBuff, StaticValues.elementAppliedICD);
-                    onPreElementalReactionTriggered.Invoke(ref reaction, reacting, element, target, ref damageInfo);
+                    onPreElementalReactionTriggered?.Invoke(ref reaction, reacting, element, target, ref damageInfo);
                     reaction.TriggerReaction(reacting, element, target, ref damageInfo, ref addedDamage);
+                    onElementalReactionTriggered?.Invoke(reaction, reacting, element, target, damageInfo.attacker);
                     return true;
                 }
             }

@@ -51,12 +51,14 @@ namespace ElementalReactionsMod.Reactions
         internal static void BakeElementalReactions()
         {
             elementalReactionGrid = new ReactionIndex[ ElementCatalog.elementCatalog.Length, ElementCatalog.elementCatalog.Length ];
+            List<ElementalReactionDef> reactionsOverSameElement = new List<ElementalReactionDef>();
             foreach (var reaction in elementalReactionCatalog) // Filling out elementalReactionGrid and element.reactsWith
             {
                 foreach (var element in reaction.reactingElements)
                 {
-                    if (reaction.baseElement.reactsWith[(int)element.index])
+                    if (reaction.baseElement.reactsWith[(int)element.index] && !reactionsOverSameElement.Contains(reaction))
                     {
+                        reactionsOverSameElement.Add(reaction);
                         Log.Warning($"Reaction {reaction.ToString()} is trying to be added for two elements that already react. This reaction will need to be triggered manually to work");
                         continue;
                     }

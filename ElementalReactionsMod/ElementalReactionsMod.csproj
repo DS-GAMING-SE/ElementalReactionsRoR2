@@ -37,6 +37,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Reference Include="ItemQualities">
+	    <HintPath>..\lib\ItemQualities.dll</HintPath>
+	  </Reference>
 	  <Reference Include="LookingGlass">
 	    <HintPath>..\lib\LookingGlass.dll</HintPath>
 	  </Reference>

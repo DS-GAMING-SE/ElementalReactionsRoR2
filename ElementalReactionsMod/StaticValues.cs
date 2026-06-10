@@ -61,6 +61,13 @@ namespace ElementalReactionsMod
 
         public const float instructorsTeaCupDamageMultiplier = 0.2f;
 
+        public const float instructorsTeaCupQualityDamageIncrease = 0.025f;
+        public const float instructorsTeaCupQualityDamageMultiplierStack = 0.025f;
+        public const int instructorsTeaCupQualityMaxStacks = 10;
+        public const int instructorsTeaCupQualityStacksPerQuality = 5;
+        public const int instructorsTeaCupQualityDuration = 5;
+        public const int instructorsTeaCupQualityDurationPerQuality = 3;
+
         #region Moon Wheel / Lunar Reactions
         /* 
          * Columbina's 4th passive could make for good Quality Moon Wheel
@@ -69,6 +76,8 @@ namespace ElementalReactionsMod
          * Lunar Crystallize, each Moondrift has a 33% chance of attacking an extra time
          */
         public const float moonWheelLunarDamagePerStack = 0.5f;
+
+        public const float moonWheelQualityChancePerQuality = 25f;
 
         public const float lunarChargeDamageCoefficient = 5f;
         public const float lunarChargeTimeBetweenAttacks = 1.5f;

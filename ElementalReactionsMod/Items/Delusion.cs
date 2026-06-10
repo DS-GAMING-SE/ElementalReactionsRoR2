@@ -36,7 +36,6 @@ namespace ElementalReactionsMod.Items
             delusion = AddNewItem("Delusion", "DELUSION", true, Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.LunarTierDef_asset).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, ItemTag.Damage, ItemTag.AllowedForUseAsCraftingIngredient);
             ItemAPI.ApplyTagToItem(delusionItemTag, delusion);
-            CharacterBody.onBodyInventoryChangedGlobal += AddDelusionBehaviour;
         }
         public static ItemDef CreateNewDelusion(ElementDef element)
         {
@@ -45,15 +44,6 @@ namespace ElementalReactionsMod.Items
             ItemAPI.ApplyTagToItem(delusionItemTag, delusion);
             delusionToElement.Add(delusion, element);
             return delusion;
-        }
-        public static void AddDelusionBehaviour(CharacterBody body)
-        {
-            List<ElementDef> list = body.inventory.GetDelusions(out int count);
-            DelusionBehaviour behaviour = body.AddItemBehavior<DelusionBehaviour>(count);
-            if (behaviour)
-            {
-                behaviour.delusionElements = list;
-            }
         }
         public static List<ElementDef> GetDelusions(this Inventory inventory, out int count)
         {
@@ -233,7 +223,7 @@ namespace ElementalReactionsMod.Items
             if (body)
             {
                 body.onSkillActivatedServer -= OnSkillActivated;
-                if (body.HasBuff(Buffs.delusionActiveBuff)) body.RemoveBuff(Buffs.delusionActiveBuff);
+                if (body.HasBuff(Buffs.delusionActiveBuff)) body.ClearTimedBuffs(Buffs.delusionActiveBuff);
             }
         } 
     }

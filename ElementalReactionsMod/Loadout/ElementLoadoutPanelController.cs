@@ -74,7 +74,7 @@ namespace ElementalReactionsMod.Loadout
         }
         public void SetDisplayData(BodyIndex bodyIndex)
         {
-            if (bodyIndex == this.bodyIndex)
+            if (bodyIndex == this.bodyIndex || bodyIndex == BodyIndex.None)
             {
                 return;
             }

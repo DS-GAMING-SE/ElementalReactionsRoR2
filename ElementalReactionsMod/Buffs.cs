@@ -17,6 +17,8 @@ namespace ElementalReactionsMod
 
         public static BuffDef lunarChargeBuff;
         public static BuffDef lunarBloomBuff;
+
+        public static BuffDef instructorsTeaCupQualityBase;
         
         public static void Initialize()
         {
@@ -34,6 +36,12 @@ namespace ElementalReactionsMod
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.lunarChargeBuffIcon).WaitForCompletion(), Color.white, false, true);
             lunarBloomBuff = Util.AddNewBuff("LunarBloomVerdantDew",
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.lunarBloomBuffIcon).WaitForCompletion(), Color.white, true, false);
+
+            if (ElementalReactionsPlugin.qualityModExists)
+            {
+                instructorsTeaCupQualityBase = Util.AddNewBuff("InstructorsTeaCupQuality",
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.instructorsTeaCupItemIcon).WaitForCompletion(), Color.white, true, false);
+            }
         }
     }
 }

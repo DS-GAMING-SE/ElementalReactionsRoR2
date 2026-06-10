@@ -230,5 +230,17 @@ namespace ElementalReactionsMod
             destination = vector3;
             return true;
         }
+
+        public static int GetItemCountWithQuality(this Inventory inventory, ItemDef item)
+        {
+            if (!ElementalReactionsPlugin.qualityModExists)
+            {
+                return inventory.GetItemCountEffective(item);
+            }
+            else
+            {
+                return QualitySupport.GetItemCountTotalQuality(inventory, item);
+            }
+        }
     }
 }

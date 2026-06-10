@@ -216,16 +216,31 @@ namespace ElementalReactionsMod.Reactions
             lunarBloom.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 bloom.TriggerReaction(element1, element2, victim, ref damage, ref addedDamage);
-                if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var attackerBody) && attackerBody.GetBuffCount(Buffs.lunarBloomBuff) < lunarBloomVerdantDewCap)
+                if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var attackerBody))
                 {
-                    attackerBody.AddBuff(Buffs.lunarBloomBuff);
+                    if (ElementalReactionsPlugin.qualityModExists && attackerBody.inventory)
+                    {
+                        attackerBody.inventory.GetItemCountQualities(Items.Items.moonWheel, out int uncommon, out int rare, out int epic, out int legendary);
+                        float chance = (uncommon * moonWheelQualityChancePerQuality);
+                        chance += (rare * moonWheelQualityChancePerQuality * 2);
+                        chance += (epic * moonWheelQualityChancePerQuality * 3);
+                        chance += (legendary * moonWheelQualityChancePerQuality * 4);
+                        if (attackerBody.GetBuffCount(Buffs.lunarBloomBuff) < lunarBloomVerdantDewCap && RoR2.Util.CheckRoll(chance, attackerBody.master))
+                        {
+                            attackerBody.AddBuff(Buffs.lunarBloomBuff);
+                        }
+                    }
+                    if (attackerBody.GetBuffCount(Buffs.lunarBloomBuff) < lunarBloomVerdantDewCap)
+                    {
+                        attackerBody.AddBuff(Buffs.lunarBloomBuff);
+                    }
                 }
             };
             lunarBloom.baseFirstReactionCoefficient = 0.5f;
             lunarBloom.baseLastReactionCoefficient = 2f;
             lunarBloom.showInLoadoutMenu = false;
 
-            lunarCrystallize = ElementalReactionDef.CreateElementalReactionDef("Crystallize", $"{ElementalReactionsPlugin.PREFIX}REACTION_CRYSTALLIZE", geoElement, [pyroElement, hydroElement, electroElement, cryoElement]);
+            lunarCrystallize = ElementalReactionDef.CreateElementalReactionDef("LunarCrystallize", $"{ElementalReactionsPlugin.PREFIX}REACTION_LUNAR_CRYSTALLIZE", geoElement, [pyroElement, hydroElement, electroElement, cryoElement]);
             lunarCrystallize.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var characterBody))

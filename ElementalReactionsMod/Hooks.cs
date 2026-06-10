@@ -102,7 +102,8 @@ namespace ElementalReactionsMod
         {
             if (attackerBody && attackerBody.inventory)
             {
-                damage *= 1 + (StaticValues.instructorsTeaCupDamageMultiplier * attackerBody.inventory.GetItemCountEffective(Items.Items.instructorsTeaCup));
+                // ADD QUALITY ITEM STACK SCALING
+                damage *= 1 + ((StaticValues.instructorsTeaCupDamageMultiplier * attackerBody.inventory.GetItemCountWithQuality(Items.Items.instructorsTeaCup)) + (attackerBody.GetBuffCount(Buffs.instructorsTeaCupQualityBase) * StaticValues.instructorsTeaCupQualityDamageIncrease));
             }
             if (victim.body.teamComponent && victim.body.teamComponent.teamIndex == TeamIndex.Player)
             {
