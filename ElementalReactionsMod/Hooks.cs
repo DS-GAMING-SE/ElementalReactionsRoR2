@@ -54,10 +54,9 @@ namespace ElementalReactionsMod
                         {
                             element = DefaultElementDefs.physicalElement;
                         }
-                        // POTENTIAL LUNAR BLOOM REWORK
-                        // Lunar bloom is a band. While having 3 Verdant Dew, doing a 400%<= damage hit overrides element to dendro and increases damage
+
                         bool lunarBloomProcced = false;
-                        if (damage.damage > 0 && attackerBody && attackerBody.GetBuffCount(Buffs.lunarBloomBuff) >= 3 && element == DefaultElementDefs.dendroElement && damage.damageType.IsSkillOrDelusionDamage())
+                        if (attackerBody && damage.damage / attackerBody.damage >= 4f && attackerBody.GetBuffCount(Buffs.lunarBloomBuff) >= 3)
                         {
                             attackerBody.SetBuffCount(Buffs.lunarBloomBuff.buffIndex, attackerBody.GetBuffCount(Buffs.lunarBloomBuff) - 3);
                             lunarBloomProcced = true;

@@ -115,5 +115,19 @@ namespace ElementalReactionsMod
             chance += (legendary * StaticValues.moonWheelQualityChancePerQuality * 4);
             return chance;
         }
+        [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
+        public static ItemIndex[] GetQualityItemIndices(ItemDef item)
+        {
+            ItemIndex[] items = new ItemIndex[4];
+            ItemQualityGroup group = QualityCatalog.GetItemQualityGroup(QualityCatalog.FindItemQualityGroupIndex(item.itemIndex));
+            if (group)
+            {
+                items[0] = group.UncommonItemIndex;
+                items[1] = group.RareItemIndex;
+                items[2] = group.EpicItemIndex;
+                items[3] = group.LegendaryItemIndex;
+            }
+            return items;
+        }
     }
 }

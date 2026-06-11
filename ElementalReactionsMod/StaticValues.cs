@@ -63,7 +63,6 @@ namespace ElementalReactionsMod
         public const float instructorsTeaCupDamageMultiplier = 0.2f;
 
         public const float instructorsTeaCupQualityDamageIncrease = 0.025f;
-        public const float instructorsTeaCupQualityDamageMultiplierStack = 0.025f;
         public const int instructorsTeaCupQualityMaxStacks = 10;
         public const int instructorsTeaCupQualityStacksPerQuality = 5;
         public const int instructorsTeaCupQualityDuration = 5;
