@@ -220,12 +220,7 @@ namespace ElementalReactionsMod.Reactions
                 {
                     if (ElementalReactionsPlugin.qualityModExists && attackerBody.inventory)
                     {
-                        attackerBody.inventory.GetItemCountQualities(Items.Items.moonWheel, out int uncommon, out int rare, out int epic, out int legendary);
-                        float chance = (uncommon * moonWheelQualityChancePerQuality);
-                        chance += (rare * moonWheelQualityChancePerQuality * 2);
-                        chance += (epic * moonWheelQualityChancePerQuality * 3);
-                        chance += (legendary * moonWheelQualityChancePerQuality * 4);
-                        if (attackerBody.GetBuffCount(Buffs.lunarBloomBuff) < lunarBloomVerdantDewCap && RoR2.Util.CheckRoll(chance, attackerBody.master))
+                        if (attackerBody.GetBuffCount(Buffs.lunarBloomBuff) < lunarBloomVerdantDewCap && RoR2.Util.CheckRoll(attackerBody.inventory.GetMoonWheelQualityChance(), attackerBody.master))
                         {
                             attackerBody.AddBuff(Buffs.lunarBloomBuff);
                         }

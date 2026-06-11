@@ -35,7 +35,7 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("GipBody", dendroElement, dendroElement, dendroElement, dendroElement, dendroElement);
             CreateLoadout("HalcyoniteBody", geoElement, electroElement, geoElement, geoElement);
             CreateLoadout("HermitCrabBody", hydroElement);
-            CreateLoadout("JellyfishBody", null, electroElement);
+            CreateLoadout("JellyfishBody", electroElement, electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("WispBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
             CreateLoadout("WispSoulBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
             CreateLoadout("LunarWispBody", dendroElement, dendroElement, dendroElement, dendroElement, pyroElement);
@@ -46,7 +46,6 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("ScorchlingBody", physicalElement, pyroElement);
             CreateLoadout("DefectiveUnitBody", electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("FriendUnitBody", electroElement, electroElement, electroElement, electroElement); // Ally
-            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Collective.CollectiveDeathProjectile_prefab, electroElement);
             CreateLoadout("RoboBallMiniBody", electroElement);
             CreateLoadout("RoboBallGreenBuddyBody", electroElement, electroElement, electroElement, electroElement); // ally
             CreateLoadout("RoboBallRedBuddyBody", electroElement, electroElement, electroElement, electroElement); // ally
@@ -98,11 +97,20 @@ namespace ElementalReactionsMod.Loadout
             //AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherUltLineProjectileRotateRight_prefab, pyroElement);
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherFirePillar_prefab, pyroElement);
             CreateLoadout("SolusHeartBody", electroElement, electroElement, electroElement, electroElement, electroElement);
+            CreateLoadout("TeleportComboLaserProjectile", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
+            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusHeart.TeleportComboLaserProjectile_prefab, pyroElement);
+            CreateLoadout("UnderclockSpawnerProjectile", cryoElement, cryoElement, cryoElement, cryoElement, cryoElement);
+            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusHeart.UnderclockSpawnerProjectile_prefab, cryoElement);
+            CreateLoadout("SolusHeart_DDOSProjectile", electroElement, electroElement, electroElement, electroElement, electroElement);
+            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusHeart.SolusHeart_DDOSProjectile_prefab, electroElement);
             CreateLoadout("SolusWingBody", electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("MiniVoidCrabBodyPhase1", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("MiniVoidCrabBodyPhase2", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("MiniVoidCrabBodyPhase3", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("VoidCrabBody", hydroElement, hydroElement, hydroElement, hydroElement);
+
+            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Collective.CollectiveDeathProjectile_prefab, electroElement);
+            CreateLoadout("AffixEarthHealerBody", dendroElement, dendroElement, dendroElement, dendroElement, dendroElement);
 
             CreateLoadout("CopycatDroneBody", cryoElement, cryoElement, cryoElement, cryoElement); // Ally
             CreateLoadout("FlameDroneBody", pyroElement, pyroElement, pyroElement, pyroElement); // Ally
@@ -143,6 +151,12 @@ namespace ElementalReactionsMod.Loadout
                 CreateLoadout("LampBody", pyroElement, pyroElement, pyroElement, pyroElement);
                 CreateLoadout("LampBossBody", pyroElement, pyroElement, pyroElement, pyroElement);
             }
+            // Bootleg Bestiary
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("Skeletogne.BootlegBestiary"))
+            {
+                CreateLoadout("SkyDraconBody", pyroElement);
+                CreateLoadout("DemineurBody", hydroElement, hydroElement, hydroElement, hydroElement);
+            }
 
             LogEnemyElementStats();
         }
@@ -172,6 +186,10 @@ namespace ElementalReactionsMod.Loadout
                 if (x.Result.TryGetComponent<ProjectileDamage>(out var damage))
                 {
                     damage.damageType.SetElement(element.index);
+                }
+                if (x.Result.TryGetComponent<ProjectileHurtOwnerOnDeathWithOrb>(out var deathOrb))
+                {
+                    deathOrb.damageTypeCombo.SetElement(element.index);
                 }
             };
         }

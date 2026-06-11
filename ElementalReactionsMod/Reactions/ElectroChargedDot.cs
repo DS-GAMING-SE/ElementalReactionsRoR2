@@ -3,12 +3,14 @@ using ElementalReactionsMod.Orbs;
 using R2API;
 using RoR2;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.UIElements;
 using static RoR2.DotController;
 
 namespace ElementalReactionsMod.Reactions
@@ -69,18 +71,41 @@ namespace ElementalReactionsMod.Reactions
         }
         public static void LunarChargedLightning(DotController self, PendingDamage damage)
         {
-            if (!Mathf.Approximately(damage.totalDamage, 0f) && self.victimHealthComponent.alive)
+            if (self.victimHealthComponent.alive)
+            {
+                CharacterBody attackerBody = damage.attackerObject ? damage.attackerObject.GetComponent<CharacterBody>() : null;
+                Vector3 damagePosition = damage.hitHurtBox ? damage.hitHurtBox.transform.position : self.victimBody.corePosition;
+                TeamIndex team = TeamComponent.GetObjectTeam(damage.attackerObject);
+                CreateLunarChargedLightning(damage.attackerObject, team, damage.totalDamage, attackerBody ? attackerBody.RollCrit() : false, damagePosition);
+
+                if (ElementalReactionsPlugin.qualityModExists && attackerBody && attackerBody.inventory && RoR2.Util.CheckRoll(attackerBody.inventory.GetMoonWheelQualityChance(), attackerBody.master))
+                {
+                    self.victimBody.StartCoroutine(LunarChargedQualityStrikeTwice(damage.attackerObject, team, damage.totalDamage, attackerBody.RollCrit(), self.victimBody, damage.hitHurtBox));
+                }
+            }
+        }
+        public static void CreateLunarChargedLightning(GameObject attacker, TeamIndex team, float damage, bool crit, Vector3 position)
+        {
+            if (!Mathf.Approximately(damage, 0f))
             {
                 DamageTypeCombo damageType = new DamageTypeCombo(DamageType.DoT, DamageTypeExtended.Electrical, DamageSource.NoneSpecified);
                 damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                 damageType.AddModdedDamageType(DamageTypes.lunarDamageType);
-                CharacterBody attackerBody = damage.attackerObject ? damage.attackerObject.GetComponent<CharacterBody>() : null;
-                Vector3 damagePosition = damage.hitHurtBox ? damage.hitHurtBox.transform.position : self.victimBody.corePosition;
-                EffectManager.SimpleEffect(ElementalReactionManager.lunarChargedEffect.WaitForCompletion(), damagePosition, Quaternion.identity, true);
+                EffectManager.SimpleEffect(ElementalReactionManager.lunarChargedEffect.WaitForCompletion(), position, Quaternion.identity, true);
 
-                BlastAttack blast = Util.CreateBlastAttack(damage.attackerObject, TeamComponent.GetObjectTeam(damage.attackerObject), damage.totalDamage, attackerBody ? attackerBody.RollCrit() : false, StaticValues.lunarChargeRadius, BlastAttack.FalloffModel.None, 1f, damageType, damagePosition, 0f);
+                BlastAttack blast = Util.CreateBlastAttack(attacker, team, damage, crit, StaticValues.lunarChargeRadius, BlastAttack.FalloffModel.None, 1f, damageType, position, 0f);
                 blast.bonusForce = new Vector3(0f, -500f, 0f);
                 blast.Fire();
+            }
+        }
+        public static IEnumerator LunarChargedQualityStrikeTwice(GameObject attacker, TeamIndex team, float damage, bool crit, CharacterBody target, HurtBox targetHurtBox)
+        {
+            yield return new WaitForSeconds(0.4f);
+
+            if (target && target.healthComponent.alive)
+            {
+                // Doesn't work for the last hit, since the DOT controller disappears
+                CreateLunarChargedLightning(attacker, team, damage, crit, targetHurtBox ? targetHurtBox.transform.position : target.corePosition);
             }
         }
     }

@@ -24,7 +24,7 @@ namespace ElementalReactionsMod
 
         public const float overloadDamageCoefficient = 2f;
 
-        public const float electroChargeDamageCoefficient = 0.7f;
+        public const float electroChargeDamageCoefficient = 1f;
         public const float electroChargeDuration = 5f;
         public const float electroChargeRadius = 15f;
 
@@ -38,16 +38,17 @@ namespace ElementalReactionsMod
         public const int crystallizeCap = 3;
         public const float crystallizeBarrierPercent = 0.1f;
         public const float crystallizeMaxBarrierPercent = 0.3f;
-        public const float crystallizePlayerGravitateRange = 3f;
-        public const float crystallizeEnemyGravitateRange = 6f;
+        public const float crystallizePlayerGravitateRange = 4f;
+        public const float crystallizeEnemyGravitateRange = 7f;
 
         public const int bloomCap = 5;
-        public const float bloomDamageCoefficient = 2f;
+        public const float bloomDamageCoefficient = 3.5f;
         public const float bloomDuration = 5f;
-        public const float hyperBloomDamageCoefficient = 3f;
-        public const float burgeonDamageCoefficient = 4f;
-        public const float burgeonRadius = 15f;
-        public const float hyperBloomRadius = 20f;
+        public const float bloomRadius = 17f;
+        public const float hyperBloomDamageCoefficient = 6f;
+        public const float burgeonDamageCoefficient = 6f;
+        public const float burgeonRadius = 22f;
+        public const float hyperBloomRadius = 30f;
         #endregion
 
         #region Items
@@ -69,12 +70,6 @@ namespace ElementalReactionsMod
         public const int instructorsTeaCupQualityDurationPerQuality = 3;
 
         #region Moon Wheel / Lunar Reactions
-        /* 
-         * Columbina's 4th passive could make for good Quality Moon Wheel
-         * Lunar Charged has a 33% chance of striking lightning an additional time
-         * Lunar Bloom, basically, increases Verdant Dew cap
-         * Lunar Crystallize, each Moondrift has a 33% chance of attacking an extra time
-         */
         public const float moonWheelLunarDamagePerStack = 0.5f;
 
         public const float moonWheelQualityChancePerQuality = 25f;

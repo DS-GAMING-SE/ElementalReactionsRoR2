@@ -42,7 +42,11 @@ namespace ElementalReactionsMod.Loadout
             }
             if (!NetworkServer.active && characterBody.isPlayerControlled)
             {
-                new NetworkElementLoadout(characterBody.netId, primaryElement.index, secondaryElement.index, utilityElement.index, specialElement.index).Send(R2API.Networking.NetworkDestination.Server);
+                new NetworkElementLoadout(characterBody.netId, 
+                    primaryElement ? primaryElement.index : ElementIndex.Physical,
+                    secondaryElement ? secondaryElement.index : ElementIndex.Physical,
+                    utilityElement ? utilityElement.index : ElementIndex.Physical,
+                    specialElement ? specialElement.index : ElementIndex.Physical).Send(R2API.Networking.NetworkDestination.Server);
             }
             if (Config.CanEnemiesBeElemental().Value && permanentlyAppliedElement && TryGetComponent<SpecialObjectAttributes>(out var specialObjectAttributes))
             {

@@ -11,6 +11,7 @@ using RoR2;
 using ElementalReactionsMod.Reactions;
 using System.Linq;
 using R2API;
+using UnityEngine.Jobs;
 
 namespace ElementalReactionsMod
 {
@@ -85,15 +86,18 @@ namespace ElementalReactionsMod
             CancelRaycastJob();
 
             characterBodies = CharacterBody.readOnlyInstancesList.ToArray();
+            TransformAccessArray transformAccessArray = new TransformAccessArray(characterBodies.Length);
             this.rainRaycastCommands = new NativeArray<RaycastCommand>(characterBodies.Length, Allocator.TempJob);
-            this.rainRaycastHitBuffer = new NativeArray<RaycastHit>(characterBodies.Length, Allocator.TempJob);
-            for (int i = 0; i < characterBodies.Length; i++)
+            CreateRaycastCommandsJob createRaycastCommandsJob = new CreateRaycastCommandsJob
             {
-                rainRaycastCommands[i] = new RaycastCommand(characterBodies[i].corePosition, Vector3.up, float.MaxValue, LayerIndex.world.intVal);
-                Debug.DrawLine(characterBodies[i].corePosition, characterBodies[i].corePosition + (Vector3.up * 10000f), Color.red, rainInterval);
-                Log.Message($"body pos {characterBodies[i].corePosition}");
-            }
-            rainRaycastJob = RaycastCommand.ScheduleBatch(this.rainRaycastCommands, this.rainRaycastHitBuffer, characterBodies.Length);
+                output = rainRaycastCommands,
+                physicsScene = Physics.defaultPhysicsScene,
+                raycastMask = LayerIndex.world.mask
+            };
+            JobHandle createRaycastJobHandle = createRaycastCommandsJob.Schedule(transformAccessArray);
+            this.rainRaycastHitBuffer = new NativeArray<RaycastHit>(characterBodies.Length, Allocator.TempJob);
+            rainRaycastJob = RaycastCommand.ScheduleBatch(this.rainRaycastCommands, this.rainRaycastHitBuffer, characterBodies.Length, createRaycastJobHandle);
+            transformAccessArray.Dispose();
         }
         private void CancelRaycastJob()
         {
@@ -104,6 +108,16 @@ namespace ElementalReactionsMod
                 rainRaycastHitBuffer.Dispose();
             }
             this.rainRaycastJob = null;
+        }
+    }
+    public struct CreateRaycastCommandsJob : IJobParallelForTransform
+    {
+        public PhysicsScene physicsScene;
+        public LayerMask raycastMask;
+        public NativeArray<RaycastCommand> output;
+        public void Execute(int index, TransformAccess access)
+        {
+            output[index] = new RaycastCommand(physicsScene, access.position, Vector3.up, float.MaxValue, raycastMask, 1);
         }
     }
 }

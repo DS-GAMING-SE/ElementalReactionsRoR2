@@ -37,7 +37,7 @@ namespace ElementalReactionsMod
             yield break;
         }
 
-        public static void AddQualityLanguage(string key, bool isPickup, string value, bool appendToOriginalDescription = false, params object[] args)
+        public static void AddQualityLanguage(string key, bool isPickup, string value, params object[] args)
         {
             if (!ElementalReactionsPlugin.qualityModExists) return;
             int argsPerQuality = args.Length / 4;
@@ -63,7 +63,7 @@ namespace ElementalReactionsMod
                         qualityName = "";
                         break;
                 }
-                LanguageAPI.Add($"ITEM_ELEMENTALREACTIONS{key.Replace("_", "")}_{qualityName}_{(isPickup ? "PICKUP" : "DESC")}", appendToOriginalDescription ? Language.GetString($"{ElementalReactionsPlugin.PREFIX}ITEM_{key}_{(isPickup ? "PICKUP" : "DESCRIPTION")}") + " " + description : description);
+                LanguageAPI.Add($"ITEM_ELEMENTALREACTIONS{key.Replace("_", "")}_{qualityName}_{(isPickup ? "PICKUP" : "DESC")}", description);
             }
         }
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
@@ -92,9 +92,28 @@ namespace ElementalReactionsMod
             }
             return 0;
         }
+        [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
+        public static int GetItemCountQualities(this Inventory inventory, ItemDef item)
+        {
+            ItemQualityGroupIndex index = QualityCatalog.FindItemQualityGroupIndex(item.itemIndex);
+            if (index != ItemQualityGroupIndex.Invalid)
+            {
+                return ItemQualities.Utilities.Extensions.InventoryExtensions.GetItemCountsEffective(inventory, index).TotalQualityCount;
+            }
+            return 0;
+        }
         public static int GetWeightedQualityItemCount(int uncommon, int rare, int epic, int legendary)
         {
             return uncommon + (rare * 2) + (epic * 3) + (legendary * 4);
+        }
+        public static float GetMoonWheelQualityChance(this Inventory inventory)
+        {
+            inventory.GetItemCountQualities(Items.Items.moonWheel, out int uncommon, out int rare, out int epic, out int legendary);
+            float chance = (uncommon * StaticValues.moonWheelQualityChancePerQuality);
+            chance += (rare * StaticValues.moonWheelQualityChancePerQuality * 2);
+            chance += (epic * StaticValues.moonWheelQualityChancePerQuality * 3);
+            chance += (legendary * StaticValues.moonWheelQualityChancePerQuality * 4);
+            return chance;
         }
     }
 }

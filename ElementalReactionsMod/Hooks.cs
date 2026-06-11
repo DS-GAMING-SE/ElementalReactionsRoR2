@@ -6,6 +6,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.Utils;
 using R2API;
+using R2API.Utils;
 using RoR2;
 using RoR2.EntitlementManagement;
 using RoR2.ExpansionManagement;
@@ -27,6 +28,8 @@ namespace ElementalReactionsMod
             On.RoR2.HealthComponent.Heal += HealingReceivedDebuff;
             On.RoR2.OverheatSystem.BodyOverheatInfo.AddChanneledBuff += AddOverheatPyro;
             IL.RoR2.CharacterBody.AddTimedBuff_BuffDef_float += SolusWingCoolingCryo;
+            IL.RoR2.CharacterBody.InflictLavaDamage += LavaPyro;
+            IL.RoR2.Projectile.ProjectileManager.InitializeProjectile += AddLoadoutElementToProjectile;
         }
         // Right after IOnincomingDamageReceiver does its thing, since that's where many things (including bloom dendro cores) reject damage
         private static void TakeDamageIL(ILContext il)
@@ -41,10 +44,18 @@ namespace ElementalReactionsMod
                 {
                     if (!damage.rejected && ElementalReactionManager.instance)
                     {
-                        
                         ElementDef element = ElementCatalog.GetElementDef(damage.damageType.GetElement());
                         CharacterBody attackerBody = damage.attacker ? damage.attacker.GetComponent<CharacterBody>() : null;
 
+                        if (element != DefaultElementDefs.physicalElement && attackerBody && attackerBody.teamComponent &&
+                        ((attackerBody.teamComponent.teamIndex == TeamIndex.Player && attackerBody.isPlayerControlled && !Config.CanSurvivorsUseElements().Value) ||
+                        (attackerBody.teamComponent.teamIndex == TeamIndex.Player && !attackerBody.isPlayerControlled && !Config.CanAlliesUseElements().Value) ||
+                        (attackerBody.teamComponent.teamIndex != TeamIndex.Player && !Config.CanEnemiesUseElements().Value)))
+                        {
+                            element = DefaultElementDefs.physicalElement;
+                        }
+                        // POTENTIAL LUNAR BLOOM REWORK
+                        // Lunar bloom is a band. While having 3 Verdant Dew, doing a 400%<= damage hit overrides element to dendro and increases damage
                         bool lunarBloomProcced = false;
                         if (damage.damage > 0 && attackerBody && attackerBody.GetBuffCount(Buffs.lunarBloomBuff) >= 3 && element == DefaultElementDefs.dendroElement && damage.damageType.IsSkillOrDelusionDamage())
                         {
@@ -102,8 +113,13 @@ namespace ElementalReactionsMod
         {
             if (attackerBody && attackerBody.inventory)
             {
-                // ADD QUALITY ITEM STACK SCALING
-                damage *= 1 + ((StaticValues.instructorsTeaCupDamageMultiplier * attackerBody.inventory.GetItemCountWithQuality(Items.Items.instructorsTeaCup)) + (attackerBody.GetBuffCount(Buffs.instructorsTeaCupQualityBase) * StaticValues.instructorsTeaCupQualityDamageIncrease));
+                float elementalReactionDamageIncrease = 1f;
+                elementalReactionDamageIncrease += StaticValues.instructorsTeaCupDamageMultiplier * attackerBody.inventory.GetItemCountWithQuality(Items.Items.instructorsTeaCup);
+                if (ElementalReactionsPlugin.qualityModExists)
+                {
+                    elementalReactionDamageIncrease += attackerBody.GetBuffCount(Buffs.instructorsTeaCupQualityBase) * StaticValues.instructorsTeaCupQualityDamageIncrease * attackerBody.inventory.GetItemCountQualities(Items.Items.instructorsTeaCup);
+                }
+                damage *= elementalReactionDamageIncrease;
             }
             if (victim.body.teamComponent && victim.body.teamComponent.teamIndex == TeamIndex.Player)
             {
@@ -117,11 +133,7 @@ namespace ElementalReactionsMod
                 ElementDef element = ElementCatalog.GetElementDef(damageInfo.damageType.GetElement());
 
                 if (element == DefaultElementDefs.physicalElement && damageInfo.attacker && damageInfo.damageType.IsDamageSourceSkillBased && 
-                    damageInfo.attacker.TryGetComponent<ElementLoadoutComponent>(out var elementLoadout) && elementLoadout.isActiveAndEnabled
-                    && ((elementLoadout.team == TeamIndex.Player && 
-                        (elementLoadout.characterBody.isPlayerControlled && Config.CanSurvivorsUseElements().Value) || 
-                        (!elementLoadout.characterBody.isPlayerControlled && Config.CanAlliesUseElements().Value)) || 
-                    (elementLoadout.team != TeamIndex.Player && Config.CanEnemiesUseElements().Value)))
+                    damageInfo.attacker.TryGetComponent<ElementLoadoutComponent>(out var elementLoadout) && elementLoadout.isActiveAndEnabled)
                 {
                     element = elementLoadout.GetElement(damageInfo.damageType.damageSource);
                     if (element) damageInfo.damageType.SetElement(element.index);
@@ -166,6 +178,57 @@ namespace ElementalReactionsMod
                         ElementalReactionManager.ApplyElement(DefaultElementDefs.cryoElement, self, 1f);
                     }
                 });
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void LavaPyro(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            if (c.TryGotoNext(MoveType.After, x => x.MatchStfld(typeof(DamageInfo), nameof(DamageInfo.damageType))))
+            {
+                c.Emit(OpCodes.Ldloc_0); // damageInfo
+                c.EmitDelegate<Action<DamageInfo>>((damageInfo) =>
+                {
+                    if (ElementalReactionManager.instance)
+                    {
+                        damageInfo.damageType.SetElement(DefaultElementDefs.pyroElement.index);
+                    }
+                });
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void AddLoadoutElementToProjectile(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            if (c.TryGotoNext(MoveType.After, x => x.MatchStfld(typeof(DamageTypeCombo), nameof(DamageTypeCombo.damageSource))))
+            {
+                c.Emit(OpCodes.Ldarg_1); // fireProjectileInfo
+                Instruction instruction = c.Prev; // saving location of my code
+                c.Emit(OpCodes.Ldloc_1); // projectileDamage
+                c.EmitDelegate<Action<RoR2.Projectile.FireProjectileInfo, RoR2.Projectile.ProjectileDamage>>((fireProjectileInfo, projectileDamage) =>
+                {
+                    if (ElementalReactionManager.instance)
+                    {
+                        if (!projectileDamage.damageType.IsElementalDamage() && projectileDamage.damageType.IsDamageSourceSkillBased && fireProjectileInfo.owner && fireProjectileInfo.owner.TryGetComponent<ElementLoadoutComponent>(out var loadout))
+                        {
+                            ElementDef element = loadout.GetElement(projectileDamage.damageType.damageSource);
+                            if (element)
+                            {
+                                projectileDamage.damageType.SetElement(element.index);
+                            }
+                        }
+                    }
+                });
+                if (c.TryGotoPrev(x => x.MatchBr(out _))) // redirecting projectiledamage related ifs to go to my code instead of leaving the projectiledamage block
+                {
+                    c.Next.Operand = instruction;
+                }
             }
             else
             {

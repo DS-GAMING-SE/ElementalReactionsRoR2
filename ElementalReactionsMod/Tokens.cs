@@ -113,10 +113,12 @@ namespace ElementalReactionsMod
             }
 
             LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_NAME", "Instructor's Tea Cup");
-            LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_PICKUP", "Deal bonus damage from elemental reactions.");
-            QualitySupport.AddQualityLanguage($"INSTRUCTORS_TEA_CUP", true, $"{QualitySupport.qualityIcon} Bonus damage increases after triggering elemental reactions.", true);
-            LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_DESCRIPTION", $"Increases {UtilityText("elemental reaction")} damage by {DamageText($"{instructorsTeaCupDamageMultiplier * 100f}%")} {StackingText($"(+{instructorsTeaCupDamageMultiplier * 100f}% per stack)")}.");
-            QualitySupport.AddQualityLanguage($"INSTRUCTORS_TEA_CUP", false, $"Triggering an {UtilityText("elemental reaction")} increases {UtilityText("elemental reaction")} damage by {DamageText($"{instructorsTeaCupQualityDamageIncrease * 100f}%")} {StackingText($"(+{instructorsTeaCupQualityDamageMultiplierStack * 100f}% per stack)")}, up to {QualitySupport.qualityIcon} {UtilityText("{0}")}, for {QualitySupport.qualityIcon} {UtilityText("{1}s")}. Triggering a reaction refreshes the timer.", true,
+            string teaCupPickup = "Deal bonus damage from elemental reactions.";
+            LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_PICKUP", teaCupPickup);
+            QualitySupport.AddQualityLanguage($"INSTRUCTORS_TEA_CUP", true, $"{teaCupPickup} {QualitySupport.qualityIcon} Bonus damage increases after triggering elemental reactions.");
+            string teaCupDescription = $"Increases {UtilityText("elemental reaction")} damage by {DamageText($"{instructorsTeaCupDamageMultiplier * 100f}%")} {StackingText($"(+{instructorsTeaCupDamageMultiplier * 100f}% per stack)")}.";
+            LanguageAPI.Add($"{prefix}ITEM_INSTRUCTORS_TEA_CUP_DESCRIPTION", teaCupDescription);
+            QualitySupport.AddQualityLanguage($"INSTRUCTORS_TEA_CUP", false, $"{teaCupDescription} Triggering an {UtilityText("elemental reaction")} increases {UtilityText("elemental reaction")} damage by {DamageText($"{instructorsTeaCupQualityDamageIncrease * 100f}%")} {StackingText($"(+{instructorsTeaCupQualityDamageMultiplierStack * 100f}% per stack)")}, up to {QualitySupport.qualityIcon} {UtilityText("{0}")}, for {QualitySupport.qualityIcon} {UtilityText("{1}s")}. Triggering a reaction refreshes the timer.",
                 instructorsTeaCupQualityMaxStacks, instructorsTeaCupQualityDuration,
                 instructorsTeaCupQualityMaxStacks + instructorsTeaCupQualityStacksPerQuality, instructorsTeaCupQualityDuration + instructorsTeaCupQualityDurationPerQuality,
                 instructorsTeaCupQualityMaxStacks + (instructorsTeaCupQualityStacksPerQuality * 2), instructorsTeaCupQualityDuration + (instructorsTeaCupQualityDurationPerQuality * 2),
@@ -133,13 +135,13 @@ namespace ElementalReactionsMod
 
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_NAME", "Moon Wheel");
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_PICKUP", "Upgrades the Hydro reactions between Electro, Dendro, and Geo into powerful Lunar Reactions.");
-            QualitySupport.AddQualityLanguage($"MOON_WHEEL", true, $"Upgrades the Hydro reactions between Electro, Dendro, and Geo into {QualitySupport.qualityIcon} much more powerful Lunar Reactions.");
+            QualitySupport.AddQualityLanguage($"MOON_WHEEL", true, $"Upgrades the Hydro reactions between Electro, Dendro, and Geo into powerful Lunar Reactions. {QualitySupport.qualityIcon} Lunar Reactions have a chance to double their effects.");
             string moonWheelDescIntro = $"Upgrades the {ElectroText("Electro-Charge")}, {DendroText("Bloom")}, and {GeoText("Hydro-Crystallize")} reactions into {DamageText("Lunar Reactions")} that can {DamageText("critically strike")}. Increases {DamageText("Lunar Reaction damage")} by {DamageText("0%")} {StackingText("(+" + moonWheelLunarDamagePerStack * 100f + "% per stack)")}.";
             string moonWheelDescCharged = $"{ElectroText("Lunar-Charge")}: Continuously strike the target with lightning, dealing {DamageValueTextRepeat(lunarChargeDamageCoefficient, lunarChargeAttacksPerDot)}.";
             string moonWheelDescBloom = $"{DendroText("Lunar-Bloom")}: Create a {DendroText("Dendro Core")} and gain a {UtilityText("Verdant Dew")}, up to {UtilityText(lunarBloomVerdantDewCap.ToString())}. Dealing {DendroText()} {UtilityText("skill")} damage with {UtilityText(lunarBloomVerdantDewCap.ToString() + " Verdant Dews")} will consume them and increase the damage dealt by {DamageText((lunarBloomDamageMultiplier * 100) + "%")}.";
             string moonWheelDescCrystallize = $"{GeoText("Lunar-Crystallize")}: Create three Moondrifts. For every {UtilityText(lunarCrystallizeTriggersToAttack.ToString())} times this reaction is triggered, the Moondrifts will deal {DamageValueTextRepeat(lunarCrystallizeDamageCoefficient, 3)}.";
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_DESCRIPTION", $"{moonWheelDescIntro}\n\n{moonWheelDescCharged}\n{moonWheelDescBloom}\n{moonWheelDescCrystallize}");
-            QualitySupport.AddQualityLanguage($"MOON_WHEEL", false, $"{moonWheelDescIntro}\n\n{moonWheelDescCharged} {QualitySupport.qualityIcon} {DamageText("{0}%")} {StackingText("(+{0}% per stack)")} chance to strike twice.\n{moonWheelDescBloom} {QualitySupport.qualityIcon} {UtilityText("{0}%")} {StackingText("(+{0}% per stack)")} chance to gain an additional {UtilityText("Verdant Dew")}.\n{moonWheelDescCrystallize} Each Moondrift has a {QualitySupport.qualityIcon} {DamageText("{0}%")} {StackingText("(+{0}% per stack)")} chance to fire twice.", false,
+            QualitySupport.AddQualityLanguage($"MOON_WHEEL", false, $"{moonWheelDescIntro}\n\n{moonWheelDescCharged} {QualitySupport.qualityIcon} {DamageText("{0}%")} {StackingText("(+{0}% per stack)")} chance to strike twice.\n{moonWheelDescBloom} {QualitySupport.qualityIcon} {UtilityText("{0}%")} {StackingText("(+{0}% per stack)")} chance to gain an additional {UtilityText("Verdant Dew")}.\n{moonWheelDescCrystallize} Each Moondrift has a {QualitySupport.qualityIcon} {DamageText("{0}%")} {StackingText("(+{0}% per stack)")} chance to fire twice.",
                 moonWheelQualityChancePerQuality * 1,
                 moonWheelQualityChancePerQuality * 2,
                 moonWheelQualityChancePerQuality * 3,

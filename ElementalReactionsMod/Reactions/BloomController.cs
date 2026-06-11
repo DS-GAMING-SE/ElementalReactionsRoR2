@@ -73,7 +73,7 @@ namespace ElementalReactionsMod.Reactions
 
                 float damage = StaticValues.bloomDamageCoefficient * projectileDamage.damage;
 
-                ManualBlastAttack(characterBody.corePosition, StaticValues.genericReactionExplosionRadius, projectileController.owner, projectileController.teamFilter.teamIndex,
+                ManualBlastAttack(characterBody.corePosition, StaticValues.bloomRadius, projectileController.owner, projectileController.teamFilter.teamIndex,
                     damage, damage * (Config.PlayerBloomResistance().Value / 100f), false, damageType, true);
 
                 EffectManager.SimpleEffect(Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Treebot.OmniExplosionVFXTreebot_prefab).WaitForCompletion(), characterBody.corePosition, Quaternion.identity, true);
