@@ -28,6 +28,8 @@ namespace ElementalReactionsMod.Reactions
         //public static PrefabComponentPool<ElementalReactionPooledObject> crystallizePool;
         public static AsyncOperationHandle<GameObject> quickenTempVisualEffect;
         public static AsyncOperationHandle<GameObject> bloomCore;
+        public static AsyncOperationHandle<GameObject> bloomExplosion;
+        public static AsyncOperationHandle<GameObject> burgeonExplosion;
         public static DeployableSlot bloomDeployableSlot;
         //public static PrefabComponentPool<ElementalReactionPooledObject> bloomPool;
         public static AsyncOperationHandle<GameObject> lunarChargedEffect;
@@ -52,22 +54,23 @@ namespace ElementalReactionsMod.Reactions
             UnloadAssets();
             SingletonHelper.Unassign(ref instance, this);
         }
-
-        public static void ApplyElement(ElementDef element, CharacterBody target, float procCoefficient = 1f)
+        // Maybe switch to something using ambient level instead of attacker so there's less variation in damage?
+        public static void ApplyElement(ElementDef element, CharacterBody target, float procCoefficient = 1f, GameObject overrideAttacker = null, bool alwaysPersist = false)
         {
             if (element && target)
             {
                 DamageInfo empty = new DamageInfo();
                 empty.procCoefficient = procCoefficient;
-                ApplyElement(element, target, ref empty, out _);
+                if (overrideAttacker) empty.attacker = overrideAttacker;
+                ApplyElement(element, target, ref empty, out _, alwaysPersist);
             }
         }
-        public static void ApplyElement(ElementDef element, CharacterBody target, ref DamageInfo damageInfo, out float addedDamage)
+        public static void ApplyElement(ElementDef element, CharacterBody target, ref DamageInfo damageInfo, out float addedDamage, bool alwaysPersist = false)
         {
             addedDamage = 0;
             if (element && element != DefaultElementDefs.physicalElement && !target.HasBuff(element.cooldownBuff) && damageInfo.procCoefficient != 0)
             {
-                if (!TryTriggerReaction(element, target, ref damageInfo, ref addedDamage) && element.canPersist)
+                if (!TryTriggerReaction(element, target, ref damageInfo, ref addedDamage) && (element.canPersist || alwaysPersist))
                 {
                     if (damageInfo.procCoefficient == float.MaxValue)
                     {
@@ -89,17 +92,29 @@ namespace ElementalReactionsMod.Reactions
                 ElementalReactionDef reaction = ElementalReactionCatalog.GetElementalReaction(element, reacting);
                 if (reaction)
                 {
-                    float remainingElementDuration = target.ReduceTimedBuffDuration(reacting.buff, StaticValues.elementAppliedDuration * damageInfo.procCoefficient * (reacting == reaction.baseElement ? reaction.baseFirstReactionCoefficient : reaction.baseLastReactionCoefficient));
-                    if (remainingElementDuration == float.MaxValue)
+                    if (damageInfo.procCoefficient != float.MaxValue)
                     {
-                        target.RemoveBuff(reacting.buff);
-                        target.AddTimedBuff(reacting.cooldownBuff, StaticValues.permanentElementICD);
+                        float remainingElementDuration = target.ReduceTimedBuffDuration(reacting.buff, StaticValues.elementAppliedDuration * damageInfo.procCoefficient * (reacting == reaction.baseElement ? reaction.baseFirstReactionCoefficient : reaction.baseLastReactionCoefficient));
+                        if (remainingElementDuration == float.MaxValue)
+                        {
+                            target.RemoveBuff(reacting.buff);
+                            target.AddTimedBuff(reacting.cooldownBuff, StaticValues.permanentElementICD);
+                        }
+                        if (remainingElementDuration == 0)
+                        {
+                            target.AddTimedBuff(reacting.cooldownBuff, StaticValues.elementRemovedICD);
+                        }
                     }
-                    if (remainingElementDuration == 0)
+                    else
                     {
+                        target.ClearTimedBuffs(reacting.buff);
+                        if (target.HasBuff(reacting.buff)) target.RemoveBuff(reacting.buff);
                         target.AddTimedBuff(reacting.cooldownBuff, StaticValues.elementRemovedICD);
                     }
                     target.AddTimedBuff(element.cooldownBuff, StaticValues.elementAppliedICD);
+
+                    if (damageInfo.procCoefficient == float.MaxValue) damageInfo.procCoefficient = 1f;
+
                     onPreElementalReactionTriggered?.Invoke(ref reaction, reacting, element, target, ref damageInfo);
                     reaction.TriggerReaction(reacting, element, target, ref damageInfo, ref addedDamage);
                     onElementalReactionTriggered?.Invoke(reaction, reacting, element, target, damageInfo.attacker);
@@ -119,6 +134,8 @@ namespace ElementalReactionsMod.Reactions
             crystallizePickup = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.crystallizePickup, AsyncReferenceHandleUnloadType.OnRunEnd);
             quickenTempVisualEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.quickenTempVisualEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             bloomCore = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.bloomObject, AsyncReferenceHandleUnloadType.OnRunEnd);
+            bloomExplosion = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.bloomExplosion, AsyncReferenceHandleUnloadType.OnRunEnd);
+            burgeonExplosion = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.burgeonExplosion, AsyncReferenceHandleUnloadType.OnRunEnd);
             lunarChargedEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarChargedLightningEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             lunarBloomEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarBloomEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
         }
@@ -132,6 +149,8 @@ namespace ElementalReactionsMod.Reactions
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.crystallizePickup);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.quickenTempVisualEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.bloomObject);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.bloomExplosion);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.burgeonExplosion);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarChargedLightningEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarBloomEffect);
         }

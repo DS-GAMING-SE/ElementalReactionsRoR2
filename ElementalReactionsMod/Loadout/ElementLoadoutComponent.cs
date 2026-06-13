@@ -19,11 +19,28 @@ namespace ElementalReactionsMod.Loadout
         public ElementDef utilityElement;
         public ElementDef specialElement;
 
-        public ElementDef permanentlyAppliedElement;
+        public ElementDef permanentlyAppliedElement
+        {
+            get
+            {
+                if (specialAppliedElement)
+                {
+                    return specialAppliedElement;
+                }
+                else
+                {
+                    return naturallyAppliedElement;
+                }
+            }
+        }
         public bool permanentElementWasApplied;
         private float permanentElementStopwatch;
+        public ElementDef naturallyAppliedElement;
+        public ElementDef specialAppliedElement;
+        public Run.FixedTimeStamp specialAppliedElementEndTime = Run.FixedTimeStamp.positiveInfinity;
 
         public CharacterBody characterBody;
+        public SpecialObjectAttributes specialObjectAttributes;
         public TeamIndex team;
         private void Awake()
         {
@@ -32,6 +49,7 @@ namespace ElementalReactionsMod.Loadout
                 this.enabled = false;
             }
             characterBody = GetComponent<CharacterBody>();
+            specialObjectAttributes = GetComponent<SpecialObjectAttributes>();
         }
 
         private void Start()
@@ -48,7 +66,7 @@ namespace ElementalReactionsMod.Loadout
                     utilityElement ? utilityElement.index : ElementIndex.Physical,
                     specialElement ? specialElement.index : ElementIndex.Physical).Send(R2API.Networking.NetworkDestination.Server);
             }
-            if (Config.CanEnemiesBeElemental().Value && permanentlyAppliedElement && TryGetComponent<SpecialObjectAttributes>(out var specialObjectAttributes))
+            if (Config.CanEnemiesBeElemental().Value && permanentlyAppliedElement && specialObjectAttributes)
             {
                 specialObjectAttributes.damageTypeOverride.SetElement(permanentlyAppliedElement.index);
             }
@@ -56,23 +74,30 @@ namespace ElementalReactionsMod.Loadout
 
         private void FixedUpdate()
         {
-            if (NetworkServer.active && Config.CanEnemiesBeElemental().Value && permanentlyAppliedElement && permanentlyAppliedElement.buff)
+            if (NetworkServer.active)
             {
-                if (characterBody.HasBuff(permanentlyAppliedElement.buff))
+                if (Config.CanEnemiesBeElemental().Value && permanentlyAppliedElement && permanentlyAppliedElement.buff)
                 {
-                    permanentElementWasApplied = true;
-                }
-                else
-                {
-                    if (permanentElementWasApplied)
+                    if (characterBody.HasBuff(permanentlyAppliedElement.buff))
                     {
-                        permanentElementStopwatch = 0;
-                        permanentElementWasApplied = false;
+                        permanentElementWasApplied = true;
                     }
-                    permanentElementStopwatch += Time.fixedDeltaTime;
-                    if (permanentElementStopwatch >= StaticValues.permanentElementICD)
+                    else
                     {
-                        ElementalReactionManager.ApplyElement(permanentlyAppliedElement, characterBody, float.MaxValue);
+                        if (permanentElementWasApplied)
+                        {
+                            permanentElementStopwatch = 0;
+                            permanentElementWasApplied = false;
+                        }
+                        permanentElementStopwatch += Time.fixedDeltaTime;
+                        if (permanentElementStopwatch >= StaticValues.permanentElementICD)
+                        {
+                            ElementalReactionManager.ApplyElement(permanentlyAppliedElement, characterBody, float.MaxValue, gameObject, true);
+                        }
+                    }
+                    if (specialAppliedElement && specialAppliedElementEndTime.hasPassed)
+                    {
+                        SetSpecialAppliedElement(null);
                     }
                 }
             }
@@ -108,6 +133,40 @@ namespace ElementalReactionsMod.Loadout
             secondaryElement = ElementCatalog.GetElementDef(elements[1]);
             utilityElement = ElementCatalog.GetElementDef(elements[2]);
             specialElement = ElementCatalog.GetElementDef(elements[3]);
+        }
+        public void SetSpecialAppliedElement(ElementDef element)
+        {
+            if (!Config.CanEnemiesBeElemental().Value) return;
+            
+            if (element != specialAppliedElement)
+            {
+                AppliedElementChanged(specialAppliedElement, element);
+                specialAppliedElement = element;
+            }
+            specialAppliedElementEndTime = Run.FixedTimeStamp.positiveInfinity;
+        }
+        public void SetSpecialAppliedElement(ElementDef element, float duration)
+        {
+            if (!Config.CanEnemiesBeElemental().Value) return;
+
+            if (element != specialAppliedElement)
+            {
+                AppliedElementChanged(specialAppliedElement, element);
+                specialAppliedElement = element;
+            }
+            specialAppliedElementEndTime = Run.FixedTimeStamp.now + duration;
+        }
+        private void AppliedElementChanged(ElementDef previous, ElementDef current)
+        {
+            if (specialObjectAttributes) specialObjectAttributes.damageTypeOverride.SetElement(current.index);
+            if (previous && previous.buff && characterBody.HasBuff(previous.buff) && permanentElementWasApplied)
+            {
+                characterBody.RemoveBuff(previous.buff);
+            }
+            if (current && current.buff)
+            {
+                ElementalReactionManager.ApplyElement(current, characterBody, float.MaxValue);
+            }
         }
 
         public static void AddElementLoadoutComponents()

@@ -192,7 +192,7 @@ namespace ElementalReactionsMod.Reactions
                         projectilePrefab = bloomCore.WaitForCompletion(),
                         damage = characterBody.damage,
                         crit = false,
-                        position = pos + (1.5f * Vector3.up),
+                        position = pos + (2f * Vector3.up),
                         rotation = Quaternion.identity,
                         owner = damage.attacker
                     });

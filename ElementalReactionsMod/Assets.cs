@@ -98,6 +98,7 @@ namespace ElementalReactionsMod
             };
 
             #region Reactions
+            Mesh ringMesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.mdlVFXDonut2_fbx_donut2Mesh_)).WaitForCompletion();
             electroTrailMaterial = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matPrimeDevastatorChargeVFX2_mat)).WaitForCompletion());
             electroTrailMaterial.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTeslaCoil_png)).WaitForCompletion());
             electroTrailMaterial.SetFloat("_Boost", 2f);
@@ -106,10 +107,21 @@ namespace ElementalReactionsMod
             darkElectricTrailMaterial.SetColor("_TintColor", Color.black);
             darkElectricTrailMaterial.SetInt("_DstBlend", 10);
 
+            Texture dendroRampTex = AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampOrbitalLaser_png)).WaitForCompletion();
             dendroElectricTrailMaterial = new Material(electroTrailMaterial);
-            dendroElectricTrailMaterial.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampOrbitalLaser_png)).WaitForCompletion());
+            dendroElectricTrailMaterial.SetTexture("_RemapTex", dendroRampTex);
             dendroElectricTrailMaterial.SetColor("_TintColor", new Color(0.5f, 1f, 0f));
             dendroElectricTrailMaterial.SetFloat("_Boost", 4f);
+
+            Material dendroLeafMat = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Seeker.matSeekerLotus_mat_bfd003ca)).WaitForCompletion();
+            dendroLeafMat.SetColor("_TintColor", Color.white);
+            Material bloomCoreExplosionMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matOmniRing1Generic_mat)).WaitForCompletion());
+            bloomCoreExplosionMat.SetTexture("_MainTex", AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.bloomTransparent).WaitForCompletion());
+            bloomCoreExplosionMat.SetTexture("_RemapTex", dendroRampTex);
+            bloomCoreExplosionMat.SetFloat("_AlphaBoost", 1f);
+            bloomCoreExplosionMat.SetFloat("_Boost", 1f);
+            bloomCoreExplosionMat.SetInt("_SrcBlend", 5);
+            bloomCoreExplosionMat.SetInt("_DstBlend", 1);
 
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.electroChargeTempVisualEffect).Completed += x =>
             {
@@ -242,7 +254,7 @@ namespace ElementalReactionsMod
                 GenericElementEffectComponent component = x.Result.AddComponent<GenericElementEffectComponent>();
                 ParticleSystemRenderer swirlRingParticleRenderer = x.Result.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
                 component.particlesToRecolor = [swirlRingParticleRenderer.GetComponent<ParticleSystem>()];
-                swirlRingParticleRenderer.mesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.mdlVFXDonut2_fbx_donut2Mesh_)).WaitForCompletion();
+                swirlRingParticleRenderer.mesh = ringMesh;
                 AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BFG.matBeamSphereBeam_mat)).Completed += y =>
                 {
                     Material swirlMat = new Material(y.Result);
@@ -262,7 +274,7 @@ namespace ElementalReactionsMod
                 {
                     x.Result.SetTexture("_FresnelMask", y.Result);
                 };
-                x.Result.SetTexture("_FresnelRamp", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampOrbitalLaser_png)).WaitForCompletion());
+                x.Result.SetTexture("_FresnelRamp", dendroRampTex);
                 x.Result.EnableKeyword("FRESNEL_EMISSION");
                 x.Result.SetFloat("_FresnelBoost", 7f);
                 x.Result.SetFloat("_FresnelPower", 1.6f);
@@ -283,6 +295,7 @@ namespace ElementalReactionsMod
                 healthComponent.body = characterBody;
                 characterBody.baseMaxHealth = 1f;
                 characterBody.healthComponent = healthComponent;
+                x.Result.AddComponent<PseudoCharacterMotor>();
                 var model = x.Result.transform.GetChild(0).gameObject.AddComponent<HurtBoxGroup>();
                 var modelLocator = x.Result.AddComponent<ModelLocator>();
                 modelLocator.modelTransform = model.transform;
@@ -306,6 +319,106 @@ namespace ElementalReactionsMod
                 x.Result.AddComponent<ProjectileDeployToOwner>().deployableSlot = ElementalReactionManager.bloomDeployableSlot;
 
                 Content.AddNetworkedObjectPrefab(x.Result);
+            };
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.bloomExplosion).Completed += x =>
+            {
+                EffectComponent effect = x.Result.AddComponent<EffectComponent>();
+                effect.positionAtReferencedTransform = true;
+                effect.parentToReferencedTransform = false;
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Medium;
+                vfx.DoNotPool = false;
+                ShakeEmitter shakeEmitter = x.Result.AddComponent<ShakeEmitter>();
+                shakeEmitter.amplitudeTimeDecay = true;
+                shakeEmitter.duration = 0.2f;
+                shakeEmitter.radius = 55f;
+                shakeEmitter.scaleShakeRadiusWithLocalScale = false;
+
+                shakeEmitter.wave = new Wave
+                {
+                    amplitude = 0.35f,
+                    frequency = 30f,
+                    cycleOffset = 0f
+                };
+                x.Result.AddComponent<NetworkIdentity>();
+                ParticleSystemRenderer ringParticleRenderer = x.Result.transform.Find("BloomRing").GetComponent<ParticleSystemRenderer>();
+                ringParticleRenderer.mesh = ringMesh;
+                Material bloomRingMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BFG.matBeamSphereBeam_mat)).WaitForCompletion());
+                bloomRingMat.SetTexture("_RemapTex", dendroRampTex);
+                ringParticleRenderer.sharedMaterial = bloomRingMat;
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_EliteEarth.matAffixEarthSphereIndicator_mat)).Completed += y =>
+                {
+                    Material bloomSphereMat = new Material(y.Result);
+                    bloomSphereMat.SetTexture("_RemapTex", dendroRampTex);
+                    bloomSphereMat.SetFloat("_SrcBlendFloat", 1);
+                    bloomSphereMat.SetFloat("_DstBlendFloat", 1);
+                    x.Result.transform.Find("BloomSphere").GetComponent<ParticleSystemRenderer>().sharedMaterial = bloomSphereMat;
+                };
+                x.Result.transform.Find("BloomExplosionCore").GetComponent<ParticleSystemRenderer>().sharedMaterial = bloomCoreExplosionMat;
+                var flash = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
+                x.Result.transform.Find("BloomSparks").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
+                x.Result.transform.Find("BloomPetals").GetComponent<ParticleSystemRenderer>().sharedMaterial = dendroLeafMat;
+                var light = x.Result.transform.Find("Light");
+                vfx.optionalLights = [light.GetComponent<Light>()];
+                var lightCurve = light.gameObject.AddComponent<LightIntensityCurve>();
+                lightCurve.timeMax = 0.3f;
+                lightCurve.curve = AnimationCurve.EaseInOut(0, 1, 1, 0);
+                x.Result.AddComponent<DestroyOnTimer>().duration = 1f;
+
+                AddNewEffectDef(x.Result, "Play_seeker_skill1_impact");
+            };
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.burgeonExplosion).Completed += x =>
+            {
+                EffectComponent effect = x.Result.AddComponent<EffectComponent>();
+                effect.positionAtReferencedTransform = true;
+                effect.parentToReferencedTransform = false;
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Medium;
+                vfx.DoNotPool = false;
+                ShakeEmitter shakeEmitter = x.Result.AddComponent<ShakeEmitter>();
+                shakeEmitter.amplitudeTimeDecay = true;
+                shakeEmitter.duration = 0.25f;
+                shakeEmitter.radius = 55f;
+                shakeEmitter.scaleShakeRadiusWithLocalScale = false;
+
+                shakeEmitter.wave = new Wave
+                {
+                    amplitude = 0.55f,
+                    frequency = 30f,
+                    cycleOffset = 0f
+                };
+                x.Result.AddComponent<NetworkIdentity>();
+                Texture burgeonRamp = AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampWilloWispExplosion2_png)).WaitForCompletion();
+                ParticleSystemRenderer ringParticleRenderer = x.Result.transform.Find("BloomRing").GetComponent<ParticleSystemRenderer>();
+                ringParticleRenderer.mesh = ringMesh;
+                Material bloomRingMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BFG.matBeamSphereBeam_mat)).WaitForCompletion());
+                bloomRingMat.SetTexture("_RemapTex", burgeonRamp);
+                bloomRingMat.SetInt("_SrcBlend", 5);
+                ringParticleRenderer.sharedMaterial = bloomRingMat;
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BurnNearby.matHelfireRangeIndicator_mat)).Completed += y =>
+                {
+                    Material bloomSphereMat = new Material(y.Result);
+                    bloomSphereMat.SetTexture("_RemapTex", burgeonRamp);
+                    bloomSphereMat.SetFloat("_SrcBlendFloat", 5);
+                    bloomSphereMat.SetFloat("_DstBlendFloat", 1);
+                    x.Result.transform.Find("BloomSphere").GetComponent<ParticleSystemRenderer>().sharedMaterial = bloomSphereMat;
+                };
+                Material burgeonCoreExplosion = new Material(bloomCoreExplosionMat);
+                burgeonCoreExplosion.SetTexture("_RemapTex", burgeonRamp);
+                x.Result.transform.Find("BloomExplosionCore").GetComponent<ParticleSystemRenderer>().sharedMaterial = burgeonCoreExplosion;
+                var flash = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
+                x.Result.transform.Find("BloomSparks").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
+                x.Result.transform.Find("BloomPetals").GetComponent<ParticleSystemRenderer>().sharedMaterial = dendroLeafMat;
+                var light = x.Result.transform.Find("Light");
+                vfx.optionalLights = [light.GetComponent<Light>()];
+                var lightCurve = light.gameObject.AddComponent<LightIntensityCurve>();
+                lightCurve.timeMax = 0.35f;
+                lightCurve.curve = AnimationCurve.EaseInOut(0, 1, 1, 0);
+                x.Result.AddComponent<DestroyOnTimer>().duration = 1f;
+
+                AddNewEffectDef(x.Result, "Play_seeker_skill1_impact");
             };
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.crystallizePickup).Completed += x =>
             {
@@ -385,7 +498,6 @@ namespace ElementalReactionsMod
             };
 
             #region Lunar Reactions
-            // redo lunarvfxsymbol texture so it isn't touching the edge
             Material lunarVFXSymbol = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matOmniRing1Generic_mat)).WaitForCompletion());
             lunarVFXSymbol.SetTexture("_MainTex", AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.lunarVFXSymbol).WaitForCompletion());
             lunarVFXSymbol.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTritoneSmoothed_png)).WaitForCompletion());
@@ -519,6 +631,7 @@ namespace ElementalReactionsMod
                 AddNewEffectDef(x.Result, "Play_seeker_skill4_win");
             };
             // use more seeker sfx for lunar crystallize. shift enter for crystallize spawn, primary for attack?
+            //Play_Seeker_PalmBlast_HealImpact for reaching 3 moondrifts
             #endregion
             #endregion
         }
@@ -720,6 +833,10 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<GameObject> bloomObject = new("3208908270e8db14489bfb68079f0dcd");
             public static AssetReferenceT<Material> bloomMaterial = new("c74a8fba09c05e843afab90abce26e10");
             public static AssetReferenceT<Texture> bloomFresnelMask = new("77d939fda7dde4048a33fccac924a029");
+            public static AssetReferenceT<Texture> bloomTransparent = new("ff18c4fae117474409f084cf24b74999");
+
+            public static AssetReferenceT<GameObject> bloomExplosion = new("1a5da254110bef7488484791f3220e83");
+            public static AssetReferenceT<GameObject> burgeonExplosion = new("016343dff8c6ed345a37610401ac69b4");
             #endregion
 
             #region Items

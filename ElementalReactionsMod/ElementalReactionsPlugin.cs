@@ -51,13 +51,12 @@ namespace ElementalReactionsMod
 
             if (Chainloader.PluginInfos.ContainsKey(ItemQualities.ItemQualitiesPlugin.PluginGUID)) qualityModExists = true;
             if (qualityModExists) QualityInitialize();
+            ElementalReactionManager.bloomDeployableSlot = DeployableAPI.RegisterDeployableSlot((self, deployableCountMultiplier) => { return StaticValues.bloomCap; });
+            ElementalReactionManager.crystallizeDeployableSlot = DeployableAPI.RegisterDeployableSlot((self, deployableCountMultiplier) => { return StaticValues.crystallizeCap; });
 
             Assets.Initialize();
 
             Buffs.Initialize();
-
-            ElementalReactionManager.bloomDeployableSlot = DeployableAPI.RegisterDeployableSlot((self, deployableCountMultiplier) => { return StaticValues.bloomCap; });
-            ElementalReactionManager.crystallizeDeployableSlot = DeployableAPI.RegisterDeployableSlot((self, deployableCountMultiplier) => { return StaticValues.crystallizeCap; });
 
             DelusionManager.Initialize();
 

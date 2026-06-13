@@ -51,7 +51,6 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("RoboBallRedBuddyBody", electroElement, electroElement, electroElement, electroElement); // ally
             CreateLoadout("TankerBody", pyroElement);
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Tanker.TankerAccelerantProjectile_prefab, pyroElement);
-            // grease puddles
             CreateLoadout("IronHaulerBody", anemoElement, anemoElement, anemoElement, anemoElement);
             CreateLoadout("GolemBody", geoElement, electroElement);
             CreateLoadout("VoidBarnacleBody", hydroElement);
@@ -74,7 +73,7 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("VoidMegaCrabBody", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("VoidMegaCrabAllyBody", hydroElement, hydroElement, hydroElement, hydroElement); // ally
             CreateLoadout("VagrantBody", electroElement, electroElement, electroElement, electroElement, electroElement);
-            // malachite urchin? figure out elites
+            CreateLoadout("VagrantTrackingBomb", electroElement, electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("VoidInfestorBody", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("VultureHunterBody", electroElement, pyroElement);
             CreateLoadout("ArifactShellBody", electroElement);
@@ -109,6 +108,9 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("MiniVoidCrabBodyPhase3", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("VoidCrabBody", hydroElement, hydroElement, hydroElement, hydroElement);
 
+            CreateLoadout("SolusVendorBody", electroElement, electroElement, electroElement, electroElement, electroElement);
+            
+            // malachite urchin? figure out elites
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Collective.CollectiveDeathProjectile_prefab, electroElement);
             CreateLoadout("AffixEarthHealerBody", dendroElement, dendroElement, dendroElement, dendroElement, dendroElement);
 
@@ -135,6 +137,7 @@ namespace ElementalReactionsMod.Loadout
                 CreateLoadout("LynxShamanBody", dendroElement, dendroElement, dendroElement, dendroElement);
                 CreateLoadout("LynxShamanAllyBody", dendroElement, dendroElement, dendroElement, dendroElement); // Ally
                 CreateLoadout("SandCrabBody", physicalElement, hydroElement);
+                CreateLoadout("SandCrabBubbleProjectile", hydroElement, hydroElement, hydroElement, hydroElement, hydroElement);
                 CreateLoadout("ColossusBody", geoElement, geoElement, electroElement, electroElement);
                 CreateLoadout("IfritBody", physicalElement, pyroElement, pyroElement, pyroElement, pyroElement);
                 CreateLoadout("IfritPylonEnemyBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
@@ -169,7 +172,7 @@ namespace ElementalReactionsMod.Loadout
                 ElementDef[] loadout = [primary ? primary : physicalElement, secondary ? secondary : physicalElement, utility ? utility : physicalElement, special ? special : physicalElement];
                 ElementLoadoutComponent loadoutComponent = body.EnsureComponent<ElementLoadoutComponent>();
                 loadoutComponent.ApplyElementLoadout(loadout);
-                loadoutComponent.permanentlyAppliedElement = applied;
+                loadoutComponent.naturallyAppliedElement = applied;
                 List<ElementDef> duplicateElementDef = new List<ElementDef>();
                 foreach (var item in loadout)
                 {

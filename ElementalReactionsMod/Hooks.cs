@@ -2,6 +2,7 @@
 using ElementalReactionsMod.Items;
 using ElementalReactionsMod.Loadout;
 using ElementalReactionsMod.Reactions;
+using HarmonyLib;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.Utils;
@@ -15,10 +16,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace ElementalReactionsMod
 {
-    public static class Hooks
+    public static class Hooks // I wrote my first IL hook for this mod. It was scary. It is still scary sometimes. That's progress, I guess
     {
         public static void Initialize()
         {
@@ -30,6 +32,13 @@ namespace ElementalReactionsMod
             IL.RoR2.CharacterBody.AddTimedBuff_BuffDef_float += SolusWingCoolingCryo;
             IL.RoR2.CharacterBody.InflictLavaDamage += LavaPyro;
             IL.RoR2.Projectile.ProjectileManager.InitializeProjectile += AddLoadoutElementToProjectile;
+            On.EntityStates.RoboBallBoss.Weapon.FireSuperDelayKnockup.OnEnter += AlloyWorshipUnitShieldAnemo;
+            On.EntityStates.SolusAmalgamator.ShockArmor.StartShock += SolusAmalgamatorShockArmorElectro;
+            IL.EntityStates.DefectiveUnit.Detonate.FixedUpdate += SolusInvalidatorSlamAttackElectro;
+            On.EntityStates.MiniMushroom.Plant.OnEnter += MiniMushrumHealingStartDendro;
+            On.EntityStates.MiniMushroom.Plant.OnExit += MiniMushrumHealingEndDendro;
+            IL.EntityStates.VoidInfestor.Infest.FixedUpdate += VoidInfestorHydro;
+            IL.RoR2.GlobalEventManager.OnCharacterDeath += GlacialExplosionCryo;
         }
         // Right after IOnincomingDamageReceiver does its thing, since that's where many things (including bloom dendro cores) reject damage
         private static void TakeDamageIL(ILContext il)
@@ -227,6 +236,104 @@ namespace ElementalReactionsMod
                 if (c.TryGotoPrev(x => x.MatchBr(out _))) // redirecting projectiledamage related ifs to go to my code instead of leaving the projectiledamage block
                 {
                     c.Next.Operand = instruction;
+                }
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void AlloyWorshipUnitShieldAnemo(On.EntityStates.RoboBallBoss.Weapon.FireSuperDelayKnockup.orig_OnEnter orig, EntityStates.RoboBallBoss.Weapon.FireSuperDelayKnockup self)
+        {
+            orig(self);
+            if (ElementalReactionManager.instance && NetworkServer.active && self.TryGetComponent<ElementLoadoutComponent>(out var loadout))
+            {
+                loadout.SetSpecialAppliedElement(DefaultElementDefs.anemoElement, EntityStates.RoboBallBoss.Weapon.FireSuperDelayKnockup.shieldDuration);
+            }
+        }
+        private static void SolusAmalgamatorShockArmorElectro(On.EntityStates.SolusAmalgamator.ShockArmor.orig_StartShock orig, EntityStates.SolusAmalgamator.ShockArmor self)
+        {
+            orig(self);
+            if (ElementalReactionManager.instance && NetworkServer.active)
+            {
+                ElementalReactionManager.ApplyElement(DefaultElementDefs.electroElement, self.characterBody, 0.5f, self.gameObject, true);
+            }
+        }
+        private static void SolusInvalidatorSlamAttackElectro(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            if (c.TryGotoNext(MoveType.After, x => x.MatchStfld(typeof(EntityStates.DefectiveUnit.Detonate), nameof(EntityStates.DefectiveUnit.Detonate._hasDetonated))))
+            {
+                c.Emit(OpCodes.Ldarg_0); // Detonate state
+                c.EmitDelegate<Action<EntityStates.DefectiveUnit.Detonate>>((self) =>
+                {
+                    if (ElementalReactionManager.instance && NetworkServer.active)
+                    {
+                        ElementalReactionManager.ApplyElement(DefaultElementDefs.electroElement, self.characterBody, 0.5f, self.gameObject);
+                    }
+                });
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void MiniMushrumHealingStartDendro(On.EntityStates.MiniMushroom.Plant.orig_OnEnter orig, EntityStates.MiniMushroom.Plant self)
+        {
+            orig(self);
+            if (ElementalReactionManager.instance && NetworkServer.active && self.TryGetComponent<ElementLoadoutComponent>(out var loadout))
+            {
+                loadout.SetSpecialAppliedElement(DefaultElementDefs.dendroElement);
+            }
+        }
+        private static void MiniMushrumHealingEndDendro(On.EntityStates.MiniMushroom.Plant.orig_OnExit orig, EntityStates.MiniMushroom.Plant self)
+        {
+            if (ElementalReactionManager.instance && NetworkServer.active && self.TryGetComponent<ElementLoadoutComponent>(out var loadout))
+            {
+                loadout.SetSpecialAppliedElement(null);
+            }
+            orig(self);
+        }
+        private static void VoidInfestorHydro(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            if (c.TryGotoNext(MoveType.After, x => x.MatchCallOrCallvirt(AccessTools.PropertySetter(typeof(TeamComponent), nameof(TeamComponent.teamIndex)))))
+            {
+                c.Emit(OpCodes.Ldarg_0); // Infest state
+                c.Emit(OpCodes.Ldloc_3); // target body
+                c.EmitDelegate<Action<EntityStates.VoidInfestor.Infest, CharacterBody>>((self, target) =>
+                {
+                    if (ElementalReactionManager.instance)
+                    {
+                        ElementalReactionManager.ApplyElement(DefaultElementDefs.hydroElement, target, 3f, self.gameObject);
+                    }
+                });
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void GlacialExplosionCryo(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            int delayBlastComponentLoc = -1;
+            // I don't know how to match GetComponent to find where DelayBlast is first stored. Instead, I'm finding a point where the DelayBlast is loaded
+            // (setting the base force) and going back to find the DelayBlast loc index from there
+            if (c.TryGotoNext(x => x.MatchLdsfld(typeof(RoR2Content.Buffs), nameof(RoR2Content.Buffs.AffixWhite))) &&
+                c.TryGotoNext(MoveType.After, x => x.MatchStfld(typeof(DelayBlast), nameof(DelayBlast.baseForce))) &&
+                c.TryGotoPrev(x => x.MatchLdloc(out delayBlastComponentLoc)))
+            {
+                if (c.TryGotoNext(MoveType.After, x => x.MatchStfld(typeof(DelayBlast), nameof(DelayBlast.damageType))))
+                {
+                    c.Emit(OpCodes.Ldloc, delayBlastComponentLoc);
+                    c.EmitDelegate<Action<DelayBlast>>((self) =>
+                    {
+                        if (ElementalReactionManager.instance)
+                        {
+                            self.damageType.SetElement(DefaultElementDefs.cryoElement.index);
+                        }
+                    });
                 }
             }
             else
