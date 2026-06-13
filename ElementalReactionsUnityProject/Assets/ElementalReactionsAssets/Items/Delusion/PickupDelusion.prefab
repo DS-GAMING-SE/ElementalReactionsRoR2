@@ -124,7 +124,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2647601203949269740}
   m_Layer: 0
-  m_Name: mdlDelusion
+  m_Name: PickupDelusion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

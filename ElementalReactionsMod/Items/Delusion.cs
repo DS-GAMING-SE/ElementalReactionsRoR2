@@ -25,22 +25,25 @@ namespace ElementalReactionsMod.Items
         public static ItemTag delusionItemTag;
         public static Dictionary<ItemDef, ElementDef> delusionToElement = new Dictionary<ItemDef, ElementDef>();
 
+        private static Material delusionMat;
+
         public static void Initialize()
         {
             delusionItemTag = ItemAPI.AddItemTag("ElementalReactionsDelusion");
+            delusionMat = Assets.CreateVisionMaterial(delusionLogo, new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampDefault_png), 0.75f);
             AssetAsyncReferenceManager<GameObject>.LoadAsset(delusionPickupModel).Completed += x =>
             {
-                x.Result.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = Assets.CreateVisionMaterial(delusionLogo, new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampDefault_png), 0.75f);
+                x.Result.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = delusionMat;
                 AddModelPanelParameters(x.Result);
             };
             delusion = AddNewItem("Delusion", "DELUSION", true, Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.LunarTierDef_asset).WaitForCompletion(),
-                Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, ItemTag.Damage, ItemTag.AllowedForUseAsCraftingIngredient);
+                Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, InitializeItemDisplays(), ItemTag.Damage, ItemTag.AllowedForUseAsCraftingIngredient);
             ItemAPI.ApplyTagToItem(delusionItemTag, delusion);
         }
         public static ItemDef CreateNewDelusion(ElementDef element)
         {
             ItemDef delusion = AddNewItem($"Delusion{element.cachedName}", $"DELUSION_{element.cachedName.ToUpper()}", true, Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.LunarTierDef_asset).WaitForCompletion(),
-                Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, ItemTag.Damage, ItemTag.WorldUnique, ItemTag.AllowedForUseAsCraftingIngredient);
+                Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, null, ItemTag.Damage, ItemTag.WorldUnique, ItemTag.AllowedForUseAsCraftingIngredient);
             ItemAPI.ApplyTagToItem(delusionItemTag, delusion);
             delusionToElement.Add(delusion, element);
             return delusion;
@@ -67,6 +70,186 @@ namespace ElementalReactionsMod.Items
                 count += inventory.GetItemCountEffective(delusion);
             }
             return count;
+        }
+        public static ItemDisplayRuleDict InitializeItemDisplays()
+        {
+            GameObject displayPrefab = AssetAsyncReferenceManager<GameObject>.LoadAsset(delusionDisplayModel).WaitForCompletion();
+            displayPrefab.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = delusionMat;
+            CreateItemDisplay(displayPrefab, CreateItemRendererInfo(displayPrefab, 0, visionHolderMaterial), CreateItemRendererInfo(displayPrefab, 1, delusionMat));
+            ItemDisplayRuleDict itemDisplays = new ItemDisplayRuleDict();
+            /*itemDisplays.Add("CommandoBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "LowerArmL",
+                localPos = new Vector3(0.03206F, 0.23382F, -0.05406F),
+                localAngles = new Vector3(5.56553F, 0.75563F, 0.95463F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });
+            itemDisplays.Add("HuntressBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "Chest",
+                localPos = new Vector3(-0.00073F, 0.20592F, 0.162F),
+                localAngles = new Vector3(331.3469F, 1.57845F, 1.41202F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });
+            itemDisplays.Add("Bandit2Body", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "Hat",
+                localPos = new Vector3(-0.00262F, 0.11559F, 0.08425F),
+                localAngles = new Vector3(317.5828F, 353.8432F, 5.02905F),
+                localScale = new Vector3(0.7F, 0.7F, 0.7F)
+            });
+            itemDisplays.Add("ToolbotBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "",
+                localPos = new Vector3(0F, 0F, 0F),
+                localAngles = new Vector3(0F, 0F, 0F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });
+            itemDisplays.Add("EngiBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "",
+                localPos = new Vector3(0F, 0F, 0F),
+                localAngles = new Vector3(0F, 0F, 0F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });
+            itemDisplays.Add("MageBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "",
+                localPos = new Vector3(0F, 0F, 0F),
+                localAngles = new Vector3(0F, 0F, 0F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });
+            itemDisplays.Add("MercBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "",
+                localPos = new Vector3(0F, 0F, 0F),
+                localAngles = new Vector3(0F, 0F, 0F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });
+            itemDisplays.Add("TreebotBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "",
+                localPos = new Vector3(0F, 0F, 0F),
+                localAngles = new Vector3(0F, 0F, 0F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });*/
+            itemDisplays.Add("LoaderBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "MechHandR",
+                localPos = new Vector3(0.07702F, 0.14753F, 0.14142F),
+                localAngles = new Vector3(4.85349F, 34.75354F, 181.8131F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });/*
+            itemDisplays.Add("CrocoBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "",
+                localPos = new Vector3(0F, 0F, 0F),
+                localAngles = new Vector3(0F, 0F, 0F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });
+            itemDisplays.Add("CaptainBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "",
+                localPos = new Vector3(0F, 0F, 0F),
+                localAngles = new Vector3(0F, 0F, 0F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });
+            itemDisplays.Add("RailgunnerBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "",
+                localPos = new Vector3(0F, 0F, 0F),
+                localAngles = new Vector3(0F, 0F, 0F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });*/
+            itemDisplays.Add("VoidSurvivorBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "CannonEnd",
+                localPos = new Vector3(-0.01739F, -0.20445F, -0.09182F),
+                localAngles = new Vector3(355.2102F, 51.1422F, 184.9114F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });/*
+            itemDisplays.Add("SeekerBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "Pack",
+                localPos = new Vector3(-0.17127F, -0.10742F, -0.35991F),
+                localAngles = new Vector3(332.9016F, 29.06501F, 28.89558F),
+                localScale = new Vector3(1F, 1F, 1F)
+
+            });
+            itemDisplays.Add("FalseSonBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "",
+                localPos = new Vector3(0F, 0F, 0F),
+                localAngles = new Vector3(0F, 0F, 0F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });
+            itemDisplays.Add("ChefBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "",
+                localPos = new Vector3(0F, 0F, 0F),
+                localAngles = new Vector3(0F, 0F, 0F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });
+            itemDisplays.Add("DroneTechBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "",
+                localPos = new Vector3(0F, 0F, 0F),
+                localAngles = new Vector3(0F, 0F, 0F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });*/
+            itemDisplays.Add("DrifterBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "BagBulgeLeft",
+                localPos = new Vector3(0.07217F, 0.12617F, 0.23026F),
+                localAngles = new Vector3(345.8675F, 297.6887F, 270.2614F),
+                localScale = new Vector3(1F, 1F, 1F)
+            });
+            itemDisplays.Add("BrotherBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject("de62e89840152434cb622e434bf9bb62"),
+                childName = "chest",
+                localPos = new Vector3(-0.22503F, 0.31914F, 0.08435F),
+                localAngles = new Vector3(7.70729F, 20.07879F, 317.6756F),
+                localScale = new Vector3(0.11F, 0.11F, 0.11F)
+            });
+            return itemDisplays;
         }
     }
     public class NoElementDelusion : BaseItemBodyBehavior

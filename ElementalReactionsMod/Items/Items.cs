@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.XR;
 using static ElementalReactionsMod.Assets.AssetReferences;
 using static ElementalReactionsMod.Materials;
 
@@ -17,22 +18,14 @@ namespace ElementalReactionsMod.Items
     {
         public static ItemDef delusion;
         public static ItemDef instructorsTeaCup;
-        public static ItemDef moonWheel;
+        public static ItemDef moonWheel => MoonWheel.moonWheel;
 
         public static void Initialize()
         {
             instructorsTeaCup = AddNewItem("InstructorsTeaCup", "INSTRUCTORS_TEA_CUP", true,
                 Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.Tier1Def_asset).WaitForCompletion(),
-                instructorsTeaCupItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), instructorsTeaCupPickupModel, ItemTag.Damage, ItemTag.CanBeTemporary);
+                instructorsTeaCupItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), instructorsTeaCupPickupModel, null, ItemTag.Damage, ItemTag.CanBeTemporary);
 
-            AssetAsyncReferenceManager<GameObject>.LoadAsset(moonWheelPickupModel).Completed += x =>
-            {
-                x.Result.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = Assets.CreateVisionMaterial(moonWheelVisionIcon, moonWheelVisionRamp, 1.5f);
-                AddModelPanelParameters(x.Result);
-            };
-            moonWheel = AddNewItem("MoonWheel", "MOON_WHEEL", true,
-                Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.Tier3Def_asset).WaitForCompletion(),
-                moonWheelItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), moonWheelPickupModel, ItemTag.Damage, ItemTag.CanBeTemporary);
             MoonWheel.Initialize();
 
             CharacterBody.onBodyInventoryChangedGlobal += AddItemBehaviours;
@@ -71,7 +64,29 @@ namespace ElementalReactionsMod.Items
             panel.maxDistance = 6f;
             return item;
         }
-        internal static ItemDef AddNewItem(string itemName, string token, bool canRemove, ItemTierDef itemTierDef, Sprite icon, AssetReferenceT<GameObject> pickupModelReference, params ItemTag[] tags)
+        internal static CharacterModel.RendererInfo CreateItemRendererInfo(GameObject displayPrefab, int child, Material material)
+        {
+            return new CharacterModel.RendererInfo
+            {
+                renderer = displayPrefab.transform.GetChild(child).GetComponent<MeshRenderer>(),
+                defaultMaterial = material,
+            };
+        }
+        internal static CharacterModel.RendererInfo CreateItemRendererInfo(GameObject displayPrefab, int child, AssetReferenceT<Material> materialReference)
+        {
+            return new CharacterModel.RendererInfo
+            {
+                renderer = displayPrefab.transform.GetChild(child).GetComponent<MeshRenderer>(),
+                defaultMaterialAddress = materialReference
+            };
+        }
+        internal static GameObject CreateItemDisplay(GameObject displayPrefab, params CharacterModel.RendererInfo[] rendererInfos)
+        {
+            ItemDisplay itemDisplay = displayPrefab.AddComponent<ItemDisplay>();
+            itemDisplay.rendererInfos = rendererInfos;
+            return displayPrefab;
+        }
+        internal static ItemDef AddNewItem(string itemName, string token, bool canRemove, ItemTierDef itemTierDef, Sprite icon, AssetReferenceT<GameObject> pickupModelReference, ItemDisplayRuleDict itemDisplay, params ItemTag[] tags)
         {
             string prefix = $"{ElementalReactionsPlugin.PREFIX}ITEM_";
             ItemDef itemDef = ScriptableObject.CreateInstance<ItemDef>();
@@ -88,7 +103,7 @@ namespace ElementalReactionsMod.Items
             itemDef.loreToken = prefix + token + "_LORE";
             itemDef.tags = tags;
 
-            Content.AddItemDef(itemDef);
+            ItemAPI.Add(new CustomItem(itemDef, itemDisplay));
 
             return itemDef;
         }

@@ -845,6 +845,7 @@ namespace ElementalReactionsMod
             #endregion
             #region Delusion
             public static AssetReferenceT<GameObject> delusionPickupModel = new AssetReferenceT<GameObject>("9f3cf544c7630a04fa25214a5197c191");
+            public static AssetReferenceT<GameObject> delusionDisplayModel = new AssetReferenceT<GameObject>("79b9b2b62c2a66a439fad33cb020271a");
             public static AssetReferenceT<Texture> delusionLogo = new AssetReferenceT<Texture>("8c75207915d01ff4280ac8f0e15b5aad");
             public static AssetReferenceT<Sprite> delusionItemIcon = new AssetReferenceT<Sprite>("884bdf224e0646e43b6dc1b6a2675c92");
 
@@ -861,6 +862,7 @@ namespace ElementalReactionsMod
             #endregion
             #region Moonwheel
             public static AssetReferenceT<GameObject> moonWheelPickupModel = new AssetReferenceT<GameObject>("7e50ea908069f874fac56c93f70a328d");
+            public static AssetReferenceT<GameObject> moonWheelDisplayModel = new AssetReferenceT<GameObject>("061359f9d76adfe429aa42f3b25caeb8");
             public static AssetReferenceT<Texture> moonWheelVisionIcon = new("af83aeca078a68443bf1583507eab088");
             public static AssetReferenceT<Texture> moonWheelVisionRamp = new("1f819082df45cdf44b5b8f019b4a90b5");
             public static AssetReferenceT<Sprite> moonWheelItemIcon = new("00f1f0088ad92dc4eb41b80b7aef67f2");

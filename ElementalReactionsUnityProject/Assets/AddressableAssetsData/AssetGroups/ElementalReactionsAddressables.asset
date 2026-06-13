@@ -265,6 +265,14 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Reactions/Bloom/BurgeonExplosion.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 061359f9d76adfe429aa42f3b25caeb8
+    m_Address: Assets/ElementalReactionsAssets/Items/Moonwheel/DisplayMoonWheel.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 79b9b2b62c2a66a439fad33cb020271a
+    m_Address: Assets/ElementalReactionsAssets/Items/Delusion/DisplayDelusion.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

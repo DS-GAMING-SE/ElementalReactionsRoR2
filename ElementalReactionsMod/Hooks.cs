@@ -39,6 +39,7 @@ namespace ElementalReactionsMod
             On.EntityStates.MiniMushroom.Plant.OnExit += MiniMushrumHealingEndDendro;
             IL.EntityStates.VoidInfestor.Infest.FixedUpdate += VoidInfestorHydro;
             IL.RoR2.GlobalEventManager.OnCharacterDeath += GlacialExplosionCryo;
+            IL.RoR2.CharacterModel.UpdateItemDisplay += DelusionsShareItemDisplay;
         }
         // Right after IOnincomingDamageReceiver does its thing, since that's where many things (including bloom dendro cores) reject damage
         private static void TakeDamageIL(ILContext il)
@@ -335,6 +336,28 @@ namespace ElementalReactionsMod
                         }
                     });
                 }
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void DelusionsShareItemDisplay(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            if (c.TryGotoNext(MoveType.After, x => x.MatchCallOrCallvirt<Inventory>(nameof(Inventory.CalculateEffectiveItemStacks))))
+            {
+                // Item count comes from CalculateEffectiveItemStacks
+                c.Emit(OpCodes.Ldarg_1); // Inventory
+                c.Emit(OpCodes.Ldloc_0); // ItemIndex
+                c.EmitDelegate<Func<int, Inventory, ItemIndex, int>>((itemCount, inventory, itemIndex) =>
+                {
+                    if (inventory && itemIndex == Items.Items.delusion.itemIndex)
+                    {
+                        return itemCount + inventory.GetDelusionCount();
+                    }
+                    return itemCount;
+                });
             }
             else
             {
