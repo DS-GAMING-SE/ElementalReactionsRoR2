@@ -273,6 +273,10 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Items/Delusion/DisplayDelusion.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 2d411dfeba7a2b645b9d2d76d8b9ea90
+    m_Address: Assets/ElementalReactionsAssets/Items/Moonwheel/LunarReactions/texLunarBloomColorlessIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

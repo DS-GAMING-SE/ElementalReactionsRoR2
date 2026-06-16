@@ -53,7 +53,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9046607662889858923, guid: 11147caefb6967a41ab27574e55d2a88, type: 3}
       propertyPath: m_Name
-      value: ElectroChargeTempVisualEffect
+      value: QuickenTempVisualEffect
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11147caefb6967a41ab27574e55d2a88, type: 3}

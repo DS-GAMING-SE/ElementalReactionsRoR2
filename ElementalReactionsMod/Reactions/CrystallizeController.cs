@@ -13,6 +13,7 @@ namespace ElementalReactionsMod.Reactions
         public TeamFilter teamFilter;
         public GameObject baseGameObject;
         public SphereCollider gravitateCollider;
+        public ParticleSystem[] teamRecolorParticle;
         private Deployable deployable;
         public void Awake()
         {
@@ -27,6 +28,14 @@ namespace ElementalReactionsMod.Reactions
             if (NetworkServer.active)
             {
                 gravitateCollider.radius = teamFilter.teamIndex == TeamIndex.Player ? StaticValues.crystallizePlayerGravitateRange : StaticValues.crystallizeEnemyGravitateRange;
+            }
+            if (teamFilter.teamIndex != TeamIndex.Player)
+            {
+                foreach (var particle in teamRecolorParticle)
+                {
+                    var main = particle.main;
+                    main.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 0.17f, 0.25f));
+                }
             }
         }
         private void OnTriggerStay(Collider other)

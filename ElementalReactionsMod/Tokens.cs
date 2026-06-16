@@ -45,7 +45,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_VAPORIZE_DESCRIPTION", $"{PyroText()} + {HydroText()}/{CryoText()}. Based on whether {PyroText()} is applied first or last, increase damage by {DamageMultiplierText(vaporizeMultiplierHydroTrigger)} or {DamageMultiplierText(vaporizeMultiplierPyroTrigger)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_OVERLOAD_NAME", "Overload");
-            LanguageAPI.Add($"{prefix}REACTION_OVERLOAD_DESCRIPTION", $"{PyroText()} + {ElectroText()}. Create an explosion of {PyroText()} dealing {DamageValueText(overloadDamageCoefficient)}.");
+            LanguageAPI.Add($"{prefix}REACTION_OVERLOAD_DESCRIPTION", $"{PyroText()} + {ElectroText()}. Create an explosion dealing {DamageValueText(overloadDamageCoefficient)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_NAME", "Electro-Charge");
             LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_DESCRIPTION", $"{ElectroText()} + {HydroText()}. Create {DamageText("chain lightning")} that arcs between enemies affected by {HydroText()} for {DamageValueTextRepeat(electroChargeDamageCoefficient, Mathf.FloorToInt(electroChargeDuration))} over time.");
@@ -54,10 +54,10 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_FROZEN_DESCRIPTION", $"{CryoText()} + {HydroText()}. Briefly {UtilityText("freeze")} the target.");
 
             LanguageAPI.Add($"{prefix}REACTION_SUPERCONDUCT_NAME", "Superconduct");
-            LanguageAPI.Add($"{prefix}REACTION_SUPERCONDUCT_DESCRIPTION", $"{CryoText()} + {ElectroText()}. Create a blast of {CryoText()} dealing {DamageValueText(superconductDamageCoefficient)} and increasing all non-elemental damage dealt by {DamageMultiplierText(superconductDamageMultiplier)}.");
+            LanguageAPI.Add($"{prefix}REACTION_SUPERCONDUCT_DESCRIPTION", $"{CryoText()} + {ElectroText()}. Create a blast of ice dealing {DamageValueText(superconductDamageCoefficient)} and increasing all non-elemental damage dealt by {DamageMultiplierText(superconductDamageMultiplier)} for {UtilityText($"{superconductDuration}s")}.");
 
             LanguageAPI.Add($"{prefix}REACTION_SWIRL_NAME", "Swirl");
-            LanguageAPI.Add($"{prefix}REACTION_SWIRL_DESCRIPTION", $"{AnemoText()} + {PyroText()}/{HydroText()}/{ElectroText()}/{CryoText()}. Create a burst of the non-{AnemoText()} element dealing {DamageValueText(swirlDamageCoefficient)}.");
+            LanguageAPI.Add($"{prefix}REACTION_SWIRL_DESCRIPTION", $"{AnemoText()} + {PyroText()}/{HydroText()}/{ElectroText()}/{CryoText()}. Create a burst of wind, spreading the non-{AnemoText()} element for {DamageValueText(swirlDamageCoefficient)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_CRYSTALLIZE_NAME", "Crystallize");
             LanguageAPI.Add($"{prefix}REACTION_CRYSTALLIZE_DESCRIPTION", $"{GeoText()} + {PyroText()}/{HydroText()}/{ElectroText()}/{CryoText()}. Create a shard that grants you a {HealingText("temporary barrier")} for {HealingText(crystallizeBarrierPercent*100f+"%")} of your max health, up to {HealingText(crystallizeMaxBarrierPercent * 100f + "%")}.");
@@ -69,7 +69,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_QUICKEN_DESCRIPTION", $"{DendroText()} + {ElectroText()}. Increase damage dealt by all {DendroText()} or {ElectroText()} attacks by a flat {DamageText((quickenDamageAddCoefficient * 100f).ToString()+"% base damage")}.");
 
             LanguageAPI.Add($"{prefix}REACTION_BLOOM_NAME", "Bloom");
-            LanguageAPI.Add($"{prefix}REACTION_BLOOM_DESCRIPTION", $"{DendroText()} + {HydroText()}. Create a {DendroText("Dendro Core")} which explodes after {UtilityText(bloomDuration+"s")} dealing {DamageValueText(bloomDamageCoefficient)} to ALL characters.\n{ElectroText()} converts the core into a {DamageText("homing projectile")} dealing {DamageValueText(hyperBloomDamageCoefficient)}.\n{PyroText()} causes the core to explode in a {DamageText("larger radius")}, dealing {DamageValueText(burgeonDamageCoefficient)} to ALL characters.");
+            LanguageAPI.Add($"{prefix}REACTION_BLOOM_DESCRIPTION", $"{DendroText()} + {HydroText()}. Create a {DendroText("Dendro Core")} which explodes after {UtilityText(bloomDuration+"s")} dealing {DamageValueText(bloomDamageCoefficient)} to ALL characters.\n{ElectroText()} converts the core into a {DamageText("homing projectile")} dealing {DamageValueText(hyperBloomDamageCoefficient)}.\n{PyroText()} detonates the core in a {DamageText("larger radius")}, dealing {DamageValueText(burgeonDamageCoefficient)} to ALL characters.");
             LanguageAPI.Add($"{prefix}REACTION_BLOOM_OBJECT_NAME", "Dendro Core");
             #endregion
 
@@ -89,17 +89,15 @@ namespace ElementalReactionsMod
 
                 But can you hear them?
 
-                The ones you rule, who cry out in anguish.
+                The ones you rule. You reshaped the entire world just for them. Going to such extreme lengths could almost convince me of how much you claim to care about them. 
                 
-                The heretics. The curious. The ones in the wrong place at the wrong time. All the ones you kill to keep your gilded world unblemished.
+                But that cannot be, can it? Your actions do not come from benevolence. After all, how could you ignore all those who cry out in anguish?
+                
+                You shackle them with your taboos. Your constructs of destruction close in after, fencing the mind into meek obedience, so no one would dare imagine breaking free.
 
-                Maybe you only see the 'peace' you envision: The order you have brought to the world, built on lies and oppression. 
+                Your suffocating grip on this world does not go without contempt. Perhaps you have fooled yourself into only seeing peace, but hidden beneath is hatred for the world you've made. Their hatred festers and their will to destroy grows. They are the kindling.
                 
-                Do not be fooled. Your suffocating grip on this world does not go without contempt. Their hatred festers and their will to destroy grows. They are the kindling.
-                
-                No matter how much you try to hide the past of this world, to hide <i>me</i>, there will always be those who look to the sky.
-
-                Those whose gaze pierces through the lies you've confined this world beneath. When their gaze meets mine, their grievances of your world will manifest as an unshakable resolve.
+                Despite all the force and oppression you use to hide me, they look to the sky. Their gaze pierces through the lies you've confined this world beneath. When their gaze meets mine, their grievances of your world manifest as an unshakable resolve.
 
                 The resolve to endure bitter cold, to fight, to kill, and to die, all so they may burn your world away with them.
 
@@ -147,14 +145,12 @@ namespace ElementalReactionsMod
                 moonWheelQualityChancePerQuality * 3,
                 moonWheelQualityChancePerQuality * 4);
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_LORE", """"""
-                Awaken, awaken, new moon, even if all that remains is torment.
-
-                Even if shame and agony gnaw at our hearts through day and night.
-
-                But the moon will rise again, and we and our hearts will not be silent.
-
-                You will hear the roar of the tides, then laughter and cheer in its wake.
+                ---the "traitor" moons were destroyed in the war of funerary flame---
+                ---the moon's downfall was celebrated, as it was seen as the traitor, but providence is really the traitor---
                 """""");
+            LanguageAPI.Add($"{prefix}REACTION_LUNAR_BLOOM_NAME", "Lunar Bloom");
+            LanguageAPI.Add($"{prefix}REACTION_LUNAR_CHARGE_NAME", "Lunar Charge");
+            LanguageAPI.Add($"{prefix}REACTION_LUNAR_CRYSTALLIZE_NAME", "Lunar Crystallize");
             #endregion
         }
         public static string DelusionPickup(string element)

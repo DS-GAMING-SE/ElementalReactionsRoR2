@@ -22,7 +22,7 @@ namespace ElementalReactionsMod
         public const float vaporizeMultiplierPyroTrigger = 1.75f;
         public const float vaporizeMultiplierHydroTrigger = 1.5f;
 
-        public const float overloadDamageCoefficient = 2f;
+        public const float overloadDamageCoefficient = 2.5f;
 
         public const float electroChargeDamageCoefficient = 1f;
         public const float electroChargeDuration = 5f;
@@ -30,8 +30,9 @@ namespace ElementalReactionsMod
 
         public const float superconductDamageCoefficient = 1f;
         public const float superconductDamageMultiplier = 1.3f;
+        public const float superconductDuration = 5f;
 
-        public const float swirlDamageCoefficient = 2f;
+        public const float swirlDamageCoefficient = 1.5f;
 
         public const float quickenDamageAddCoefficient = 0.3f;
 

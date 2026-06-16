@@ -69,7 +69,6 @@ namespace ElementalReactionsMod.Reactions
 
                 DamageTypeCombo damageType = DamageType.AOE;
                 damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
-                damageType.SetElement(DefaultElementDefs.dendroElement.index);
 
                 float damage = StaticValues.bloomDamageCoefficient * projectileDamage.damage;
 
@@ -90,7 +89,6 @@ namespace ElementalReactionsMod.Reactions
 
                 DamageTypeCombo damageType = DamageType.AOE;
                 damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
-                damageType.SetElement(DefaultElementDefs.dendroElement.index);
 
                 float damage = StaticValues.burgeonDamageCoefficient;
                 damage *= attacker.TryGetComponent<CharacterBody>(out var attackerBody) ? attackerBody.damage : projectileDamage.damage;

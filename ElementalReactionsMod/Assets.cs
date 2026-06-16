@@ -89,10 +89,7 @@ namespace ElementalReactionsMod
                 scale.initialDuration = 0.7f;
                 scale.particleSystems = [iconParticle, rayParticle, glowParticle];
                 component.particleDuration = scale;
-                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser3_mat)).Completed += y =>
-                {
-                    x.Result.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = y.Result;
-                };
+                x.Result.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser3_mat)).WaitForCompletion();
                 genericElementActivatedEffect = x.Result;
                 AddNewEffectDef(genericElementActivatedEffect);
             };
@@ -437,15 +434,21 @@ namespace ElementalReactionsMod
                 gravitate.gravitateAtFullHealth = true;
                 var vfxParent = x.Result.transform.GetChild(0);
                 var model = vfxParent.GetChild(0).gameObject;
+                var crystallizeRings = model.transform.Find("CrystallizeRings");
+                var startVFX = model.transform.Find("CrystallizeStartGlow");
+                startVFX.Find("CrystallizeStartDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matDistortionFaded_mat)).WaitForCompletion();
                 AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matOmniRing1Generic_mat)).Completed += x =>
                 {
-                    model.transform.Find("CrystallizeRings").GetComponent<ParticleSystemRenderer>().sharedMaterial = x.Result;
+                    crystallizeRings.GetComponent<ParticleSystemRenderer>().sharedMaterial = x.Result;
+                    startVFX.Find("CrystallizeStartRing").GetComponent<ParticleSystemRenderer>().sharedMaterial = x.Result;
                 };
+                model.transform.Find("CrystallizeRays").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser3_mat)).WaitForCompletion();
                 model.gameObject.AddComponent<RotateItem>().spinSpeed = 120f;
                 var controller = x.Result.transform.Find("PickupTrigger").gameObject.AddComponent<CrystallizeController>();
                 controller.teamFilter = teamFilter;
                 controller.baseGameObject = x.Result;
                 controller.gravitateCollider = gravitate.GetComponent<SphereCollider>();
+                controller.teamRecolorParticle = [crystallizeRings.GetComponent<ParticleSystem>(), startVFX.Find("CrystallizeStartRing").GetComponent<ParticleSystem>()];
                 x.Result.AddComponent<Deployable>();
                 //x.Result.AddComponent<ElementalReactionPooledObject>().gravitatePickup = gravitate;
 
@@ -469,12 +472,10 @@ namespace ElementalReactionsMod
             #endregion
 
             #region Items
-            AssetAsyncReferenceManager<Material>.LoadAsset(AssetReferences.visionHolderMaterial).Completed += x =>
-            {
-                x.Result.SetHopooMaterial().Specular(0.4f, 3f, false);
-                x.Result.SetNormal(1.3f);
-                x.Result.SetFloat("_RampInfo", 1);
-            };
+            Material visionHolderMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(AssetReferences.visionHolderMaterial).WaitForCompletion();
+            visionHolderMaterial.SetHopooMaterial().Specular(0.4f, 3f, false);
+            visionHolderMaterial.SetNormal(1.3f);
+            visionHolderMaterial.SetFloat("_RampInfo", 1);
 
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.instructorsTeaCupPickupModel).Completed += x =>
             {
@@ -874,6 +875,7 @@ namespace ElementalReactionsMod
 
             public static AssetReferenceT<GameObject> lunarBloomEffect = new("623c28827e49bf041ade36cdd7cdf922");
             public static AssetReferenceT<Sprite> lunarBloomBuffIcon = new("b14c2afa0ea1ba6449927fb72cbbd016");
+            public static AssetReferenceT<Sprite> lunarBloomColorlessBuffIcon = new("2d411dfeba7a2b645b9d2d76d8b9ea90");
             #endregion
             #endregion
         }

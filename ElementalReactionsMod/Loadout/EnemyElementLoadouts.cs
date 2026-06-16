@@ -17,14 +17,15 @@ namespace ElementalReactionsMod.Loadout
         public static void Initialize()
         {
             uniqueEnemiesWithElement = new int[ElementCatalog.elementCatalog.Length];
+            CreateLoadout("AcidLarvaBody", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("VultureBody", anemoElement);
             CreateLoadout("BeetleGuardBody", geoElement, geoElement);
             CreateLoadout("BeetleGuardAllyBody", geoElement, geoElement);
             CreateLoadout("BisonBody", physicalElement, geoElement); // for EnemyAbilities
             CreateLoadout("ChildBody", null, null, null, null, pyroElement);
-            //CreateLoadout("ClayGrenadierBody", DefaultElementDefs.hydroElement, DefaultElementDefs.hydroElement);
-            //CreateLoadout("ClayBruiserBody", DefaultElementDefs.physicalElement, DefaultElementDefs.hydroElement);
-            //CreateLoadout("ClayBossBody", pyroElement, pyroElement);
+            CreateLoadout("ClayGrenadierBody", hydroElement, hydroElement, hydroElement, hydroElement, hydroElement);
+            CreateLoadout("ClayBruiserBody", physicalElement, hydroElement, hydroElement, hydroElement, hydroElement);
+            CreateLoadout("ClayBossBody", hydroElement, hydroElement,hydroElement, hydroElement, hydroElement);
             CreateLoadout("DevotedLemurianBruiserBody", pyroElement, pyroElement);
             CreateLoadout("LemurianBruiserBody", pyroElement, pyroElement);
             CreateLoadout("DevotedLemurianBody", pyroElement);
@@ -43,7 +44,8 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("LunarExploderBody", electroElement, electroElement, electroElement, electroElement);
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_LunarExploder.LunarExploderProjectileDotZone_prefab, electroElement);
             CreateLoadout("MiniMushroomBody", dendroElement, dendroElement, dendroElement, dendroElement);
-            CreateLoadout("ScorchlingBody", physicalElement, pyroElement);
+            CreateLoadout("ScorchlingBody", physicalElement, pyroElement, pyroElement, pyroElement, pyroElement);
+            CreateLoadout("ScorchlingBombProjectile", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
             CreateLoadout("DefectiveUnitBody", electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("FriendUnitBody", electroElement, electroElement, electroElement, electroElement); // Ally
             CreateLoadout("RoboBallMiniBody", electroElement);
@@ -67,7 +69,7 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("SolusAmalgamatorThrusterBody", electroElement);
             CreateLoadout("SolusAmalgamatorMissilePodBody", electroElement);
             CreateLoadout("RoboBallBossBody", electroElement, electroElement, electroElement, electroElement);
-            CreateLoadout("SuperRoboBallBossBody", electroElement, electroElement, electroElement, electroElement);
+            CreateLoadout("SuperRoboBallBossBody", electroElement, electroElement, electroElement, anemoElement);
             CreateLoadout("TitanBody", geoElement, geoElement, electroElement, electroElement);
             CreateLoadout("TitanGoldBody", geoElement, geoElement, electroElement, electroElement);
             CreateLoadout("VoidMegaCrabBody", hydroElement, hydroElement, hydroElement, hydroElement);
@@ -75,7 +77,7 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("VagrantBody", electroElement, electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("VagrantTrackingBomb", electroElement, electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("VoidInfestorBody", hydroElement, hydroElement, hydroElement, hydroElement);
-            CreateLoadout("VultureHunterBody", electroElement, pyroElement);
+            CreateLoadout("VultureHunterBody", anemoElement, pyroElement, anemoElement, anemoElement);
             CreateLoadout("ArifactShellBody", electroElement);
             CreateLoadout("FalseSonBossBody", geoElement, electroElement, electroElement, geoElement);
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.FalseSonFissurePillar_prefab, pyroElement);
@@ -114,6 +116,7 @@ namespace ElementalReactionsMod.Loadout
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Collective.CollectiveDeathProjectile_prefab, electroElement);
             CreateLoadout("AffixEarthHealerBody", dendroElement, dendroElement, dendroElement, dendroElement, dendroElement);
 
+            CreateLoadout("SquidTurretBody", hydroElement, hydroElement, hydroElement, hydroElement); // Ally
             CreateLoadout("CopycatDroneBody", cryoElement, cryoElement, cryoElement, cryoElement); // Ally
             CreateLoadout("FlameDroneBody", pyroElement, pyroElement, pyroElement, pyroElement); // Ally
             CreateLoadout("BombardmentDroneBody", electroElement, electroElement, electroElement, electroElement); // Ally

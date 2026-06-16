@@ -40,7 +40,6 @@ namespace ElementalReactionsMod.Orbs
                 procCoefficient = 0.5f,
                 teamIndex = attackerTeam
             };
-            hyperbloomOrb.damageType.SetElement(DefaultElementDefs.dendroElement.index);
             hyperbloomOrb.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
             OrbManager.instance.AddOrb(hyperbloomOrb);
         }

@@ -97,7 +97,7 @@ namespace ElementalReactionsMod.Reactions
             overload.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 EffectManager.SimpleEffect(overloadEffect.WaitForCompletion(), damage.position, Quaternion.identity, true);
-                Util.CreateBlastAttack(damage, overloadDamageCoefficient * damage.procCoefficient, genericReactionExplosionRadius, genericReactionProcCoefficient, pyroElement.index, true, 1000f).Fire();
+                Util.CreateBlastAttack(damage, overloadDamageCoefficient * damage.procCoefficient, genericReactionExplosionRadius, genericReactionProcCoefficient, ElementIndex.Physical, true, 1000f).Fire();
             };
 
             electroCharge = ElementalReactionDef.CreateElementalReactionDef("ElectroCharge", $"{ElementalReactionsPlugin.PREFIX}REACTION_ELECTRO_CHARGE", electroElement, hydroElement);
@@ -123,7 +123,6 @@ namespace ElementalReactionsMod.Reactions
             {
                 EffectManager.SimpleEffect(superconductEffect.WaitForCompletion(), damage.position, Quaternion.identity, true);
                 DamageTypeCombo damageType = DamageType.AOE;
-                damageType.SetElement(cryoElement.index);
                 damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                 damageType.AddModdedDamageType(DamageTypes.superconductDamageType);
                 Util.CreateBlastAttack(damage, superconductDamageCoefficient * damage.procCoefficient, genericReactionExplosionRadius, genericReactionProcCoefficient, damageType, 0f).Fire();
@@ -154,7 +153,7 @@ namespace ElementalReactionsMod.Reactions
                 {
                     Util.GetRandomNode(damage.position, out var pos, 0.5f, 15f);
                     //ElementalReactionPooledObject crystallize = ElementalReactionManager.CreatePooledDeployable(ElementalReactionManager.crystallizePool, characterBody, ElementalReactionManager.crystallizeDeployableSlot, pos);
-                    GameObject crystallize = GameObject.Instantiate(crystallizePickup.WaitForCompletion(), pos + (1.5f * Vector3.up), Quaternion.identity);
+                    GameObject crystallize = GameObject.Instantiate(crystallizePickup.WaitForCompletion(), pos + (2f * Vector3.up), Quaternion.identity);
                     if (characterBody.master) characterBody.master.AddDeployable(crystallize.GetComponent<Deployable>(), ElementalReactionManager.crystallizeDeployableSlot);
                     if (crystallize) crystallize.GetComponent<TeamFilter>().teamIndex = characterBody.teamComponent.teamIndex;
                     NetworkServer.Spawn(crystallize);

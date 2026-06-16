@@ -40,6 +40,10 @@ namespace ElementalReactionsMod
             IL.EntityStates.VoidInfestor.Infest.FixedUpdate += VoidInfestorHydro;
             IL.RoR2.GlobalEventManager.OnCharacterDeath += GlacialExplosionCryo;
             IL.RoR2.CharacterModel.UpdateItemDisplay += DelusionsShareItemDisplay;
+            On.EntityStates.ClayBruiser.Weapon.FireSonicBoom.AddDebuff += ClayTemplarPushHydro;
+            IL.EntityStates.AcidLarva.LarvaLeap.DoImpactAuthority += LarvaHydroThemselves;
+            On.EntityStates.FriendUnit.KineticAura.OnEnter += OrphanedCoreElectroOnCharge;
+            IL.EntityStates.AffixEarthHealer.Heal.OnEnter += MendingHealingOrbDendro;
         }
         // Right after IOnincomingDamageReceiver does its thing, since that's where many things (including bloom dendro cores) reject damage
         private static void TakeDamageIL(ILContext il)
@@ -81,7 +85,7 @@ namespace ElementalReactionsMod
                             EffectManager.SimpleEffect(ElementalReactionManager.lunarBloomEffect.WaitForCompletion(), damage.inflictedHurtbox ? damage.inflictedHurtbox.transform.position : self.body.corePosition, Quaternion.identity, true);
                         }
 
-                        if (self.body.HasBuff(Buffs.superconductBuff) && element == DefaultElementDefs.physicalElement)
+                        if (self.body.HasBuff(Buffs.superconductBuff) && element == DefaultElementDefs.physicalElement && !damage.damageType.HasModdedDamageType(DamageTypes.elementalReactionDamageType))
                         {
                             damageIncreaseFromReactions += damage.damage * StaticValues.superconductDamageMultiplier;
                         }
@@ -92,7 +96,7 @@ namespace ElementalReactionsMod
 
                         if (damage.damageType.HasModdedDamageType(DamageTypes.superconductDamageType))
                         {
-                            self.body.AddTimedBuff(Buffs.superconductBuff, 5, 1);
+                            self.body.AddTimedBuff(Buffs.superconductBuff, StaticValues.superconductDuration, 1);
                         }
 
                         if (damage.damageType.HasModdedDamageType(DamageTypes.elementalReactionDamageType))
@@ -357,6 +361,64 @@ namespace ElementalReactionsMod
                         return itemCount + inventory.GetDelusionCount();
                     }
                     return itemCount;
+                });
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void ClayTemplarPushHydro(On.EntityStates.ClayBruiser.Weapon.FireSonicBoom.orig_AddDebuff orig, EntityStates.ClayBruiser.Weapon.FireSonicBoom self, CharacterBody target)
+        {
+            orig(self, target);
+            if (ElementalReactionManager.instance)
+            {
+                ElementalReactionManager.ApplyElement(DefaultElementDefs.hydroElement, target, 1, self.gameObject);
+            }
+        }
+        private static void LarvaHydroThemselves(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            if (c.TryGotoNext(x => x.MatchStfld(typeof(DamageInfo), nameof(DamageInfo.damageType))))
+            {
+                c.EmitDelegate<Func<DamageTypeCombo, DamageTypeCombo>>((damageType) =>
+                {
+                    if (ElementalReactionManager.instance)
+                    {
+                        damageType.SetElement(DefaultElementDefs.hydroElement.index);
+                    }
+                    return damageType;
+                });
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void OrphanedCoreElectroOnCharge(On.EntityStates.FriendUnit.KineticAura.orig_OnEnter orig, EntityStates.FriendUnit.KineticAura self)
+        {
+            orig(self);
+            if (ElementalReactionManager.instance && NetworkServer.active)
+            {
+                ElementalReactionManager.ApplyElement(DefaultElementDefs.electroElement, self.characterBody, 1.5f, self.gameObject);
+            }
+        }
+        private static void MendingHealingOrbDendro(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            int targetLocIndex = -1;
+            if (c.TryGotoNext(x => x.MatchLdfld(typeof(HealthComponent), nameof(HealthComponent.body))) &&
+                c.TryGotoPrev(x => x.MatchLdloc(out targetLocIndex)) &&
+                c.TryGotoNext(x => x.MatchCallOrCallvirt(typeof(RoR2.Orbs.OrbManager), nameof(RoR2.Orbs.OrbManager.AddOrb))))
+            {
+                c.Emit(OpCodes.Ldarg_0); // Heal state
+                c.Emit(OpCodes.Ldloc, targetLocIndex); // target healthComponent
+                c.EmitDelegate<Action<EntityStates.AffixEarthHealer.Heal, HealthComponent>>((self, target) =>
+                {
+                    if (ElementalReactionManager.instance)
+                    {
+                        ElementalReactionManager.ApplyElement(DefaultElementDefs.dendroElement, target.body, 2f, self.gameObject);
+                    }
                 });
             }
             else

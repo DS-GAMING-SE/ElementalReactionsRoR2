@@ -41,6 +41,11 @@ namespace ElementalReactionsMod
         {
             return ElementalReactionsPlugin.instance.Config.Bind<float>("Characters", "Player Bloom Resistance", 20f, "The percent of the normal Bloom reaction damage that will be dealt when hitting players. This is applied on top of the Player Reaction Resistance config.\nHost's config takes priority.");
         }
+
+        public static ConfigEntry<bool> CanWeatherUseElements()
+        {
+            return ElementalReactionsPlugin.instance.Config.Bind<bool>("Environment", "Elemental Weather", true, "Whether certain weather effects, such as the rain on the moon, will be able to apply elements.\nHost's config takes priority.");
+        }
         #endregion
         #region Loadout
         /*
@@ -158,6 +163,8 @@ namespace ElementalReactionsMod
             ModSettingsManager.AddOption(new CheckBoxOption(Config.CanEnemiesBeElemental()));
             ModSettingsManager.AddOption(new SliderOption(Config.PlayerReactionResistance(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));
             ModSettingsManager.AddOption(new SliderOption(Config.PlayerBloomResistance(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));
+
+            ModSettingsManager.AddOption(new CheckBoxOption(Config.CanWeatherUseElements()));
         }
         #endregion
     }

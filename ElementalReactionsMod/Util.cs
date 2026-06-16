@@ -91,6 +91,22 @@ namespace ElementalReactionsMod
 
             return buffDef;
         }
+        internal static T AddNewBuff<T>(string buffName, Sprite buffIcon, Color buffColor, bool canStack, bool isDebuff, bool isCooldown = false, bool hidden = false) where T : BuffDef
+        {
+            T buffDef = ScriptableObject.CreateInstance<T>();
+            buffDef.name = "bdElementalReactions" + buffName;
+            buffDef.buffColor = buffColor;
+            buffDef.canStack = canStack;
+            buffDef.isDebuff = isDebuff;
+            buffDef.eliteDef = null;
+            buffDef.iconSprite = buffIcon;
+            buffDef.isHidden = hidden;
+            buffDef.isCooldown = isCooldown;
+
+            Content.AddBuffDef(buffDef);
+
+            return buffDef;
+        }
         public static BlastAttack CreateBlastAttack(DamageInfo damageInfo, float damage, float radius, float proc, ElementIndex element, bool isReaction, float force)
         {
             CharacterBody characterBody = damageInfo.attacker ? damageInfo.attacker.GetComponent<CharacterBody>() : null;
