@@ -14,6 +14,7 @@ namespace ElementalReactionsMod.Loadout
     public static class EnemyElementLoadouts
     {
         public static int[] uniqueEnemiesWithElement;
+        public static List<BodyIndex> enemiesWithMoonWheel = new List<BodyIndex>();
         public static void Initialize()
         {
             uniqueEnemiesWithElement = new int[ElementCatalog.elementCatalog.Length];
@@ -39,9 +40,9 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("JellyfishBody", electroElement, electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("WispBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
             CreateLoadout("WispSoulBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
-            CreateLoadout("LunarWispBody", dendroElement, dendroElement, dendroElement, dendroElement, pyroElement);
-            CreateLoadout("LunarGolemBody", geoElement, geoElement, geoElement, geoElement);
-            CreateLoadout("LunarExploderBody", electroElement, electroElement, electroElement, electroElement);
+            AddMoonWheel(CreateLoadout("LunarWispBody", dendroElement, dendroElement, dendroElement, dendroElement, pyroElement));
+            AddMoonWheel(CreateLoadout("LunarGolemBody", geoElement, geoElement, geoElement, geoElement));
+            AddMoonWheel(CreateLoadout("LunarExploderBody", electroElement, electroElement, electroElement, electroElement));
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_LunarExploder.LunarExploderProjectileDotZone_prefab, electroElement);
             CreateLoadout("MiniMushroomBody", dendroElement, dendroElement, dendroElement, dendroElement);
             CreateLoadout("ScorchlingBody", physicalElement, pyroElement, pyroElement, pyroElement, pyroElement);
@@ -79,11 +80,11 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("VoidInfestorBody", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("VultureHunterBody", anemoElement, pyroElement, anemoElement, anemoElement);
             CreateLoadout("ArifactShellBody", electroElement);
-            CreateLoadout("FalseSonBossBody", geoElement, electroElement, electroElement, geoElement);
+            AddMoonWheel(CreateLoadout("FalseSonBossBody", geoElement, electroElement, electroElement, geoElement));
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.FalseSonFissurePillar_prefab, pyroElement);
             // false son statue
-            CreateLoadout("FalseSonBossBodyLunarShard", geoElement, electroElement, electroElement, geoElement);
-            CreateLoadout("FalseSonBossBodyBrokenLunarShard", geoElement, electroElement, electroElement, electroElement);
+            AddMoonWheel(CreateLoadout("FalseSonBossBodyLunarShard", geoElement, electroElement, electroElement, geoElement));
+            AddMoonWheel(CreateLoadout("FalseSonBossBodyBrokenLunarShard", geoElement, electroElement, electroElement, electroElement));
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.PrimeDevastatorProjectile_prefab, electroElement);
             RoR2.ContentManagement.AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_meridian_DisableSkillsLightning.LightningStrikeInstance_prefab)).Completed += x =>
             {
@@ -92,8 +93,8 @@ namespace ElementalReactionsMod.Loadout
                     lightning.blastDamageType.SetElement(electroElement.index);
                 }
             };
-            CreateLoadout("BrotherBody", physicalElement, cryoElement, physicalElement, physicalElement);
-            CreateLoadout("BrotherHurtBody", physicalElement, pyroElement);
+            AddMoonWheel(CreateLoadout("BrotherBody", physicalElement, cryoElement, physicalElement, physicalElement));
+            AddMoonWheel(CreateLoadout("BrotherHurtBody", physicalElement, pyroElement));
             //AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherUltLineProjectileRotateLeft_prefab, pyroElement);
             //AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherUltLineProjectileRotateRight_prefab, pyroElement);
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherFirePillar_prefab, pyroElement);
@@ -167,7 +168,7 @@ namespace ElementalReactionsMod.Loadout
             LogEnemyElementStats();
         }
 
-        public static void CreateLoadout(string bodyName, ElementDef primary = null, ElementDef secondary = null, ElementDef utility = null, ElementDef special = null, ElementDef applied = null)
+        public static GameObject CreateLoadout(string bodyName, ElementDef primary = null, ElementDef secondary = null, ElementDef utility = null, ElementDef special = null, ElementDef applied = null)
         {
             GameObject body = BodyCatalog.FindBodyPrefab(bodyName);
             if (body)
@@ -183,6 +184,7 @@ namespace ElementalReactionsMod.Loadout
                     duplicateElementDef.Add(item);
                 }
             }
+            return body;
         }
         public static void AddElementToProjectile(string projectilePrefab, ElementDef element)
         {
@@ -198,6 +200,11 @@ namespace ElementalReactionsMod.Loadout
                     deathOrb.damageTypeCombo.SetElement(element.index);
                 }
             };
+        }
+        public static void AddMoonWheel(GameObject body)
+        {
+            if (!body) return;
+            enemiesWithMoonWheel.Add(BodyCatalog.FindBodyIndex(body));
         }
         internal static void LogEnemyElementStats()
         {

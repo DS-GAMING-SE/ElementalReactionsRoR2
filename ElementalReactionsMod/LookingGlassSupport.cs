@@ -51,7 +51,7 @@ namespace ElementalReactionsMod
             moonWheelStatsDef.calculateValues = (master, stackCount) =>
             {
                 List<float> values = new();
-                values.Add(moonWheelLunarDamagePerStack * Mathf.Max(master.inventory.GetItemCountWithQuality(Items.Items.instructorsTeaCup) - 1, 0));
+                values.Add(moonWheelLunarDamagePerStack * Mathf.Max(master.inventory.GetItemCountWithQuality(Items.Items.moonWheel) - 1, 0));
                 return values;
             };
             ItemDefinitions.RegisterItemStatsDef(moonWheelStatsDef, Items.Items.moonWheel.itemIndex);

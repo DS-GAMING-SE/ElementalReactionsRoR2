@@ -92,7 +92,7 @@ namespace ElementalReactionsMod.Loadout
                         permanentElementStopwatch += Time.fixedDeltaTime;
                         if (permanentElementStopwatch >= StaticValues.permanentElementICD)
                         {
-                            ElementalReactionManager.ApplyElement(permanentlyAppliedElement, characterBody, float.MaxValue, gameObject, true);
+                            ElementalReactionManager.ApplyElement(permanentlyAppliedElement, characterBody, float.MaxValue, null, true);
                         }
                     }
                     if (specialAppliedElement && specialAppliedElementEndTime.hasPassed)

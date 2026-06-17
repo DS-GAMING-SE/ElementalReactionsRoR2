@@ -154,7 +154,7 @@ namespace ElementalReactionsMod.Reactions
                     Util.GetRandomNode(damage.position, out var pos, 0.5f, 15f);
                     //ElementalReactionPooledObject crystallize = ElementalReactionManager.CreatePooledDeployable(ElementalReactionManager.crystallizePool, characterBody, ElementalReactionManager.crystallizeDeployableSlot, pos);
                     GameObject crystallize = GameObject.Instantiate(crystallizePickup.WaitForCompletion(), pos + (2f * Vector3.up), Quaternion.identity);
-                    if (characterBody.master) characterBody.master.AddDeployable(crystallize.GetComponent<Deployable>(), ElementalReactionManager.crystallizeDeployableSlot);
+                    if (characterBody.master) characterBody.master.AddDeployable(crystallize.GetComponent<Deployable>(), crystallizeDeployableSlot);
                     if (crystallize) crystallize.GetComponent<TeamFilter>().teamIndex = characterBody.teamComponent.teamIndex;
                     NetworkServer.Spawn(crystallize);
                 }

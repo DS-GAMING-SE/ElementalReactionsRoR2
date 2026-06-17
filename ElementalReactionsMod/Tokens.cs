@@ -152,6 +152,11 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_LUNAR_CHARGE_NAME", "Lunar Charge");
             LanguageAPI.Add($"{prefix}REACTION_LUNAR_CRYSTALLIZE_NAME", "Lunar Crystallize");
             #endregion
+            #region Events
+            LanguageAPI.Add($"{prefix}EVENT_ELEMENTAL_RAIN_HYDRO", "<style=cWorldEvent>The rain is rich with elemental energy.</style>");
+            LanguageAPI.Add($"{prefix}EVENT_ELEMENTAL_RAIN_CRYO", "<style=cWorldEvent>The snow is rich with elemental energy.</style>");
+            LanguageAPI.Add($"{prefix}EVENT_ELEMENTAL_RAIN_PYRO", "<style=cWorldEvent>The ash is rich with elemental energy.</style>");
+            #endregion
         }
         public static string DelusionPickup(string element)
         {

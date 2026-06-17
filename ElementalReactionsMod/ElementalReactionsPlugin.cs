@@ -4,6 +4,7 @@ using ElementalReactionsMod.Elements;
 using ElementalReactionsMod.Items;
 using ElementalReactionsMod.Loadout;
 using ElementalReactionsMod.Reactions;
+using ElementalReactionsMod.Weather;
 using R2API;
 using R2API.ContentManagement;
 using R2API.Networking;

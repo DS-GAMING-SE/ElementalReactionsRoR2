@@ -77,114 +77,132 @@ namespace ElementalReactionsMod.Items
             displayPrefab.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = delusionMat;
             CreateItemDisplay(displayPrefab, CreateItemRendererInfo(displayPrefab, 0, visionHolderMaterial), CreateItemRendererInfo(displayPrefab, 1, delusionMat));
             ItemDisplayRuleDict itemDisplays = new ItemDisplayRuleDict();
-            /*itemDisplays.Add("CommandoBody", new ItemDisplayRule
+            itemDisplays.Add("CommandoBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "LowerArmL",
-                localPos = new Vector3(0.03206F, 0.23382F, -0.05406F),
-                localAngles = new Vector3(5.56553F, 0.75563F, 0.95463F),
+                childName = "LowerArmR",
+                localPos = new Vector3(-0.03206F, 0.23382F, -0.05406F),
+                localAngles = new Vector3(5.56553F, 0.75563F, 359.0454F),
                 localScale = new Vector3(1F, 1F, 1F)
             });
             itemDisplays.Add("HuntressBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "Chest",
-                localPos = new Vector3(-0.00073F, 0.20592F, 0.162F),
-                localAngles = new Vector3(331.3469F, 1.57845F, 1.41202F),
+                childName = "Pelvis",
+                localPos = new Vector3(-0.16971F, 0.01192F, -0.08042F),
+                localAngles = new Vector3(332.1566F, 50.95617F, 189.2482F),
                 localScale = new Vector3(1F, 1F, 1F)
             });
             itemDisplays.Add("Bandit2Body", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "Hat",
-                localPos = new Vector3(-0.00262F, 0.11559F, 0.08425F),
-                localAngles = new Vector3(317.5828F, 353.8432F, 5.02905F),
-                localScale = new Vector3(0.7F, 0.7F, 0.7F)
+                childName = "MainWeapon",
+                localPos = new Vector3(-0.08156F, 0.8256F, -0.05666F),
+                localAngles = new Vector3(0F, 0F, 180F),
+                localScale = new Vector3(0.8F, 0.8F, 0.8F)
             });
             itemDisplays.Add("ToolbotBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
+                childName = "Head",
+                localPos = new Vector3(0F, -0.35118F, 1.1199F),
+                localAngles = new Vector3(55.43135F, 0.00005F, 0.00007F),
+                localScale = new Vector3(7F, 7F, 7F)
             });
             itemDisplays.Add("EngiBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
+                childName = "Chest",
+                localPos = new Vector3(-0.44991F, 0.46288F, -0.31321F),
+                localAngles = new Vector3(0F, 90F, 0F),
+                localScale = new Vector3(0.9F, 0.9F, 0.9F)
+            });
+            itemDisplays.Add("EngiTurretBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "Head",
+                localPos = new Vector3(0.61612F, 0.54662F, -1.31641F),
+                localAngles = new Vector3(0F, 320.9564F, 0F),
+                localScale = new Vector3(2.5F, 2.5F, 2.5F)
+            });
+            itemDisplays.Add("EngiWalkerTurretBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "Neck",
+                localPos = new Vector3(0.7483F, 0.65663F, 0F),
+                localAngles = new Vector3(0F, 90F, 0F),
+                localScale = new Vector3(2.5F, 2.5F, 2.5F)
             });
             itemDisplays.Add("MageBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
+                childName = "Chest",
+                localPos = new Vector3(-0.21887F, 0.2151F, -0.1934F),
+                localAngles = new Vector3(5F, 90F, 9F),
                 localScale = new Vector3(1F, 1F, 1F)
             });
             itemDisplays.Add("MercBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
+                childName = "LowerArmL",
+                localPos = new Vector3(-0.00477F, 0.15047F, -0.06726F),
+                localAngles = new Vector3(3.47613F, 19.27756F, 185.9751F),
+                localScale = new Vector3(0.7F, 0.7F, 0.7F)
             });
             itemDisplays.Add("TreebotBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
-            });*/
+                childName = "PlatformBase",
+                localPos = new Vector3(-0.63358F, 0.68115F, -0.77494F),
+                localAngles = new Vector3(46.13254F, 43.97253F, 4.15217F),
+                localScale = new Vector3(1.3F, 1.3F, 1.3F)
+            });
             itemDisplays.Add("LoaderBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "MechHandR",
-                localPos = new Vector3(0.07702F, 0.14753F, 0.14142F),
-                localAngles = new Vector3(4.85349F, 34.75354F, 181.8131F),
-                localScale = new Vector3(1F, 1F, 1F)
-            });/*
+                childName = "Chest",
+                localPos = new Vector3(0.2F, 0.28F, 0.28F),
+                localAngles = new Vector3(0F, 0F, 0F),
+                localScale = new Vector3(0.9F, 0.9F, 0.9F)
+            });
             itemDisplays.Add("CrocoBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
+                childName = "LowerArmL",
+                localPos = new Vector3(0.89492F, 3.7274F, -0.77738F),
+                localAngles = new Vector3(1.39027F, 313.4044F, 86.03119F),
+                localScale = new Vector3(5.5F, 5.5F, 5.5F)
             });
             itemDisplays.Add("CaptainBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
+                childName = "Stomach",
+                localPos = new Vector3(0.1565F, 0.04206F, 0.17186F),
+                localAngles = new Vector3(352.0692F, 27.6311F, 2.48244F),
                 localScale = new Vector3(1F, 1F, 1F)
             });
             itemDisplays.Add("RailgunnerBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
-            });*/
+                childName = "Backpack",
+                localPos = new Vector3(0.24035F, -0.38056F, -0.08505F),
+                localAngles = new Vector3(0F, 120F, 0F),
+                localScale = new Vector3(0.8F, 0.8F, 0.8F)
+            });
             itemDisplays.Add("VoidSurvivorBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
@@ -193,32 +211,31 @@ namespace ElementalReactionsMod.Items
                 localPos = new Vector3(-0.01739F, -0.20445F, -0.09182F),
                 localAngles = new Vector3(355.2102F, 51.1422F, 184.9114F),
                 localScale = new Vector3(1F, 1F, 1F)
-            });/*
+            });
             itemDisplays.Add("SeekerBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "Pack",
-                localPos = new Vector3(-0.17127F, -0.10742F, -0.35991F),
-                localAngles = new Vector3(332.9016F, 29.06501F, 28.89558F),
-                localScale = new Vector3(1F, 1F, 1F)
-
+                childName = "ThighR",
+                localPos = new Vector3(0.10212F, 0.07662F, 0.07998F),
+                localAngles = new Vector3(11.78787F, 41.68037F, 183.0371F),
+                localScale = new Vector3(0.9F, 0.9F, 0.9F)
             });
             itemDisplays.Add("FalseSonBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
+                childName = "Chest",
+                localPos = new Vector3(0.10128F, 0.47448F, -0.34967F),
+                localAngles = new Vector3(348.2777F, 356.4035F, 11.26319F),
+                localScale = new Vector3(1.2F, 1.2F, 1.2F)
             });
             itemDisplays.Add("ChefBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
+                childName = "OvenDoor",
+                localPos = new Vector3(-0.44195F, -0.15999F, 0.03149F),
                 localAngles = new Vector3(0F, 0F, 0F),
                 localScale = new Vector3(1F, 1F, 1F)
             });
@@ -226,18 +243,18 @@ namespace ElementalReactionsMod.Items
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
-            });*/
+                childName = "LowerArmR",
+                localPos = new Vector3(0.69052F, -0.03821F, 0.04073F),
+                localAngles = new Vector3(273.9966F, 13.89896F, 95.11175F),
+                localScale = new Vector3(0.9F, 0.9F, 0.9F)
+            });
             itemDisplays.Add("DrifterBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
-                childName = "BagBulgeLeft",
-                localPos = new Vector3(0.07217F, 0.12617F, 0.23026F),
-                localAngles = new Vector3(345.8675F, 297.6887F, 270.2614F),
+                childName = "Chest",
+                localPos = new Vector3(-0.13434F, 0.07791F, -0.25401F),
+                localAngles = new Vector3(34.96383F, 47.45707F, 157.2111F),
                 localScale = new Vector3(1F, 1F, 1F)
             });
             itemDisplays.Add("BrotherBody", new ItemDisplayRule

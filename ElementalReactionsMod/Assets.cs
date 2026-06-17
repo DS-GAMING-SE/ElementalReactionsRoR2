@@ -425,7 +425,7 @@ namespace ElementalReactionsMod
                 x.Result.AddComponent<DestroyOnTimer>().duration = 10;
                 var networkTransform = x.Result.AddComponent<ProjectileNetworkTransform>();
                 networkTransform.interpolationFactor = 2f;
-                networkTransform.positionTransmitInterval = 0.66666f;
+                networkTransform.positionTransmitInterval = 0.066666f;
                 var gravitate = x.Result.transform.Find("GravitationController").gameObject.AddComponent<GravitatePickup>();
                 gravitate.rigidbody = x.Result.GetComponent<Rigidbody>();
                 gravitate.maxSpeed = 40f;
@@ -578,6 +578,8 @@ namespace ElementalReactionsMod
 
                 AddNewEffectDef(x.Result, "Play_item_use_lighningArm");
             };
+            ElementalReactionManager.lunarChargeEnemyStrikePrefab = PrefabAPI.CreateEmptyPrefab("LunarChargeEnemyInstance");
+            ElementalReactionManager.lunarChargeEnemyStrikePrefab.AddComponent<EnemyLunarChargeInstance>();
 
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.lunarBloomEffect).Completed += x =>
             {

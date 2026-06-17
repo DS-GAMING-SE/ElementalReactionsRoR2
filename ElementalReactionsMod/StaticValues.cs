@@ -7,8 +7,8 @@ namespace ElementalReactionsMod
     public static class StaticValues
     {
         #region Elements
-        public const float elementAppliedICD = 0.3f;
-        public const float elementRemovedICD = 0.15f;
+        public const float elementAppliedICD = 0.4f;
+        public const float elementRemovedICD = 0.2f;
         public const float permanentElementICD = 1f;
 
         public const float elementAppliedDuration = 10f;
@@ -38,6 +38,7 @@ namespace ElementalReactionsMod
 
         public const int crystallizeCap = 3;
         public const float crystallizeBarrierPercent = 0.1f;
+        public const float crystallizeBossBarrierPercent = 0.03f;
         public const float crystallizeMaxBarrierPercent = 0.3f;
         public const float crystallizePlayerGravitateRange = 4f;
         public const float crystallizeEnemyGravitateRange = 7f;
@@ -79,6 +80,7 @@ namespace ElementalReactionsMod
         public const int lunarChargeAttacksPerDot = 4;
         public const float lunarChargeDotDuration = lunarChargeTimeBetweenAttacks * lunarChargeAttacksPerDot;
         public const float lunarChargeRadius = 6f;
+        public const float lunarChargeEnemyDelay = 1.5f;
 
         public const int lunarBloomVerdantDewCap = 3;
         public const float lunarBloomDamageMultiplier = 1.5f;

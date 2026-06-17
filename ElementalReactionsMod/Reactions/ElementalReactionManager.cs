@@ -11,6 +11,8 @@ using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.UIElements;
+using static UnityEngine.GridBrushBase;
 
 namespace ElementalReactionsMod.Reactions
 {
@@ -33,6 +35,8 @@ namespace ElementalReactionsMod.Reactions
         public static DeployableSlot bloomDeployableSlot;
         //public static PrefabComponentPool<ElementalReactionPooledObject> bloomPool;
         public static AsyncOperationHandle<GameObject> lunarChargedEffect;
+        public static ComponentPoolManager lunarChargeEnemyPool;
+        public static GameObject lunarChargeEnemyStrikePrefab;
         public static AsyncOperationHandle<GameObject> lunarBloomEffect;
 
         public delegate void PreElementalReactionDelegate(ref ElementalReactionDef reaction, ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo);
@@ -44,6 +48,7 @@ namespace ElementalReactionsMod.Reactions
         {
             SingletonHelper.Assign(ref instance, this);
             PreloadAssets();
+            SpawnCard.onSpawnedServerGlobal += AddMoonWheelToLunarEnemies;
             //if (bloomPool == null) CreatePool(ref bloomPool, AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.bloomObject, AsyncReferenceHandleUnloadType.OnRunEnd).WaitForCompletion(), StaticValues.bloomCap);
             //if (crystallizePool == null) CreatePool(ref crystallizePool, AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.crystallizePickup, AsyncReferenceHandleUnloadType.OnRunEnd).WaitForCompletion(), StaticValues.crystallizeCap);
         }
@@ -51,21 +56,23 @@ namespace ElementalReactionsMod.Reactions
         {
             //bloomPool.Kill();
             //crystallizePool.Kill();
+            if (lunarChargeEnemyPool != null) lunarChargeEnemyPool.ResetPools();
+            SpawnCard.onSpawnedServerGlobal -= AddMoonWheelToLunarEnemies;
             UnloadAssets();
             SingletonHelper.Unassign(ref instance, this);
         }
         // Maybe switch to something using ambient level instead of attacker so there's less variation in damage?
-        public static void ApplyElement(ElementDef element, CharacterBody target, float procCoefficient = 1f, GameObject overrideAttacker = null, bool alwaysPersist = false)
+        public static void ApplyElement(ElementDef element, CharacterBody target, float procCoefficient = 1f, GameObject overrideAttacker = null, bool alwaysPersist = false, float overrideICD = -1)
         {
             if (element && target)
             {
                 DamageInfo empty = new DamageInfo();
                 empty.procCoefficient = procCoefficient;
                 if (overrideAttacker) empty.attacker = overrideAttacker;
-                ApplyElement(element, target, ref empty, out _, alwaysPersist);
+                ApplyElement(element, target, ref empty, out _, alwaysPersist, overrideICD);
             }
         }
-        public static void ApplyElement(ElementDef element, CharacterBody target, ref DamageInfo damageInfo, out float addedDamage, bool alwaysPersist = false)
+        public static void ApplyElement(ElementDef element, CharacterBody target, ref DamageInfo damageInfo, out float addedDamage, bool alwaysPersist = false, float overrideICD = -1)
         {
             addedDamage = 0;
             if (element && element != DefaultElementDefs.physicalElement && !target.HasBuff(element.cooldownBuff) && damageInfo.procCoefficient != 0)
@@ -80,7 +87,7 @@ namespace ElementalReactionsMod.Reactions
                     {
                         target.AddTimedBuff(element.buff, StaticValues.elementAppliedDuration * damageInfo.procCoefficient * StaticValues.elementAppliedTaxMultiplier);
                     }
-                    target.AddTimedBuff(element.cooldownBuff, StaticValues.elementAppliedICD);
+                    target.AddTimedBuff(element.cooldownBuff, (overrideICD > 0 ? overrideICD : StaticValues.elementAppliedICD));
                 }
             }
         }
@@ -122,6 +129,27 @@ namespace ElementalReactionsMod.Reactions
                 }
             }
             return false;
+        }
+        // make lunar charge dodgeable
+        // Lunar Wisp's secondary has damage falloff, so it doesn't always do enough damage to proc lunar bloom. Do something about this?
+        private static void AddMoonWheelToLunarEnemies(SpawnCard.SpawnResult spawnResult)
+        {
+            if (!Config.LunarEnemyLunarReactions().Value) return;
+            CharacterMaster characterMaster = spawnResult.spawnedInstance ? spawnResult.spawnedInstance.GetComponent<CharacterMaster>() : null;
+            if (characterMaster && characterMaster.inventory && characterMaster.backupBodyIndex != BodyIndex.None && EnemyElementLoadouts.enemiesWithMoonWheel.Contains(characterMaster.backupBodyIndex) && characterMaster.inventory.GetItemCountPermanent(Items.MoonWheel.moonWheel) == 0)
+            {
+                characterMaster.inventory.GiveItemPermanent(Items.MoonWheel.moonWheel);
+            }
+        }
+
+        public static void CreateEnemyLunarChargeLightningStrike(GameObject attacker, TeamIndex team, float damage, bool crit, Vector3 position)
+        {
+            if (lunarChargeEnemyPool == null)
+            {
+                lunarChargeEnemyPool = new ComponentPoolManager(1, 6, false, true);
+            }
+            EnemyLunarChargeInstance strike = (EnemyLunarChargeInstance)lunarChargeEnemyPool.GetPooledObject(lunarChargeEnemyStrikePrefab);
+            strike.CreateLightningStrike(attacker, team, damage, crit, position);
         }
 
         private static void PreloadAssets()

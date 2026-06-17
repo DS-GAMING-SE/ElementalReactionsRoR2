@@ -44,6 +44,10 @@ namespace ElementalReactionsMod
             IL.EntityStates.AcidLarva.LarvaLeap.DoImpactAuthority += LarvaHydroThemselves;
             On.EntityStates.FriendUnit.KineticAura.OnEnter += OrphanedCoreElectroOnCharge;
             IL.EntityStates.AffixEarthHealer.Heal.OnEnter += MendingHealingOrbDendro;
+            IL.EntityStates.Destructible.ExplosivePotDeath.Explode += DestructibleObjectHydro;
+            IL.EntityStates.Destructible.SulfurPodDeath.Explode += DestructibleObjectHydro;
+            IL.EntityStates.Destructible.FusionCellDeath.Explode += DestructibleObjectElectro;
+            IL.EntityStates.Destructible.LunarRainDeathState.Explode += DestructibleObjectElectro;
         }
         // Right after IOnincomingDamageReceiver does its thing, since that's where many things (including bloom dendro cores) reject damage
         private static void TakeDamageIL(ILContext il)
@@ -419,6 +423,44 @@ namespace ElementalReactionsMod
                     {
                         ElementalReactionManager.ApplyElement(DefaultElementDefs.dendroElement, target.body, 2f, self.gameObject);
                     }
+                });
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void DestructibleObjectHydro(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            if (c.TryGotoNext(x => x.MatchStfld(typeof(BlastAttack), nameof(BlastAttack.damageType))))
+            {
+                c.EmitDelegate<Func<DamageTypeCombo, DamageTypeCombo>>((damageType) =>
+                {
+                    if (ElementalReactionManager.instance)
+                    {
+                        damageType.SetElement(DefaultElementDefs.hydroElement.index);
+                    }
+                    return damageType;
+                });
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void DestructibleObjectElectro(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            if (c.TryGotoNext(x => x.MatchCallOrCallvirt(typeof(BlastAttack), nameof(BlastAttack.Fire))))
+            {
+                c.EmitDelegate<Func<BlastAttack, BlastAttack>>((blastAttack) =>
+                {
+                    if (ElementalReactionManager.instance)
+                    {
+                        blastAttack.damageType.SetElement(DefaultElementDefs.electroElement.index);
+                    }
+                    return blastAttack;
                 });
             }
             else

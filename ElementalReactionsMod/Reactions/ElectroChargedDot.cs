@@ -76,11 +76,18 @@ namespace ElementalReactionsMod.Reactions
                 CharacterBody attackerBody = damage.attackerObject ? damage.attackerObject.GetComponent<CharacterBody>() : null;
                 Vector3 damagePosition = damage.hitHurtBox ? damage.hitHurtBox.transform.position : self.victimBody.corePosition;
                 TeamIndex team = TeamComponent.GetObjectTeam(damage.attackerObject);
-                CreateLunarChargedLightning(damage.attackerObject, team, damage.totalDamage, attackerBody ? attackerBody.RollCrit() : false, damagePosition);
-
-                if (ElementalReactionsPlugin.qualityModExists && attackerBody && attackerBody.inventory && RoR2.Util.CheckRoll(attackerBody.inventory.GetMoonWheelQualityChance(), attackerBody.master))
+                if (team == TeamIndex.Player)
                 {
-                    self.victimBody.StartCoroutine(LunarChargedQualityStrikeTwice(damage.attackerObject, team, damage.totalDamage, attackerBody.RollCrit(), self.victimBody, damage.hitHurtBox));
+                    CreateLunarChargedLightning(damage.attackerObject, team, damage.totalDamage, attackerBody ? attackerBody.RollCrit() : false, damagePosition);
+
+                    if (ElementalReactionsPlugin.qualityModExists && attackerBody && attackerBody.inventory && RoR2.Util.CheckRoll(attackerBody.inventory.GetMoonWheelQualityChance(), attackerBody.master))
+                    {
+                        self.victimBody.StartCoroutine(LunarChargedQualityStrikeTwice(damage.attackerObject, team, damage.totalDamage, attackerBody.RollCrit(), self.victimBody, damage.hitHurtBox));
+                    }
+                }
+                else
+                {
+                    ElementalReactionManager.CreateEnemyLunarChargeLightningStrike(damage.attackerObject, team, damage.totalDamage, attackerBody ? attackerBody.RollCrit() : false, damagePosition);
                 }
             }
         }

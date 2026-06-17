@@ -50,7 +50,7 @@ namespace ElementalReactionsMod.Reactions
                     if (healthComponent && healthComponent.alive)
                     {
                         float barrier = (component.healthComponent.fullBarrier * StaticValues.crystallizeMaxBarrierPercent) - component.healthComponent.barrier;
-                        if (barrier > 0) component.healthComponent.AddBarrier(Mathf.Min(barrier, component.healthComponent.fullBarrier * StaticValues.crystallizeBarrierPercent));
+                        if (barrier > 0) component.healthComponent.AddBarrier(Mathf.Min(barrier, component.healthComponent.fullBarrier * (component.isBoss || component.isChampion ? StaticValues.crystallizeBossBarrierPercent: StaticValues.crystallizeBarrierPercent)));
                         if (baseGameObject.TryGetComponent<ElementalReactionPooledObject>(out var pool))
                         {
                             pool.ReturnObject();

@@ -41,6 +41,10 @@ namespace ElementalReactionsMod
         {
             return ElementalReactionsPlugin.instance.Config.Bind<float>("Characters", "Player Bloom Resistance", 20f, "The percent of the normal Bloom reaction damage that will be dealt when hitting players. This is applied on top of the Player Reaction Resistance config.\nHost's config takes priority.");
         }
+        public static ConfigEntry<bool> LunarEnemyLunarReactions()
+        {
+            return ElementalReactionsPlugin.instance.Config.Bind<bool>("Characters", "Lunar Enemies", true, "Whether certain enemies will naturally have the Moon Wheel item, allowing them to trigger Lunar Reactions.\nHost's config takes priority.");
+        }
 
         public static ConfigEntry<bool> CanWeatherUseElements()
         {
@@ -163,6 +167,7 @@ namespace ElementalReactionsMod
             ModSettingsManager.AddOption(new CheckBoxOption(Config.CanEnemiesBeElemental()));
             ModSettingsManager.AddOption(new SliderOption(Config.PlayerReactionResistance(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));
             ModSettingsManager.AddOption(new SliderOption(Config.PlayerBloomResistance(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));
+            ModSettingsManager.AddOption(new CheckBoxOption(Config.LunarEnemyLunarReactions()));
 
             ModSettingsManager.AddOption(new CheckBoxOption(Config.CanWeatherUseElements()));
         }

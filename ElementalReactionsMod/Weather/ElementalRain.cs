@@ -12,8 +12,9 @@ using ElementalReactionsMod.Reactions;
 using System.Linq;
 using R2API;
 using UnityEngine.Jobs;
+using System.Collections;
 
-namespace ElementalReactionsMod
+namespace ElementalReactionsMod.Weather
 {
     public class ElementalRain : MonoBehaviour
     {
@@ -26,14 +27,29 @@ namespace ElementalReactionsMod
         }
         private static void TrySpawnElementalRain(Stage stage)
         {
-            if (stage.sceneDef.cachedName == "moon2" || stage.sceneDef.cachedName == "meridian")
+            if (!ElementalReactionManager.instance || !Config.CanWeatherUseElements().Value) return;
+            if (stage.sceneDef.cachedName == "moon2" || stage.sceneDef.cachedName == "moon")
             {
-                GameObject.Instantiate(elementalRainPrefab);
+                Instantiate(elementalRainPrefab);
+                GameObject arenaRoof = GameObject.Find("SceneInfo/BrotherMissionController/ArenaWalls/Ceiling");
+                if (arenaRoof && arenaRoof.TryGetComponent<MeshCollider>(out var roofCollider))
+                {
+                    instance.colliderInstanceIDsToIgnore = [roofCollider.GetInstanceID()];
+                }
+            }
+            if (stage.sceneDef.cachedName == "meridian")
+            {
+                Transform rainParent = GameObject.Find("Weather, Meridian/CAMERA PARTICLES: RainParticles").transform;
+                if (rainParent)
+                {
+                    Instantiate(elementalRainPrefab, rainParent);
+                }
             }
         }
         
         public static ElementalRain instance;
         public ElementDef element;
+        public int[] colliderInstanceIDsToIgnore;
         public void OnEnable()
         {
             SingletonHelper.Assign(ref instance, this);
@@ -41,11 +57,35 @@ namespace ElementalReactionsMod
             {
                 element = DefaultElementDefs.hydroElement;
             }
+            ActivationChatMessage();
         }
         public void OnDisable()
         {
             SingletonHelper.Unassign(ref instance, this);
             CancelRaycastJob();
+        }
+        private void ActivationChatMessage()
+        {
+            if (element == DefaultElementDefs.cryoElement)
+            {
+                Chat.SendBroadcastChat(new Chat.SimpleChatMessage
+                {
+                    baseToken = $"{ElementalReactionsPlugin.PREFIX}EVENT_ELEMENTAL_RAIN_CRYO"
+                });
+                return;
+            }
+            if (element == DefaultElementDefs.pyroElement)
+            {
+                Chat.SendBroadcastChat(new Chat.SimpleChatMessage
+                {
+                    baseToken = $"{ElementalReactionsPlugin.PREFIX}EVENT_ELEMENTAL_RAIN_PYRO"
+                });
+                return;
+            }
+            Chat.SendBroadcastChat(new Chat.SimpleChatMessage
+            {
+                baseToken = $"{ElementalReactionsPlugin.PREFIX}EVENT_ELEMENTAL_RAIN_HYDRO"
+            });
         }
 
         private float rainStopwatch;
@@ -58,28 +98,29 @@ namespace ElementalReactionsMod
         {
             if (NetworkServer.active)
             {
-                if (this.rainRaycastJob != null)
+                if (rainRaycastJob != null)
                 {
-                    this.rainRaycastJob.Value.Complete();
-                    this.rainRaycastJob = null;
-                    RainApplyHydro();
+                    rainRaycastJob.Value.Complete();
+                    rainRaycastJob = null;
+                    RainApplyElement();
                 }
-                this.rainStopwatch += Time.fixedDeltaTime;
-                if (this.rainStopwatch >= rainInterval && element && element != DefaultElementDefs.physicalElement)
+                rainStopwatch += Time.fixedDeltaTime;
+                if (rainStopwatch >= rainInterval && element && element != DefaultElementDefs.physicalElement)
                 {
-                    this.rainStopwatch = Mathf.Min(this.rainStopwatch - rainInterval, 0f);
-                    this.ScheduleRaycastJob();
+                    rainStopwatch = Mathf.Min(rainStopwatch - rainInterval, 0f);
+                    ScheduleRaycastJob();
                 }
             }
         }
-        private void RainApplyHydro()
+        private void RainApplyElement()
         {
             for (int i = 0; i < characterBodies.Length; i++)
             {
-                if (characterBodies[i] && rainRaycastHitBuffer[i].colliderInstanceID == 0 && !characterBodies[i].HasBuff(DLC1Content.Buffs.ImmuneToDebuffReady) &&
+                if (characterBodies[i] && (rainRaycastHitBuffer[i].colliderInstanceID == 0 || (colliderInstanceIDsToIgnore != null && colliderInstanceIDsToIgnore.Contains(rainRaycastHitBuffer[i].colliderInstanceID)))
+                    && !characterBodies[i].HasBuff(DLC1Content.Buffs.ImmuneToDebuffReady) &&
                     (!characterBodies[i].TryGetComponent<ElementLoadoutComponent>(out var loadout) || !loadout.permanentlyAppliedElement || loadout.permanentlyAppliedElement == DefaultElementDefs.physicalElement))
                 {
-                    ElementalReactionManager.ApplyElement(element, characterBodies[i], 0.25f);
+                    ElementalReactionManager.ApplyElement(element, characterBodies[i], 0.25f, null, false, 1f);
                 }
             }
             rainRaycastCommands.Dispose();
@@ -97,7 +138,7 @@ namespace ElementalReactionsMod
                 transformAccessArray.Add(characterBodies[i].transform);
             }
             // A job creates the raycast commands using the TransformAccessArray
-            this.rainRaycastCommands = new NativeArray<RaycastCommand>(characterBodies.Length, Allocator.TempJob);
+            rainRaycastCommands = new NativeArray<RaycastCommand>(characterBodies.Length, Allocator.TempJob);
             CreateRaycastCommandsJob createRaycastCommandsJob = new CreateRaycastCommandsJob
             {
                 output = rainRaycastCommands,
@@ -105,20 +146,20 @@ namespace ElementalReactionsMod
                 raycastMask = LayerIndex.world.mask
             };
             // The job that actually does the raycasts, using the commands generated by the last job
-            JobHandle createRaycastJobHandle = IJobParallelForTransformExtensions.ScheduleReadOnly(createRaycastCommandsJob, transformAccessArray, 32);
-            this.rainRaycastHitBuffer = new NativeArray<RaycastHit>(characterBodies.Length, Allocator.TempJob);
-            rainRaycastJob = RaycastCommand.ScheduleBatch(this.rainRaycastCommands, this.rainRaycastHitBuffer, characterBodies.Length, createRaycastJobHandle);
+            JobHandle createRaycastJobHandle = createRaycastCommandsJob.ScheduleReadOnly(transformAccessArray, 32);
+            rainRaycastHitBuffer = new NativeArray<RaycastHit>(characterBodies.Length, Allocator.TempJob);
+            rainRaycastJob = RaycastCommand.ScheduleBatch(rainRaycastCommands, rainRaycastHitBuffer, characterBodies.Length, createRaycastJobHandle);
             transformAccessArray.Dispose();
         }
         private void CancelRaycastJob()
         {
-            if (this.rainRaycastJob != null)
+            if (rainRaycastJob != null)
             {
-                this.rainRaycastJob.GetValueOrDefault().Complete();
+                rainRaycastJob.GetValueOrDefault().Complete();
                 rainRaycastCommands.Dispose();
                 rainRaycastHitBuffer.Dispose();
             }
-            this.rainRaycastJob = null;
+            rainRaycastJob = null;
         }
     }
     public struct CreateRaycastCommandsJob : IJobParallelForTransform

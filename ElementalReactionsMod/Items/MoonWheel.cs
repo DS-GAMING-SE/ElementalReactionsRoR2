@@ -70,7 +70,7 @@ namespace ElementalReactionsMod.Items
                 childName = "Chest",
                 localPos = new Vector3(-0.00073F, 0.20592F, 0.162F),
                 localAngles = new Vector3(331.3469F, 1.57845F, 1.41202F),
-                localScale = new Vector3(1F, 1F, 1F)
+                localScale = new Vector3(0.9F, 0.9F, 0.9F)
             });
             itemDisplays.Add("Bandit2Body", new ItemDisplayRule
             {
@@ -90,88 +90,97 @@ namespace ElementalReactionsMod.Items
                 localAngles = new Vector3(0F, 0F, 0F),
                 localScale = new Vector3(5F, 5F, 5F)
             });
-            /*
             itemDisplays.Add("EngiBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
+                childName = "Chest",
+                localPos = new Vector3(0.45F, 0.48687F, -0.3F),
+                localAngles = new Vector3(0F, 87F, 0F),
+                localScale = new Vector3(0.9F, 0.9F, 0.9F)
+            });
+            itemDisplays.Add("EngiTurretBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                childName = "Head",
+                localPos = new Vector3(-0.61612F, 0.59652F, -1.31641F),
+                localAngles = new Vector3(0F, 39.04362F, 0F),
+                localScale = new Vector3(2.5F, 2.5F, 2.5F)
+            });
+            itemDisplays.Add("EngiWalkerTurretBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                childName = "Neck",
+                localPos = new Vector3(-0.7483F, 0.65663F, 0F),
+                localAngles = new Vector3(0F, 90F, 0F),
+                localScale = new Vector3(2.5F, 2.5F, 2.5F)
             });
             itemDisplays.Add("MageBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
+                childName = "Chest",
+                localPos = new Vector3(0.21887F, 0.2151F, -0.1934F),
+                localAngles = new Vector3(355F, 90F, 9F),
                 localScale = new Vector3(1F, 1F, 1F)
             });
             itemDisplays.Add("MercBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
+                childName = "LowerArmR",
+                localPos = new Vector3(0.00603F, 0.16364F, -0.10984F),
+                localAngles = new Vector3(4.82814F, 0.91842F, 173.788F),
+                localScale = new Vector3(0.7F, 0.7F, 0.7F)
             });
             itemDisplays.Add("TreebotBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
-            });*/
+                childName = "HeadBase",
+                localPos = new Vector3(-0.19751F, -0.42146F, 0.72772F),
+                localAngles = new Vector3(39.14164F, 349.3906F, 172.4279F),
+                localScale = new Vector3(1.3F, 1.3F, 1.3F)
+            });
             itemDisplays.Add("LoaderBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
-                childName = "MechHandL",
-                localPos = new Vector3(-0.06373F, 0.10357F, 0.13916F),
-                localAngles = new Vector3(10.07847F, 334.9965F, 177.9507F),
-                localScale = new Vector3(1F, 1F, 1F)
-            });/*
-            itemDisplays.Add("CrocoBody", new ItemDisplayRule
-            {
-                ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
+                childName = "Chest",
+                localPos = new Vector3(-0.2F, 0.28F, 0.28F),
                 localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
+                localScale = new Vector3(0.9F, 0.9F, 0.9F)
             });
             itemDisplays.Add("CrocoBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
+                childName = "SpineStomach1",
+                localPos = new Vector3(1.14943F, 0.2214F, 1.60011F),
+                localAngles = new Vector3(313.6886F, 121.8416F, 262.7798F),
+                localScale = new Vector3(5.5F, 5.5F, 5.5F)
+
             });
             itemDisplays.Add("CaptainBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
+                childName = "Head",
+                localPos = new Vector3(0.00498F, 0.27717F, 0.14714F),
+                localAngles = new Vector3(357.0426F, 359.8333F, 359.709F),
+                localScale = new Vector3(0.8F, 0.8F, 0.8F)
             });
             itemDisplays.Add("RailgunnerBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
-            });*/
+                childName = "Backpack",
+                localPos = new Vector3(-0.24508F, 0.12649F, -0.08851F),
+                localAngles = new Vector3(0F, 88F, 0F),
+                localScale = new Vector3(0.7F, 0.7F, 0.7F)
+            });
             itemDisplays.Add("VoidSurvivorBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
@@ -190,34 +199,34 @@ namespace ElementalReactionsMod.Items
                 localAngles = new Vector3(332.9016F, 29.06501F, 28.89558F),
                 localScale = new Vector3(1F, 1F, 1F)
 
-            });/*
+            });
             itemDisplays.Add("FalseSonBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
+                childName = "Chest",
+                localPos = new Vector3(0.26695F, 0.18735F, 0.28028F),
+                localAngles = new Vector3(333.2034F, 20.23438F, 335.0917F),
+                localScale = new Vector3(1.2F, 1.2F, 1.2F)
             });
             itemDisplays.Add("ChefBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
+                childName = "Chest",
+                localPos = new Vector3(-0.0173F, -0.48905F, 0.33534F),
+                localAngles = new Vector3(58.64297F, 2.619F, 83.89237F),
                 localScale = new Vector3(1F, 1F, 1F)
             });
             itemDisplays.Add("DroneTechBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
-                childName = "",
-                localPos = new Vector3(0F, 0F, 0F),
-                localAngles = new Vector3(0F, 0F, 0F),
-                localScale = new Vector3(1F, 1F, 1F)
-            });*/
+                childName = "Backpack",
+                localPos = new Vector3(-0.23746F, 0.30876F, -0.22503F),
+                localAngles = new Vector3(1.73688F, 8.40125F, 356.0705F),
+                localScale = new Vector3(0.8F, 0.8F, 0.8F)
+            });
             itemDisplays.Add("DrifterBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
