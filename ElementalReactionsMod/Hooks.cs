@@ -116,7 +116,7 @@ namespace ElementalReactionsMod
 
                         if (attackerBody && attackerBody.inventory && damage.damageType.HasModdedDamageType(DamageTypes.lunarDamageType))
                         {
-                            damage.damage *= 1 + (Math.Max(attackerBody.inventory.GetItemCountEffective(Items.Items.moonWheel) - 1, 0) * StaticValues.moonWheelLunarDamagePerStack);
+                            damage.damage *= 1 + (Math.Max(attackerBody.inventory.GetItemCountWithQuality(Items.Items.moonWheel) - 1, 0) * StaticValues.moonWheelLunarDamagePerStack);
                         }
                     }
                 });
@@ -148,12 +148,27 @@ namespace ElementalReactionsMod
             if (self && ElementalReactionManager.instance)
             {
                 ElementDef element = ElementCatalog.GetElementDef(damageInfo.damageType.GetElement());
-
-                if (element == DefaultElementDefs.physicalElement && damageInfo.attacker && damageInfo.damageType.IsDamageSourceSkillBased && 
-                    damageInfo.attacker.TryGetComponent<ElementLoadoutComponent>(out var elementLoadout) && elementLoadout.isActiveAndEnabled)
+                bool hasElement = element != DefaultElementDefs.physicalElement;
+                if (!hasElement && damageInfo.attacker)
                 {
-                    element = elementLoadout.GetElement(damageInfo.damageType.damageSource);
-                    if (element) damageInfo.damageType.SetElement(element.index);
+                    if (damageInfo.damageType.IsDamageSourceSkillBased &&
+                    damageInfo.attacker.TryGetComponent<ElementLoadoutComponent>(out var elementLoadout) && elementLoadout.isActiveAndEnabled)
+                    {
+                        element = elementLoadout.GetElement(damageInfo.damageType.damageSource);
+                        if (element)
+                        {
+                            hasElement = true;
+                            damageInfo.damageType.SetElement(element.index);
+                        }
+                    }
+                    if (!hasElement && damageInfo.attacker.TryGetComponent<CharacterBody>(out var body) && body.inventory)
+                    {
+                        Elites.EliteElement? elite = Elites.GetFirstEliteElement(body.inventory);
+                        if (elite.HasValue)
+                        {
+                            damageInfo.damageType.SetElement(elite.Value.element.index);
+                        }
+                    }
                 }
             }
             orig(self, damageInfo);
@@ -178,7 +193,7 @@ namespace ElementalReactionsMod
             orig(self);
             if (ElementalReactionManager.instance && self.characterBody)
             {
-                ElementalReactionManager.ApplyElement(DefaultElementDefs.pyroElement, self.characterBody, 0.3f);
+                ElementalReactionManager.ApplyElement(DefaultElementDefs.pyroElement, self.characterBody, 0.3f, null, false, StaticValues.permanentElementICD);
             }
         }
         private static void SolusWingCoolingCryo(ILContext il)
@@ -192,7 +207,7 @@ namespace ElementalReactionsMod
                 {
                     if (ElementalReactionManager.instance)
                     {
-                        ElementalReactionManager.ApplyElement(DefaultElementDefs.cryoElement, self, 1f);
+                        ElementalReactionManager.ApplyElement(DefaultElementDefs.cryoElement, self, 1f, null, false, StaticValues.permanentElementICD);
                     }
                 });
             }

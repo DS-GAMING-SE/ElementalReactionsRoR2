@@ -73,11 +73,11 @@ namespace ElementalReactionsMod
 
             Items.Items.Initialize();
 
-            Crafting.Initialize();
-
             Hooks.Initialize();
 
             ElementalRain.Initialize();
+
+            Crafting.Initialize();
 
             NetworkingAPI.RegisterMessageType<NetworkElementLoadout>();
             //NetworkingAPI.RegisterMessageType<NetworkPooledObjectSetActive>();

@@ -71,9 +71,9 @@ namespace ElementalReactionsMod
                 ItemIndex[] items = QualitySupport.GetQualityItemIndices(Items.Items.instructorsTeaCup);
                 teaCupQualityStatsDef.calculateValues = (master, stackCount) => new List<float>
                 {
-                    instructorsTeaCupDamageMultiplier * stackCount,
+                    instructorsTeaCupDamageMultiplier * master.inventory.GetItemCountWithQuality(Items.Items.instructorsTeaCup),
                     instructorsTeaCupQualityDamageIncrease * QualitySupport.GetItemCountQualities(master.inventory, Items.Items.instructorsTeaCup),
-                    InstructorsTeaCupQualityMaxDamage(master, stackCount)
+                    InstructorsTeaCupQualityMaxDamage(master)
                 };
                 for (int i = 0; i < items.Length; i++)
                 {
@@ -89,8 +89,8 @@ namespace ElementalReactionsMod
                 moonWheelQualityStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Percentage);
                 moonWheelQualityStatsDef.calculateValues = (master, stackCount) => new List<float>
                 {
-                    moonWheelLunarDamagePerStack * Mathf.Max(stackCount - 1, 0),
-                    MoonWheelQualityLookingGlassChance(master, stackCount)
+                    moonWheelLunarDamagePerStack * Mathf.Max(master.inventory.GetItemCountWithQuality(Items.Items.moonWheel) - 1, 0),
+                    MoonWheelQualityLookingGlassChance(master)
                 };
                 items = QualitySupport.GetQualityItemIndices(Items.Items.moonWheel);
                 for (int i = 0; i < items.Length; i++)
@@ -100,7 +100,7 @@ namespace ElementalReactionsMod
             }
         }
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-        internal static float InstructorsTeaCupQualityMaxDamage(CharacterMaster master, int stackCount)
+        internal static float InstructorsTeaCupQualityMaxDamage(CharacterMaster master)
         {
             ItemQualities.ItemQualityCounts count = ItemQualities.Utilities.Extensions.InventoryExtensions.GetItemCountsEffective(master.inventory, ItemQualities.QualityCatalog.FindItemQualityGroupIndex(Items.Items.instructorsTeaCup.itemIndex));
             switch (count.HighestQuality)
@@ -115,7 +115,7 @@ namespace ElementalReactionsMod
                     return instructorsTeaCupQualityMaxStacks *instructorsTeaCupQualityDamageIncrease * count.TotalQualityCount;
             }
         }
-        internal static float MoonWheelQualityLookingGlassChance(CharacterMaster master, int stackCount)
+        internal static float MoonWheelQualityLookingGlassChance(CharacterMaster master)
         {
             float chance = Mathf.Clamp01(QualitySupport.GetMoonWheelQualityChance(master.inventory) / 100f);
             if (master.luck == 0) return chance;

@@ -249,14 +249,17 @@ namespace ElementalReactionsMod
 
         public static int GetItemCountWithQuality(this Inventory inventory, ItemDef item)
         {
+            int count = 0;
             if (!ElementalReactionsPlugin.qualityModExists)
             {
-                return inventory.GetItemCountEffective(item);
+                count = inventory.GetItemCountEffective(item);
             }
             else
             {
-                return QualitySupport.GetItemCountTotalQuality(inventory, item);
+                count = QualitySupport.GetItemCountTotalQuality(inventory, item);
             }
+            if (item == Items.Items.moonWheel) count += inventory.GetItemCountEffective(Items.MoonWheel.hiddenMoonWheel);
+            return count;
         }
     }
 }

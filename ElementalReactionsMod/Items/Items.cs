@@ -95,6 +95,7 @@ namespace ElementalReactionsMod.Items
             itemDef.pickupModelReference = pickupModelReference;
             itemDef.pickupIconSprite = icon;
             itemDef.canRemove = canRemove;
+            itemDef.hidden = !canRemove;
             itemDef.requiredExpansion = Assets.elementalReactionExpansionDef;
 
             itemDef.nameToken = prefix + token+"_NAME"; // stylised name

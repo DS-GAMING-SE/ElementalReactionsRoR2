@@ -877,7 +877,7 @@ namespace ElementalReactionsMod
 
             public static AssetReferenceT<GameObject> lunarBloomEffect = new("623c28827e49bf041ade36cdd7cdf922");
             public static AssetReferenceT<Sprite> lunarBloomBuffIcon = new("b14c2afa0ea1ba6449927fb72cbbd016");
-            public static AssetReferenceT<Sprite> lunarBloomColorlessBuffIcon = new("2d411dfeba7a2b645b9d2d76d8b9ea90");
+            public static AssetReferenceT<Sprite> lunarBloomColorlessBuffIcon = new("2d411dfeba7a2b645b9d2d76d8b9ea90"); // REMEMBER TO TRY NEW BUFF ICON
             #endregion
             #endregion
         }

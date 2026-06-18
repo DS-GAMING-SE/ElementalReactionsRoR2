@@ -103,13 +103,21 @@ namespace ElementalReactionsMod.Loadout
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusHeart.TeleportComboLaserProjectile_prefab, pyroElement);
             CreateLoadout("UnderclockSpawnerProjectile", cryoElement, cryoElement, cryoElement, cryoElement, cryoElement);
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusHeart.UnderclockSpawnerProjectile_prefab, cryoElement);
-            CreateLoadout("SolusHeart_DDOSProjectile", electroElement, electroElement, electroElement, electroElement, electroElement);
-            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusHeart.SolusHeart_DDOSProjectile_prefab, electroElement);
+            CreateLoadout("SolusHeart_DDOSProjectile", hydroElement, hydroElement, hydroElement, hydroElement, hydroElement);
+            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusHeart.SolusHeart_DDOSProjectile_prefab, hydroElement);
             CreateLoadout("SolusWingBody", electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("MiniVoidCrabBodyPhase1", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("MiniVoidCrabBodyPhase2", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("MiniVoidCrabBodyPhase3", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("VoidCrabBody", hydroElement, hydroElement, hydroElement, hydroElement);
+            /* Make each ring in Voidling's arena have a unique weather element?
+             * Void - None
+             * Distant Roost - Dendro (It's green?)
+             * Titanic Plains - Geo
+             * Aphelian Sanctuary - Hydro (Voidling's attacks are hydro. Change something?)
+             * Siren's Call - Anemo
+             * Abyssal Depths - Pyro
+             */
 
             CreateLoadout("SolusVendorBody", electroElement, electroElement, electroElement, electroElement, electroElement);
             

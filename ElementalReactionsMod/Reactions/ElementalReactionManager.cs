@@ -136,9 +136,9 @@ namespace ElementalReactionsMod.Reactions
         {
             if (!Config.LunarEnemyLunarReactions().Value) return;
             CharacterMaster characterMaster = spawnResult.spawnedInstance ? spawnResult.spawnedInstance.GetComponent<CharacterMaster>() : null;
-            if (characterMaster && characterMaster.inventory && characterMaster.backupBodyIndex != BodyIndex.None && EnemyElementLoadouts.enemiesWithMoonWheel.Contains(characterMaster.backupBodyIndex) && characterMaster.inventory.GetItemCountPermanent(Items.MoonWheel.moonWheel) == 0)
+            if (characterMaster && characterMaster.inventory && characterMaster.backupBodyIndex != BodyIndex.None && EnemyElementLoadouts.enemiesWithMoonWheel.Contains(characterMaster.backupBodyIndex) && characterMaster.inventory.GetItemCountPermanent(Items.MoonWheel.hiddenMoonWheel) == 0)
             {
-                characterMaster.inventory.GiveItemPermanent(Items.MoonWheel.moonWheel);
+                characterMaster.inventory.GiveItemPermanent(Items.MoonWheel.hiddenMoonWheel);
             }
         }
 

@@ -73,6 +73,8 @@ namespace ElementalReactionsMod.Items
              * - Dendro = Lepton Daisy, Leeching Seed
              * - Uncommon Scrap returns default Delusion, allowing for reroll?
              */
+
+            // ADD PROJECT REF AND SOFT DEP TO SS2 AND SANDSWEPT TO ADD THEM TO RECIPES
             CreateDelusionConversion(DefaultElementDefs.pyroElement.delusion, 
                 new RecipeIngredient() // Kjaro's Band
             {
@@ -87,6 +89,87 @@ namespace ElementalReactionsMod.Items
                 pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_StrengthenBurn.StrengthenBurn_asset).WaitForCompletion(),
                 type = IngredientTypeIndex.AssetReference
             });
+
+            CreateDelusionConversion(DefaultElementDefs.hydroElement.delusion,
+                new RecipeIngredient() // Squid Polyp
+                {
+                    pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Squid.Squid_asset).WaitForCompletion(),
+                    type = IngredientTypeIndex.AssetReference
+                }, new RecipeIngredient() // Breaching Fin
+                {
+                    pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Items_KnockBackHitEnemies.KnockBackHitEnemies_asset).WaitForCompletion(),
+                    type = IngredientTypeIndex.AssetReference
+                });
+            List<RecipeIngredient> electroRecipes = [new RecipeIngredient() // Ukelele
+                {
+                    pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_ChainLightning.ChainLightning_asset).WaitForCompletion(),
+                    type = IngredientTypeIndex.AssetReference
+                }, new RecipeIngredient() // Luminous Shot
+                {
+                    pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Items_IncreasePrimaryDamage.IncreasePrimaryDamage_asset).WaitForCompletion(),
+                    type = IngredientTypeIndex.AssetReference
+                }, new RecipeIngredient() // Faraday Spur
+                {
+                    pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC3_Items_JumpDamageStrike.JumpDamageStrike_asset).WaitForCompletion(),
+                    type = IngredientTypeIndex.AssetReference
+                }];
+            /*if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.TeamMoonstorm"))
+            {
+                ItemDef manOWarSS2 = ItemCatalog.GetItemDef(ItemCatalog.FindItemIndex("LightningOnKill"));
+                if (manOWarSS2)
+                {
+                    electroRecipes.Add(new RecipeIngredient() // Man-O-War
+                    {
+                        pickup = manOWarSS2,
+                        type = IngredientTypeIndex.AssetReference
+                    });
+                }
+            }*/
+            CreateDelusionConversion(DefaultElementDefs.electroElement.delusion, electroRecipes.ToArray());
+
+            CreateDelusionConversion(DefaultElementDefs.cryoElement.delusion, 
+                new RecipeIngredient() // Runald's Band
+                {
+                    pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_ElementalRings.IceRing_asset).WaitForCompletion(),
+                    type = IngredientTypeIndex.AssetReference
+                });
+
+            CreateDelusionConversion(DefaultElementDefs.anemoElement.delusion,
+                new RecipeIngredient() // Hopoo Feather
+                {
+                    pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Feather.Feather_asset).WaitForCompletion(),
+                    type = IngredientTypeIndex.AssetReference
+                });
+
+            List<RecipeIngredient> geoRecipes = [new RecipeIngredient() // Ukelele
+                {
+                    pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_BonusGoldPackOnKill.BonusGoldPackOnKill_asset).WaitForCompletion(),
+                    type = IngredientTypeIndex.AssetReference
+                }];
+            /*if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.TeamSandswept.Sandswept"))
+            {
+                ItemDef crownsDiamond = ItemCatalog.GetItemDef(ItemCatalog.FindItemIndex("ITEM_SANDSWEPT_CROWNS_DIAMOND"));
+                if (crownsDiamond)
+                {
+                    geoRecipes.Add(new RecipeIngredient() // Crown's Diamond
+                    {
+                        pickup = crownsDiamond,
+                        type = IngredientTypeIndex.AssetReference
+                    });
+                }
+            }*/
+            CreateDelusionConversion(DefaultElementDefs.geoElement.delusion, geoRecipes.ToArray());
+
+            CreateDelusionConversion(DefaultElementDefs.dendroElement.delusion,
+                new RecipeIngredient() // Lepton Daisy
+                {
+                    pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_TPHealingNova.TPHealingNova_asset).WaitForCompletion(),
+                    type = IngredientTypeIndex.AssetReference
+                }, new RecipeIngredient() // Leeching Seed
+                {
+                    pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Seed.Seed_asset).WaitForCompletion(),
+                    type = IngredientTypeIndex.AssetReference
+                });
             #endregion
         }
         public static void CreateDelusionConversion(ItemDef delusion, params RecipeIngredient[] recipeIngredient)
