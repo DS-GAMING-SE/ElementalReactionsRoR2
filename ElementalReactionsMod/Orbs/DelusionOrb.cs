@@ -10,7 +10,7 @@ using R2API;
 
 namespace ElementalReactionsMod.Orbs
 {
-    // Change to SimpleLightningStrikeOrb for aoe damage?
+    // Blast attack aoe damage?
     public class DelusionOrb : GenericDamageOrb
     {
         public static void FireDelusionOrb(CharacterBody attacker, HurtBox target, int stacks, bool crit, ElementIndex element)

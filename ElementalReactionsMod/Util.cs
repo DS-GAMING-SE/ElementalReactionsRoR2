@@ -216,7 +216,7 @@ namespace ElementalReactionsMod
             return newDuration;
         }
 
-        public static bool GetRandomNode(Vector3 origin, out Vector3 destination, float minDistance, float maxDistance)
+        public static bool GetRandomNode(Vector3 origin, out Vector3 destination, float minDistance, float maxDistance, bool alwaysFindNode = true)
         {
             NodeGraph nodeGraph = SceneInfo.instance.GetNodeGraph(MapNodeGroup.GraphType.Ground);
             NodeGraph.NodeIndex nodeIndex = NodeGraph.NodeIndex.invalid;
@@ -238,8 +238,20 @@ namespace ElementalReactionsMod
             }
             if (list.Count <= 0)
             {
-                destination = origin;
-                return false;
+                if (alwaysFindNode)
+                {
+                    nodeIndex = nodeGraph.FindClosestNode(origin, HullClassification.Human);
+                    if (nodeIndex == NodeGraph.NodeIndex.invalid)
+                    {
+                        destination = origin;
+                        return false;
+                    }
+                }
+                else
+                {
+                    destination = origin;
+                    return false;
+                }
             }
 
             nodeGraph.GetNodePosition(nodeIndex, out Vector3 vector3);

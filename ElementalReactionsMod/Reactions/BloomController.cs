@@ -38,6 +38,7 @@ namespace ElementalReactionsMod.Reactions
         public void Start()
         {
             pool = GetComponent<ElementalReactionPooledObject>();
+            RoR2.Util.PlaySound("Play_item_use_healAndRevive_healPlantGrow", gameObject);
         }
         public void OnIncomingDamageServer(DamageInfo damageInfo)
         {

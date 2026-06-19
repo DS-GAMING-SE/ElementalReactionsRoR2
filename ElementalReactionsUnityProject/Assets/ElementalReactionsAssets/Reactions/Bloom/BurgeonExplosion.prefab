@@ -31,6 +31,10 @@ PrefabInstance:
       propertyPath: InitialModule.startSizeY.minScalar
       value: 9.5
       objectReference: {fileID: 0}
+    - target: {fileID: 285646610750470114, guid: 1a5da254110bef7488484791f3220e83, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.a
+      value: 0.4392157
+      objectReference: {fileID: 0}
     - target: {fileID: 2284212813176855072, guid: 1a5da254110bef7488484791f3220e83, type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 27

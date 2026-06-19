@@ -38,7 +38,7 @@ namespace ElementalReactionsMod
             lunarChargeBuff.isDOT = true;
 
             lunarBloomBuff = Util.AddNewBuff<BuffDefStockThresholdIcon>("LunarBloomVerdantDew",
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.lunarBloomColorlessBuffIcon).WaitForCompletion(), new Color(0.29f, 0.24f, 0.26f), true, false);
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.lunarBloomChargingBuffIcon).WaitForCompletion(), Color.white, true, false);
             lunarBloomBuff.iconOverrides = [new BuffDefStockThresholdIcon.StackIconOverride { stackThreshold = StaticValues.lunarBloomVerdantDewCap,
                 iconOverride = Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.lunarBloomBuffIcon).WaitForCompletion(), colorOverride = Color.white }];
 

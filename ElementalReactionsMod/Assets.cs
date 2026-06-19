@@ -2,6 +2,7 @@
 using ElementalReactionsMod.Loadout;
 using ElementalReactionsMod.Reactions;
 using R2API;
+using Rewired.ComponentControls.Effects;
 using RoR2;
 using RoR2.ContentManagement;
 using RoR2.ExpansionManagement;
@@ -277,6 +278,16 @@ namespace ElementalReactionsMod
                 x.Result.SetFloat("_FresnelPower", 1.6f);
                 x.Result.SetEmission(0.25f);
             };
+
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.HealthOrbEffect_prefab)).Completed += x =>
+            {
+                ElementalReactionManager.bloomSpawnOrb = PrefabAPI.InstantiateClone(x.Result, "BloomSpawnOrbEffect");
+                ElementalReactionManager.bloomSpawnOrb.AddComponent<Orbs.OrbEffectTargetPosition>();
+                GameObject.Destroy(ElementalReactionManager.bloomSpawnOrb.GetComponent<AkEvent>());
+                GameObject.Destroy(ElementalReactionManager.bloomSpawnOrb.GetComponent<AkGameObj>());
+
+                AddNewEffectDef(ElementalReactionManager.bloomSpawnOrb);
+            };
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.bloomObject).Completed += x =>
             {
                 x.Result.AddComponent<NetworkIdentity>();
@@ -303,6 +314,11 @@ namespace ElementalReactionsMod
                 model.mainHurtBox.isBullseye = true;
                 var rotate = model.transform.GetChild(0).GetChild(0).gameObject.AddComponent<RotateItem>();
                 rotate.spinSpeed = 80f;
+                var startScaleCurve = rotate.gameObject.AddComponent<ObjectScaleCurve>();
+                startScaleCurve.timeMax = 0.2f;
+                startScaleCurve.overallCurve = AnimationCurve.EaseInOut(0f, 0.3f, 1f, 1f);
+                startScaleCurve.useOverallCurveOnly = true;
+                startScaleCurve.transform.Find("BloomStartDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matDistortionFaded_mat)).WaitForCompletion();
                 var specialObjectAttributes = x.Result.AddComponent<SpecialObjectAttributes>();
                 specialObjectAttributes.grabbable = true;
                 specialObjectAttributes.massOverride = 0;
@@ -416,6 +432,44 @@ namespace ElementalReactionsMod
                 x.Result.AddComponent<DestroyOnTimer>().duration = 1f;
 
                 AddNewEffectDef(x.Result, "Play_seeker_skill1_impact");
+            };
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.hyperbloomOrb).Completed += x =>
+            {
+                EffectComponent effect = x.Result.AddComponent<EffectComponent>();
+                effect.positionAtReferencedTransform = false;
+                effect.parentToReferencedTransform = false;
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+                vfx.DoNotPool = false;
+                RoR2.Orbs.OrbEffect orb = x.Result.AddComponent<RoR2.Orbs.OrbEffect>();
+                orb.startVelocity1 = new Vector3(-3, 20f, -3f);
+                orb.startVelocity2 = new Vector3(3, 25f, 3f);
+                orb.movementCurve = AnimationCurve.Linear(0, 0, 1, 1);
+                orb.endEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Treebot.OmniImpactVFXSlashSyringe_prefab)).WaitForCompletion();
+                orb.endEffectScale = 1.5f;
+
+                x.Result.AddComponent<NetworkIdentity>();
+                var core = x.Result.transform.Find("HyperbloomOrbCoreBillboard");
+                core.GetComponent<MeshRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
+                core.gameObject.AddComponent<Billboard>();
+                var leafContainer = x.Result.transform.Find("HyperbloomOrbCoreLeafContainer");
+                var rotate = leafContainer.gameObject.AddComponent<RotateAroundAxis>();
+                rotate.relativeTo = Space.Self;
+                rotate.rotateAroundAxis = RotateAroundAxis.RotationAxis.Z;
+                rotate.fastRotationSpeed = 240f;
+                rotate.speed = RotateAroundAxis.Speed.Fast;
+                Material greenLeaf = new(dendroLeafMat);
+                greenLeaf.SetColor("_TintColor", new Color(0.1f, 0.6f, 0f));
+                leafContainer.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().sharedMaterial = greenLeaf;
+                leafContainer.GetChild(1).GetChild(0).GetComponent<MeshRenderer>().sharedMaterial = greenLeaf;
+                leafContainer.GetChild(2).GetChild(0).GetComponent<MeshRenderer>().sharedMaterial = greenLeaf;
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_EliteEarth.matAffixEarthTrailBloblets_mat)).Completed += y =>
+                {
+                    x.Result.transform.Find("HyperbloomOrbTrailOuter").GetComponent<TrailRenderer>().sharedMaterial = y.Result;
+                };
+
+                AddNewEffectDef(x.Result);
             };
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.crystallizePickup).Completed += x =>
             {
@@ -840,6 +894,7 @@ namespace ElementalReactionsMod
 
             public static AssetReferenceT<GameObject> bloomExplosion = new("1a5da254110bef7488484791f3220e83");
             public static AssetReferenceT<GameObject> burgeonExplosion = new("016343dff8c6ed345a37610401ac69b4");
+            public static AssetReferenceT<GameObject> hyperbloomOrb = new("84548caf27cac6b44b9f23e11e0c447d");
             #endregion
 
             #region Items
@@ -853,9 +908,6 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<Sprite> delusionItemIcon = new AssetReferenceT<Sprite>("884bdf224e0646e43b6dc1b6a2675c92");
 
             public static AssetReferenceT<Sprite> delusionBuffIcon = new AssetReferenceT<Sprite>("6eea3353a4d395843b4cd63335aa6de1");
-            public static AssetReferenceT<Sprite> delusionCooldownBuffIcon = new AssetReferenceT<Sprite>("11b881fd7c08c0b4faf1b305df7e394d");
-            public static AssetReferenceT<Sprite> delusionReadyBuffIcon = new AssetReferenceT<Sprite>("da2c01d04bcb15f43848d28d22db15d9");
-            public static AssetReferenceT<Sprite> delusionActiveBuffIcon = new AssetReferenceT<Sprite>("c48688fe6fab6304badbca799ca382be");
             #endregion
             #region Instructor's Tea Cup
             public static AssetReferenceT<GameObject> instructorsTeaCupPickupModel = new("b51b42d6d9466d845a1d09da7a916642");
@@ -877,7 +929,7 @@ namespace ElementalReactionsMod
 
             public static AssetReferenceT<GameObject> lunarBloomEffect = new("623c28827e49bf041ade36cdd7cdf922");
             public static AssetReferenceT<Sprite> lunarBloomBuffIcon = new("b14c2afa0ea1ba6449927fb72cbbd016");
-            public static AssetReferenceT<Sprite> lunarBloomColorlessBuffIcon = new("2d411dfeba7a2b645b9d2d76d8b9ea90"); // REMEMBER TO TRY NEW BUFF ICON
+            public static AssetReferenceT<Sprite> lunarBloomChargingBuffIcon = new("dc667ee18bd31314a9c85d4ba5590cbf");
             #endregion
             #endregion
         }

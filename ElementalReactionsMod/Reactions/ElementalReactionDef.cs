@@ -11,6 +11,7 @@ using UnityEngine.Networking;
 using static ElementalReactionsMod.Elements.DefaultElementDefs;
 using static ElementalReactionsMod.StaticValues;
 using static ElementalReactionsMod.Reactions.ElementalReactionManager;
+using ElementalReactionsMod.Orbs;
 
 namespace ElementalReactionsMod.Reactions
 {
@@ -186,7 +187,9 @@ namespace ElementalReactionsMod.Reactions
                     bloom.GetComponent<TeamComponent>().teamIndex = characterBody.teamComponent.teamIndex;
                     NetworkServer.Spawn(bloom);*/
 
-                    ProjectileManager.instance.FireProjectileServer(new FireProjectileInfo
+                    BloomSpawnOrb.SpawnBloom(damage.attacker, characterBody.damage, pos + (2 * Vector3.up), damage.position);
+
+                    /*ProjectileManager.instance.FireProjectileServer(new FireProjectileInfo
                     {
                         projectilePrefab = bloomCore.WaitForCompletion(),
                         damage = characterBody.damage,
@@ -194,7 +197,7 @@ namespace ElementalReactionsMod.Reactions
                         position = pos + (2f * Vector3.up),
                         rotation = Quaternion.identity,
                         owner = damage.attacker
-                    });
+                    });*/
                 }
             };
             bloom.baseFirstReactionCoefficient = 0.5f;

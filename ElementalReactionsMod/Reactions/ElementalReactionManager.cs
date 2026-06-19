@@ -29,9 +29,11 @@ namespace ElementalReactionsMod.Reactions
         public static DeployableSlot crystallizeDeployableSlot;
         //public static PrefabComponentPool<ElementalReactionPooledObject> crystallizePool;
         public static AsyncOperationHandle<GameObject> quickenTempVisualEffect;
+        public static GameObject bloomSpawnOrb;
         public static AsyncOperationHandle<GameObject> bloomCore;
         public static AsyncOperationHandle<GameObject> bloomExplosion;
         public static AsyncOperationHandle<GameObject> burgeonExplosion;
+        public static AsyncOperationHandle<GameObject> hyperbloomOrb;
         public static DeployableSlot bloomDeployableSlot;
         //public static PrefabComponentPool<ElementalReactionPooledObject> bloomPool;
         public static AsyncOperationHandle<GameObject> lunarChargedEffect;
@@ -164,6 +166,7 @@ namespace ElementalReactionsMod.Reactions
             bloomCore = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.bloomObject, AsyncReferenceHandleUnloadType.OnRunEnd);
             bloomExplosion = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.bloomExplosion, AsyncReferenceHandleUnloadType.OnRunEnd);
             burgeonExplosion = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.burgeonExplosion, AsyncReferenceHandleUnloadType.OnRunEnd);
+            hyperbloomOrb = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.hyperbloomOrb, AsyncReferenceHandleUnloadType.OnRunEnd);
             lunarChargedEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarChargedLightningEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             lunarBloomEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarBloomEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
         }
@@ -179,6 +182,7 @@ namespace ElementalReactionsMod.Reactions
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.bloomObject);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.bloomExplosion);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.burgeonExplosion);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.hyperbloomOrb);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarChargedLightningEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarBloomEffect);
         }

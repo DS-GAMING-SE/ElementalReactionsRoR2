@@ -1,4 +1,5 @@
 ﻿using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Reactions;
 using R2API;
 using RoR2;
 using RoR2.Orbs;
@@ -43,9 +44,26 @@ namespace ElementalReactionsMod.Orbs
             hyperbloomOrb.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
             OrbManager.instance.AddOrb(hyperbloomOrb);
         }
+        public override void Begin()
+        {
+            speed = 90f;
+            base.duration = base.distanceToTarget / this.speed;
+            base.duration += 0.1f;
+            if (this.GetOrbEffect())
+            {
+                EffectData effectData = new EffectData
+                {
+                    scale = this.scale,
+                    origin = this.origin,
+                    genericFloat = base.duration
+                };
+                effectData.SetHurtBoxReference(this.target);
+                EffectManager.SpawnEffect(this.GetOrbEffect(), effectData, true);
+            }
+        }
         public override GameObject GetOrbEffect()
         {
-            return Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Items_ShockDamageAura.ShockDamageAuraOrbEffect_prefab).WaitForCompletion();
+            return ElementalReactionManager.hyperbloomOrb.WaitForCompletion();
         }
     }
 }
