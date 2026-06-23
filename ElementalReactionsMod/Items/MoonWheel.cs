@@ -30,7 +30,7 @@ namespace ElementalReactionsMod.Items
                 Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.Tier3Def_asset).WaitForCompletion(),
                 moonWheelItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), moonWheelPickupModel, InitializeItemDisplays(), ItemTag.Damage, ItemTag.CanBeTemporary, ItemTag.AllowedForUseAsCraftingIngredient, ItemTag.DevotionBlacklist);
             hiddenMoonWheel = AddNewItem("HiddenMoonWheel", "MOON_WHEEL", false, null,
-                moonWheelItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), moonWheelPickupModel, null, ItemTag.CannotSteal, ItemTag.CannotCopy, ItemTag.CannotDuplicate);
+                null, moonWheelPickupModel, null, ItemTag.CannotSteal, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.WorldUnique, ItemTag.IgnoreForDropList);
 
             ElementalReactionManager.onPreElementalReactionTriggered += (ref reaction, element1, element2, victim, ref damage) =>
             {

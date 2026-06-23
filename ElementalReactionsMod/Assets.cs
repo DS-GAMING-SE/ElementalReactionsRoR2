@@ -258,6 +258,7 @@ namespace ElementalReactionsMod
                     Material swirlMat = new Material(y.Result);
                     swirlMat.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTritoneSmoothed_png)).WaitForCompletion());
                     swirlMat.EnableKeyword("VERTEXCOLOR");
+                    swirlMat.SetVector("_CutoffScroll", new Vector4(25, 0, -10, 0));
                     swirlRingParticleRenderer.sharedMaterial = swirlMat;
                 };
                 x.Result.AddComponent<DestroyOnTimer>().duration = 0.4f;
@@ -331,7 +332,7 @@ namespace ElementalReactionsMod
                 x.Result.AddComponent<ProjectileDamage>();
                 x.Result.AddComponent<ProjectileDeployToOwner>().deployableSlot = ElementalReactionManager.bloomDeployableSlot;
 
-                Content.AddNetworkedObjectPrefab(x.Result);
+                Content.AddProjectilePrefab(x.Result);
             };
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.bloomExplosion).Completed += x =>
             {
@@ -359,6 +360,7 @@ namespace ElementalReactionsMod
                 ringParticleRenderer.mesh = ringMesh;
                 Material bloomRingMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BFG.matBeamSphereBeam_mat)).WaitForCompletion());
                 bloomRingMat.SetTexture("_RemapTex", dendroRampTex);
+                bloomRingMat.SetVector("_CutoffScroll", new Vector4(40, 0, -20, 0));
                 ringParticleRenderer.sharedMaterial = bloomRingMat;
                 AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_EliteEarth.matAffixEarthSphereIndicator_mat)).Completed += y =>
                 {
@@ -409,6 +411,7 @@ namespace ElementalReactionsMod
                 Material bloomRingMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BFG.matBeamSphereBeam_mat)).WaitForCompletion());
                 bloomRingMat.SetTexture("_RemapTex", burgeonRamp);
                 bloomRingMat.SetInt("_SrcBlend", 5);
+                bloomRingMat.SetVector("_CutoffScroll", new Vector4(55, 0, -25, 0));
                 ringParticleRenderer.sharedMaterial = bloomRingMat;
                 AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BurnNearby.matHelfireRangeIndicator_mat)).Completed += y =>
                 {

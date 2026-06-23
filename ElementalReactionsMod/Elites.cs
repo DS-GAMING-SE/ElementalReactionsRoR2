@@ -35,6 +35,15 @@ namespace ElementalReactionsMod
             }
             return null;
         }
+        public static ElementDef GetFirstEliteElementDef(Inventory inventory)
+        {
+            EliteElement? elite = GetFirstEliteElement(inventory);
+            if (elite.HasValue)
+            {
+                return elite.Value.element;
+            }
+            return DefaultElementDefs.physicalElement;
+        }
 
         public struct EliteElement
         {

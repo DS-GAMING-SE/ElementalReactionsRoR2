@@ -1,4 +1,5 @@
 ﻿using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Loadout;
 using ElementalReactionsMod.Reactions;
 using R2API;
 using RoR2;
@@ -29,6 +30,8 @@ namespace ElementalReactionsMod.Items
             MoonWheel.Initialize();
 
             CharacterBody.onBodyInventoryChangedGlobal += AddItemBehaviours;
+
+            ElementLoadoutComponent.Initialize();
         }
         public static void AddItemBehaviours(CharacterBody characterBody)
         {
@@ -92,6 +95,7 @@ namespace ElementalReactionsMod.Items
             ItemDef itemDef = ScriptableObject.CreateInstance<ItemDef>();
             itemDef.name = "ElementalReactions"+itemName;
             itemDef._itemTierDef = itemTierDef;
+            if (!itemTierDef) itemDef.deprecatedTier = ItemTier.NoTier;
             itemDef.pickupModelReference = pickupModelReference;
             itemDef.pickupIconSprite = icon;
             itemDef.canRemove = canRemove;

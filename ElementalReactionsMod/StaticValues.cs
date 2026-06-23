@@ -80,7 +80,7 @@ namespace ElementalReactionsMod
         public const int lunarChargeAttacksPerDot = 4;
         public const float lunarChargeDotDuration = lunarChargeTimeBetweenAttacks * lunarChargeAttacksPerDot;
         public const float lunarChargeRadius = 6f;
-        public const float lunarChargeEnemyDelay = 1.5f;
+        public const float lunarChargeEnemyDelay = 0.75f;
 
         public const int lunarBloomVerdantDewCap = 3;
         public const float lunarBloomDamageMultiplier = 1.5f;

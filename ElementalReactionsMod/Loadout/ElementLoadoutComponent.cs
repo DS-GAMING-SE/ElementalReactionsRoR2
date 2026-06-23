@@ -1,13 +1,14 @@
-﻿using System;
+﻿using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Reactions;
+using HG;
+using R2API.Networking.Interfaces;
+using RoR2;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using RoR2;
-using ElementalReactionsMod.Elements;
-using HG;
-using ElementalReactionsMod.Reactions;
 using UnityEngine.Networking;
-using R2API.Networking.Interfaces;
+using static UnityEngine.UI.GridLayoutGroup;
 
 namespace ElementalReactionsMod.Loadout
 {
@@ -33,6 +34,12 @@ namespace ElementalReactionsMod.Loadout
                 }
             }
         }
+
+        public static ItemDef primaryElementItem;
+        public static ItemDef secondaryElementItem;
+        public static ItemDef utilityElementItem;
+        public static ItemDef specialElementItem;
+
         public bool permanentElementWasApplied;
         private float permanentElementStopwatch;
         public ElementDef naturallyAppliedElement;
@@ -58,13 +65,21 @@ namespace ElementalReactionsMod.Loadout
             {
                 team = characterBody.teamComponent.teamIndex;
             }
-            if (!NetworkServer.active && characterBody.isPlayerControlled)
+            if (characterBody.hasEffectiveAuthority)
             {
-                new NetworkElementLoadout(characterBody.netId, 
-                    primaryElement ? primaryElement.index : ElementIndex.Physical,
-                    secondaryElement ? secondaryElement.index : ElementIndex.Physical,
-                    utilityElement ? utilityElement.index : ElementIndex.Physical,
-                    specialElement ? specialElement.index : ElementIndex.Physical).Send(R2API.Networking.NetworkDestination.Server);
+                ElementDef[] elementLoadout = Config.GetElementLoadoutFromConfig(BodyCatalog.GetBodyName(characterBody.bodyIndex), out _);
+                if (NetworkServer.active)
+                {
+                    GiveElementLoadoutItems(elementLoadout);
+                }
+                else if (characterBody.isPlayerControlled)
+                {
+                    new NetworkElementLoadout(characterBody.netId,
+                        elementLoadout[0].index,
+                        elementLoadout[1].index,
+                        elementLoadout[2].index,
+                        elementLoadout[3].index).Send(R2API.Networking.NetworkDestination.Server);
+                }
             }
             if (Config.CanEnemiesBeElemental().Value && permanentlyAppliedElement && specialObjectAttributes)
             {
@@ -103,20 +118,74 @@ namespace ElementalReactionsMod.Loadout
             }
         }
 
-        public ElementDef GetElement(DamageSource damageSource)
+        public static ElementDef GetElement(GameObject gameObject, DamageSource damageSource)
         {
+            if (gameObject.TryGetComponent<CharacterBody>(out var body))
+            {
+                return GetElement(body, damageSource);
+            }
+            return DefaultElementDefs.physicalElement;
+        }
+        public static ElementDef GetElement(CharacterBody characterBody, DamageSource damageSource)
+        {
+            if (!characterBody) return DefaultElementDefs.physicalElement;
             switch (damageSource)
             {
                 case DamageSource.Primary:
-                    return primaryElement;
+                    if (characterBody.master && characterBody.master.inventory)
+                    {
+                        return GetElementItem(characterBody, primaryElementItem);
+                    }
+                    else if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadout))
+                    {
+                        return loadout.primaryElement;
+                    }
+                    break;
                 case DamageSource.Secondary:
-                    return secondaryElement;
+                    if (characterBody.master && characterBody.master.inventory)
+                    {
+                        return GetElementItem(characterBody, secondaryElementItem);
+                    }
+                    else if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadout))
+                    {
+                        return loadout.secondaryElement;
+                    }
+                    break;
                 case DamageSource.Utility:
-                    return utilityElement;
+                    if (characterBody.master && characterBody.master.inventory)
+                    {
+                        return GetElementItem(characterBody, utilityElementItem);
+                    }
+                    else if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadout))
+                    {
+                        return loadout.utilityElement;
+                    }
+                    break;
                 case DamageSource.Special:
-                    return specialElement;
+                    if (characterBody.master && characterBody.master.inventory)
+                    {
+                        return GetElementItem(characterBody, specialElementItem);
+                    }
+                    else if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadout))
+                    {
+                        return loadout.specialElement;
+                    }
+                    break;
                 default:
-                    return null;
+                    break;
+            }
+            return characterBody.master && characterBody.master.inventory ? Elites.GetFirstEliteElementDef(characterBody.master.inventory) : DefaultElementDefs.physicalElement;
+        }
+        private static ElementDef GetElementItem(CharacterBody characterBody, ItemDef loadoutItem)
+        {
+            ElementDef element = ElementCatalog.GetElementDef((ElementIndex)characterBody.master.inventory.GetItemCountPermanent(loadoutItem));
+            if (element == DefaultElementDefs.physicalElement)
+            {
+                return Elites.GetFirstEliteElementDef(characterBody.master.inventory);
+            }
+            else
+            {
+                return element;
             }
         }
 
@@ -126,13 +195,11 @@ namespace ElementalReactionsMod.Loadout
             secondaryElement = elements[1];
             utilityElement = elements[2];
             specialElement = elements[3];
+            GiveElementLoadoutItems(elements);
         }
         public void ApplyElementLoadout(ElementIndex[] elements)
         {
-            primaryElement = ElementCatalog.GetElementDef(elements[0]);
-            secondaryElement = ElementCatalog.GetElementDef(elements[1]);
-            utilityElement = ElementCatalog.GetElementDef(elements[2]);
-            specialElement = ElementCatalog.GetElementDef(elements[3]);
+            ApplyElementLoadout([ElementCatalog.GetElementDef(elements[0]), ElementCatalog.GetElementDef(elements[1]), ElementCatalog.GetElementDef(elements[2]), ElementCatalog.GetElementDef(elements[3])]);
         }
         public void SetSpecialAppliedElement(ElementDef element)
         {
@@ -167,6 +234,45 @@ namespace ElementalReactionsMod.Loadout
             {
                 ElementalReactionManager.ApplyElement(current, characterBody, float.MaxValue);
             }
+        }
+
+        public bool GiveElementLoadoutItems(ElementDef[] elements)
+        {
+            if (characterBody && characterBody.master && characterBody.master.inventory)
+            {
+                UpdateLoadoutItem(characterBody.master.inventory, primaryElement, primaryElementItem);
+                UpdateLoadoutItem(characterBody.master.inventory, secondaryElement, secondaryElementItem);
+                UpdateLoadoutItem(characterBody.master.inventory, utilityElement, utilityElementItem);
+                UpdateLoadoutItem(characterBody.master.inventory, specialElement, specialElementItem);
+                return true;
+            }
+            return false;
+        }
+        private void UpdateLoadoutItem(Inventory inventory, ElementDef elementDef, ItemDef item)
+        {
+            if (inventory.GetItemCountPermanent(item) != (int)elementDef.index)
+            {
+                if (inventory.GetItemCountPermanent(item) > (int)elementDef.index)
+                {
+                    inventory.RemoveItemPermanent(item, Math.Abs((int)elementDef.index) - inventory.GetItemCountPermanent(item));
+                }
+                else
+                {
+                    inventory.GiveItemPermanent(item, (int)elementDef.index - inventory.GetItemCountPermanent(item));
+                }
+            }
+        }
+
+        public static void Initialize()
+        {
+            primaryElementItem = Items.Items.AddNewItem("ElementPrimary", "ELEMENT_PRIMARY", false, null,
+                null, null, null, ItemTag.WorldUnique, ItemTag.IgnoreForDropList);
+            secondaryElementItem = Items.Items.AddNewItem("ElementSecondary", "ELEMENT_SECONDARY", false, null,
+                null, null, null, ItemTag.WorldUnique, ItemTag.IgnoreForDropList);
+            utilityElementItem = Items.Items.AddNewItem("ElementUtility", "ELEMENT_UTILITY", false, null,
+                null, null, null, ItemTag.WorldUnique, ItemTag.IgnoreForDropList);
+            specialElementItem = Items.Items.AddNewItem("ElementSpecial", "ELEMENT_SPECIAL", false, null,
+                null, null, null, ItemTag.WorldUnique, ItemTag.IgnoreForDropList);
         }
 
         public static void AddElementLoadoutComponents()

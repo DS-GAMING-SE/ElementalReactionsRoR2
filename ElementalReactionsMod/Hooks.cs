@@ -3,6 +3,7 @@ using ElementalReactionsMod.Items;
 using ElementalReactionsMod.Loadout;
 using ElementalReactionsMod.Reactions;
 using HarmonyLib;
+using HG;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.Utils;
@@ -148,27 +149,9 @@ namespace ElementalReactionsMod
             if (self && ElementalReactionManager.instance)
             {
                 ElementDef element = ElementCatalog.GetElementDef(damageInfo.damageType.GetElement());
-                bool hasElement = element != DefaultElementDefs.physicalElement;
-                if (!hasElement && damageInfo.attacker)
+                if (element == DefaultElementDefs.physicalElement && damageInfo.attacker && damageInfo.attacker.TryGetComponent<CharacterBody>(out var body))
                 {
-                    if (damageInfo.damageType.IsDamageSourceSkillBased &&
-                    damageInfo.attacker.TryGetComponent<ElementLoadoutComponent>(out var elementLoadout) && elementLoadout.isActiveAndEnabled)
-                    {
-                        element = elementLoadout.GetElement(damageInfo.damageType.damageSource);
-                        if (element)
-                        {
-                            hasElement = true;
-                            damageInfo.damageType.SetElement(element.index);
-                        }
-                    }
-                    if (!hasElement && damageInfo.attacker.TryGetComponent<CharacterBody>(out var body) && body.inventory)
-                    {
-                        Elites.EliteElement? elite = Elites.GetFirstEliteElement(body.inventory);
-                        if (elite.HasValue)
-                        {
-                            damageInfo.damageType.SetElement(elite.Value.element.index);
-                        }
-                    }
+                    damageInfo.damageType.SetElement(ElementLoadoutComponent.GetElement(body, damageInfo.damageType.damageSource).index);
                 }
             }
             orig(self, damageInfo);
@@ -247,13 +230,9 @@ namespace ElementalReactionsMod
                 {
                     if (ElementalReactionManager.instance)
                     {
-                        if (!projectileDamage.damageType.IsElementalDamage() && projectileDamage.damageType.IsDamageSourceSkillBased && fireProjectileInfo.owner && fireProjectileInfo.owner.TryGetComponent<ElementLoadoutComponent>(out var loadout))
+                        if (!projectileDamage.damageType.IsElementalDamage() && fireProjectileInfo.owner && fireProjectileInfo.owner.TryGetComponent<CharacterBody>(out var body))
                         {
-                            ElementDef element = loadout.GetElement(projectileDamage.damageType.damageSource);
-                            if (element)
-                            {
-                                projectileDamage.damageType.SetElement(element.index);
-                            }
+                            projectileDamage.damageType.SetElement(ElementLoadoutComponent.GetElement(body, projectileDamage.damageType.damageSource).index);
                         }
                     }
                 });

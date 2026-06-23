@@ -115,7 +115,8 @@ namespace ElementalReactionsMod
 
         public static void AddProjectilePrefab(GameObject prefab)
         {
-            ContentPacks.projectilePrefabs.Add(prefab);
+            //ContentPacks.projectilePrefabs.Add(prefab);
+            ContentAddition.AddProjectile(prefab);
         }
 
         public static void AddNetworkedObjectPrefab(GameObject prefab)

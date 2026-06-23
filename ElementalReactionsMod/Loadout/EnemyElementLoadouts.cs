@@ -24,6 +24,7 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("BeetleGuardAllyBody", geoElement, geoElement);
             CreateLoadout("BisonBody", physicalElement, geoElement); // for EnemyAbilities
             CreateLoadout("ChildBody", null, null, null, null, pyroElement);
+            CreateLoadout("ParentBody", null, null, null, null, pyroElement);
             CreateLoadout("ClayGrenadierBody", hydroElement, hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("ClayBruiserBody", physicalElement, hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("ClayBossBody", hydroElement, hydroElement,hydroElement, hydroElement, hydroElement);
@@ -106,6 +107,7 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("SolusHeart_DDOSProjectile", hydroElement, hydroElement, hydroElement, hydroElement, hydroElement);
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusHeart.SolusHeart_DDOSProjectile_prefab, hydroElement);
             CreateLoadout("SolusWingBody", electroElement, electroElement, electroElement, electroElement);
+            CreateLoadout("SolusWing_LaserBurstBlastProjectile", electroElement, electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("MiniVoidCrabBodyPhase1", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("MiniVoidCrabBodyPhase2", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("MiniVoidCrabBodyPhase3", hydroElement, hydroElement, hydroElement, hydroElement);
@@ -160,7 +162,7 @@ namespace ElementalReactionsMod.Loadout
                 CreateLoadout("ArraignP2Body", physicalElement, physicalElement, electroElement, electroElement);
             }
             // Star Storm 2
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.TeamMoonstorm"))
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(SS2.SS2Main.GUID))
             {
                 CreateLoadout("RunshroomBody", dendroElement, dendroElement, dendroElement, dendroElement);
                 CreateLoadout("LampBody", pyroElement, pyroElement, pyroElement, pyroElement);

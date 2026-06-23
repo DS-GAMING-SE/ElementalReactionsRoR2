@@ -4,7 +4,7 @@ using ElementalReactionsMod.Elements;
 using ElementalReactionsMod.Items;
 using ElementalReactionsMod.Loadout;
 using ElementalReactionsMod.Reactions;
-using ElementalReactionsMod.Weather;
+using ElementalReactionsMod.Environment;
 using R2API;
 using R2API.ContentManagement;
 using R2API.Networking;
@@ -29,6 +29,7 @@ namespace ElementalReactionsMod
     [BepInDependency(LookingGlass.PluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(RiskOfOptions.PluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(ItemQualities.ItemQualitiesPlugin.PluginGUID, BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency(SS2.SS2Main.GUID, BepInDependency.DependencyFlags.SoftDependency)]
 
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class ElementalReactionsPlugin : BaseUnityPlugin

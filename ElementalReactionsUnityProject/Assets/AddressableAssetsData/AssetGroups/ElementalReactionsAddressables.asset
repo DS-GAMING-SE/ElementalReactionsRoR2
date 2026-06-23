@@ -269,6 +269,10 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Items/Moonwheel/LunarReactions/texLunarBloomChargingIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 383d58c1367764647bb30cbdd0339ac0
+    m_Address: Assets/ElementalReactionsAssets/Common/VFX/GenericElementOrbEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:
