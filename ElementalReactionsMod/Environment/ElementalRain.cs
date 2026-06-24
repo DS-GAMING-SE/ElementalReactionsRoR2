@@ -24,6 +24,10 @@ namespace ElementalReactionsMod.Environment
             elementalRainPrefab = PrefabAPI.CreateEmptyPrefab("ElementalRainManager");
             elementalRainPrefab.AddComponent<ElementalRain>();
             Stage.onServerStageBegin += TrySpawnElementalRain;
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(SS2.SS2Main.GUID))
+            {
+                SS2StormElementalRain.InitializeSS2Storm();
+            }
         }
         private static void TrySpawnElementalRain(Stage stage)
         {
@@ -53,7 +57,6 @@ namespace ElementalReactionsMod.Environment
         public bool raining { get { return _raining; } 
             set 
             {
-                _raining = value;
                 if (value == _raining) return;
                 if (_raining)
                 {
@@ -63,6 +66,7 @@ namespace ElementalReactionsMod.Environment
                 {
                     DisableRain();
                 }
+                _raining = value;
             } }
         public bool _raining = true;
         public ElementDef element;
@@ -129,7 +133,7 @@ namespace ElementalReactionsMod.Environment
         private Dictionary<CharacterBody, ElementLoadoutComponent> cachedLoadoutComponents;
         private void FixedUpdate()
         {
-            if (NetworkServer.active)
+            if (NetworkServer.active && raining)
             {
                 if (rainRaycastJob != null)
                 {

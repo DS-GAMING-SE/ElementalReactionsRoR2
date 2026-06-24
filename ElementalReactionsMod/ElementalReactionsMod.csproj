@@ -43,6 +43,9 @@
 	  <Reference Include="LookingGlass">
 	    <HintPath>..\lib\LookingGlass.dll</HintPath>
 	  </Reference>
+	  <Reference Include="MSU.Runtime">
+	    <HintPath>..\lib\MSU.Runtime.dll</HintPath>
+	  </Reference>
 	  <Reference Include="RiskOfOptions">
 	    <HintPath>..\lib\RiskOfOptions.dll</HintPath>
 	  </Reference>
@@ -51,6 +54,9 @@
 	  </Reference>
 	  <Reference Include="Unity.Collections">
 	    <HintPath>..\lib\Unity.Collections.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Unity.Postprocessing.Runtime">
+	    <HintPath>..\lib\Unity.Postprocessing.Runtime.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 

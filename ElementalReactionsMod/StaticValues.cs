@@ -60,7 +60,7 @@ namespace ElementalReactionsMod
         public const float delusionStackDamageCoefficient = 6f;
         public const float delusionAttacksPerSecond = 0.5f;
         public const float delusionHealthPercentCost = 0.05f;
-        public const float delusionHealingReceivedReduction = 0.3f;
+        public const float delusionHealingReceivedReduction = 0.2f;
 
         public const float instructorsTeaCupDamageMultiplier = 0.2f;
 

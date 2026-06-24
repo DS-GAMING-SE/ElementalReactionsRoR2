@@ -42,15 +42,13 @@ namespace ElementalReactionsMod.Reactions
         {
             if (NetworkServer.active && teamFilter.teamIndex == TeamIndex.None || TeamComponent.GetObjectTeam(other.gameObject) == this.teamFilter.teamIndex)
             {
-                CharacterBody component = other.GetComponent<CharacterBody>();
-                if (component)
+                if (other.TryGetComponent<CharacterBody>(out var characterBody))
                 {
-                    component.OnPickup(CharacterBody.PickupClass.Minor);
-                    HealthComponent healthComponent = component.healthComponent;
-                    if (healthComponent && healthComponent.alive)
+                    characterBody.OnPickup(CharacterBody.PickupClass.Minor);
+                    if (characterBody.healthComponent && characterBody.healthComponent.alive)
                     {
-                        float barrier = (component.healthComponent.fullBarrier * StaticValues.crystallizeMaxBarrierPercent) - component.healthComponent.barrier;
-                        if (barrier > 0) component.healthComponent.AddBarrier(Mathf.Min(barrier, component.healthComponent.fullBarrier * (component.isBoss || component.isChampion ? StaticValues.crystallizeBossBarrierPercent: StaticValues.crystallizeBarrierPercent)));
+                        float barrier = (characterBody.healthComponent.fullBarrier * StaticValues.crystallizeMaxBarrierPercent) - characterBody.healthComponent.barrier;
+                        if (barrier > 0) characterBody.healthComponent.AddBarrier(Mathf.Min(barrier, characterBody.healthComponent.fullBarrier * (characterBody.isBoss || characterBody.isChampion ? StaticValues.crystallizeBossBarrierPercent: StaticValues.crystallizeBarrierPercent)));
                         if (baseGameObject.TryGetComponent<ElementalReactionPooledObject>(out var pool))
                         {
                             pool.ReturnObject();

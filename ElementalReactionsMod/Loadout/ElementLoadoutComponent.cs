@@ -65,22 +65,6 @@ namespace ElementalReactionsMod.Loadout
             {
                 team = characterBody.teamComponent.teamIndex;
             }
-            if (characterBody.hasEffectiveAuthority)
-            {
-                ElementDef[] elementLoadout = Config.GetElementLoadoutFromConfig(BodyCatalog.GetBodyName(characterBody.bodyIndex), out _);
-                if (NetworkServer.active)
-                {
-                    GiveElementLoadoutItems(elementLoadout);
-                }
-                else if (characterBody.isPlayerControlled)
-                {
-                    new NetworkElementLoadout(characterBody.netId,
-                        elementLoadout[0].index,
-                        elementLoadout[1].index,
-                        elementLoadout[2].index,
-                        elementLoadout[3].index).Send(R2API.Networking.NetworkDestination.Server);
-                }
-            }
             if (Config.CanEnemiesBeElemental().Value && permanentlyAppliedElement && specialObjectAttributes)
             {
                 specialObjectAttributes.damageTypeOverride.SetElement(permanentlyAppliedElement.index);
@@ -129,64 +113,61 @@ namespace ElementalReactionsMod.Loadout
         public static ElementDef GetElement(CharacterBody characterBody, DamageSource damageSource)
         {
             if (!characterBody) return DefaultElementDefs.physicalElement;
+            Inventory inventory = characterBody.inventory ? characterBody.inventory : (characterBody.master && characterBody.master.inventory ? characterBody.master.inventory : null);
             switch (damageSource)
             {
                 case DamageSource.Primary:
-                    if (characterBody.master && characterBody.master.inventory)
+                    if (inventory)
                     {
-                        return GetElementItem(characterBody, primaryElementItem);
+                        ElementDef inventoryElement = GetElementItem(inventory, primaryElementItem);
+                        if (inventoryElement != DefaultElementDefs.physicalElement) return inventoryElement;
                     }
-                    else if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadout))
+                    if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadoutPrimary))
                     {
-                        return loadout.primaryElement;
+                        if (loadoutPrimary && loadoutPrimary.primaryElement != DefaultElementDefs.physicalElement) return loadoutPrimary.primaryElement;
                     }
                     break;
                 case DamageSource.Secondary:
-                    if (characterBody.master && characterBody.master.inventory)
+                    if (inventory)
                     {
-                        return GetElementItem(characterBody, secondaryElementItem);
+                        ElementDef inventoryElement = GetElementItem(inventory, secondaryElementItem);
+                        if (inventoryElement != DefaultElementDefs.physicalElement) return inventoryElement;
                     }
-                    else if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadout))
+                    if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadoutSecondary))
                     {
-                        return loadout.secondaryElement;
+                        if (loadoutSecondary && loadoutSecondary.primaryElement != DefaultElementDefs.physicalElement) return loadoutSecondary.secondaryElement;
                     }
                     break;
                 case DamageSource.Utility:
-                    if (characterBody.master && characterBody.master.inventory)
+                    if (inventory)
                     {
-                        return GetElementItem(characterBody, utilityElementItem);
+                        ElementDef inventoryElement = GetElementItem(inventory, utilityElementItem);
+                        if (inventoryElement != DefaultElementDefs.physicalElement) return inventoryElement;
                     }
-                    else if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadout))
+                    if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadoutUtility))
                     {
-                        return loadout.utilityElement;
+                        if (loadoutUtility && loadoutUtility.primaryElement != DefaultElementDefs.physicalElement) return loadoutUtility.utilityElement;
                     }
                     break;
                 case DamageSource.Special:
-                    if (characterBody.master && characterBody.master.inventory)
+                    if (inventory)
                     {
-                        return GetElementItem(characterBody, specialElementItem);
+                        ElementDef inventoryElement = GetElementItem(inventory, specialElementItem);
+                        if (inventoryElement != DefaultElementDefs.physicalElement) return inventoryElement;
                     }
-                    else if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadout))
+                    if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadoutSpecial))
                     {
-                        return loadout.specialElement;
+                        if (loadoutSpecial && loadoutSpecial.primaryElement != DefaultElementDefs.physicalElement) return loadoutSpecial.specialElement;
                     }
                     break;
                 default:
                     break;
             }
-            return characterBody.master && characterBody.master.inventory ? Elites.GetFirstEliteElementDef(characterBody.master.inventory) : DefaultElementDefs.physicalElement;
+            return inventory ? Elites.GetFirstEliteElementDef(inventory) : DefaultElementDefs.physicalElement;
         }
-        private static ElementDef GetElementItem(CharacterBody characterBody, ItemDef loadoutItem)
+        private static ElementDef GetElementItem(Inventory inventory, ItemDef loadoutItem)
         {
-            ElementDef element = ElementCatalog.GetElementDef((ElementIndex)characterBody.master.inventory.GetItemCountPermanent(loadoutItem));
-            if (element == DefaultElementDefs.physicalElement)
-            {
-                return Elites.GetFirstEliteElementDef(characterBody.master.inventory);
-            }
-            else
-            {
-                return element;
-            }
+            return ElementCatalog.GetElementDef((ElementIndex)inventory.GetItemCountPermanent(loadoutItem));
         }
 
         public void ApplyElementLoadout(ElementDef[] elements)
@@ -195,7 +176,6 @@ namespace ElementalReactionsMod.Loadout
             secondaryElement = elements[1];
             utilityElement = elements[2];
             specialElement = elements[3];
-            GiveElementLoadoutItems(elements);
         }
         public void ApplyElementLoadout(ElementIndex[] elements)
         {
@@ -233,33 +213,6 @@ namespace ElementalReactionsMod.Loadout
             if (current && current.buff)
             {
                 ElementalReactionManager.ApplyElement(current, characterBody, float.MaxValue);
-            }
-        }
-
-        public bool GiveElementLoadoutItems(ElementDef[] elements)
-        {
-            if (characterBody && characterBody.master && characterBody.master.inventory)
-            {
-                UpdateLoadoutItem(characterBody.master.inventory, primaryElement, primaryElementItem);
-                UpdateLoadoutItem(characterBody.master.inventory, secondaryElement, secondaryElementItem);
-                UpdateLoadoutItem(characterBody.master.inventory, utilityElement, utilityElementItem);
-                UpdateLoadoutItem(characterBody.master.inventory, specialElement, specialElementItem);
-                return true;
-            }
-            return false;
-        }
-        private void UpdateLoadoutItem(Inventory inventory, ElementDef elementDef, ItemDef item)
-        {
-            if (inventory.GetItemCountPermanent(item) != (int)elementDef.index)
-            {
-                if (inventory.GetItemCountPermanent(item) > (int)elementDef.index)
-                {
-                    inventory.RemoveItemPermanent(item, Math.Abs((int)elementDef.index) - inventory.GetItemCountPermanent(item));
-                }
-                else
-                {
-                    inventory.GiveItemPermanent(item, (int)elementDef.index - inventory.GetItemCountPermanent(item));
-                }
             }
         }
 

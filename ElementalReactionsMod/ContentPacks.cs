@@ -115,14 +115,14 @@ namespace ElementalReactionsMod
 
         public static void AddProjectilePrefab(GameObject prefab)
         {
-            //ContentPacks.projectilePrefabs.Add(prefab);
-            ContentAddition.AddProjectile(prefab);
+            ContentPacks.projectilePrefabs.Add(prefab);
+            //ContentAddition.AddProjectile(prefab);
         }
 
         public static void AddNetworkedObjectPrefab(GameObject prefab)
         {
-            //ContentPacks.networkedObjectPrefabs.Add(prefab);
-            ContentAddition.AddNetworkedObject(prefab);
+            ContentPacks.networkedObjectPrefabs.Add(prefab);
+            //ContentAddition.AddNetworkedObject(prefab);
         }
 
         public static void AddSurvivorDef(SurvivorDef survivorDef)

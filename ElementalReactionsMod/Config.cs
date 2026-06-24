@@ -50,6 +50,10 @@ namespace ElementalReactionsMod
         {
             return ElementalReactionsPlugin.instance.Config.Bind<bool>("Environment", "Elemental Weather", true, "Whether certain weather effects, such as the rain on the moon, will be able to apply elements.\nHost's config takes priority.");
         }
+        public static ConfigEntry<bool> CanSS2StormsUseElements()
+        {
+            return ElementalReactionsPlugin.instance.Config.Bind<bool>("Environment", "Elemental SS2 Storms", true, "Whether storms from Starstorm2 will be able to apply elements.\nHost's config takes priority.");
+        }
         #endregion
         #region Loadout
         /*
@@ -170,6 +174,7 @@ namespace ElementalReactionsMod
             ModSettingsManager.AddOption(new CheckBoxOption(Config.LunarEnemyLunarReactions()));
 
             ModSettingsManager.AddOption(new CheckBoxOption(Config.CanWeatherUseElements()));
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(SS2.SS2Main.GUID)) ModSettingsManager.AddOption(new CheckBoxOption(Config.CanSS2StormsUseElements()));
         }
         #endregion
     }

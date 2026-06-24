@@ -1,4 +1,5 @@
 ﻿using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Items;
 using ElementalReactionsMod.Loadout;
 using ElementalReactionsMod.Reactions;
 using R2API;
@@ -10,12 +11,14 @@ using RoR2.Projectile;
 using RoR2.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
+using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 using static Rewired.Controller;
@@ -34,7 +37,6 @@ namespace ElementalReactionsMod
 
         public static Material dendroElectricTrailMaterial;
 
-        public static GameObject genericElementActivatedEffect;
         public static Material genericElementEffectMaterial;
 
         public static string AddressablesDirectory { get; private set; }
@@ -74,7 +76,7 @@ namespace ElementalReactionsMod
                 effect.positionAtReferencedTransform = true;
                 effect.parentToReferencedTransform = true;
                 VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
-                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Medium;
                 vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
                 vfx.DoNotPool = false;
                 x.Result.AddComponent<NetworkIdentity>();
@@ -84,15 +86,40 @@ namespace ElementalReactionsMod
                 ParticleSystem glowParticle = x.Result.transform.GetChild(2).GetComponent<ParticleSystem>();
                 component.icon = x.Result.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
                 component.particlesToRecolor = [iconParticle, rayParticle, glowParticle];
-                component.scaleDuration = true;
                 x.Result.AddComponent<DestroyOnParticleEnd>().trackedParticleSystem = iconParticle;
                 var scale = x.Result.AddComponent<ScaleParticleSystemDuration>();
                 scale.initialDuration = 0.7f;
                 scale.particleSystems = [iconParticle, rayParticle, glowParticle];
                 component.particleDuration = scale;
                 x.Result.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser3_mat)).WaitForCompletion();
-                genericElementActivatedEffect = x.Result;
-                AddNewEffectDef(genericElementActivatedEffect);
+                
+                AddNewEffectDef(x.Result);
+            };
+
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.genericElementOrbEffect).Completed += x =>
+            {
+                EffectComponent effect = x.Result.AddComponent<EffectComponent>();
+                effect.positionAtReferencedTransform = false;
+                effect.parentToReferencedTransform = false;
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Medium;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+                vfx.DoNotPool = false;
+
+                RoR2.Orbs.OrbEffect orb = x.Result.AddComponent<RoR2.Orbs.OrbEffect>();
+                orb.startVelocity1 = new Vector3(-15, -7f, -15f);
+                orb.startVelocity2 = new Vector3(15, 7f, 15f);
+                orb.movementCurve = AnimationCurve.Linear(0, 0, 1, 1);
+                orb.endEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Treebot.OmniImpactVFXSlashSyringe_prefab)).WaitForCompletion();
+
+                x.Result.AddComponent<NetworkIdentity>();
+                var wideGlow = x.Result.transform.GetChild(0).GetComponent<ParticleSystem>();
+                wideGlow.GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matWideGlow_mat)).WaitForCompletion();
+                GenericElementEffectComponent component = x.Result.AddComponent<GenericElementEffectComponent>();
+                component.trailsToRecolor = [x.Result.transform.GetChild(1).GetComponent<TrailRenderer>()];
+                component.particlesToRecolor = [wideGlow, x.Result.transform.GetChild(2).GetComponent<ParticleSystem>()];
+
+                AddNewEffectDef(x.Result);
             };
 
             #region Reactions
@@ -555,6 +582,39 @@ namespace ElementalReactionsMod
                 };
             };
 
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Tonic.TonicBuffEffect_prefab)).Completed += x =>
+            {
+                GameObject delusionActiveEffect = PrefabAPI.InstantiateClone(x.Result, "DelusionActiveEffect");
+                VFXAttributes vfx = delusionActiveEffect.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+                vfx.DoNotPool = false;
+                var particle = delusionActiveEffect.transform.GetChild(0).GetChild(0).GetComponent<ParticleSystem>();
+                ParticleSystem.MainModule main = particle.main;
+                main.startColor = new ParticleSystem.MinMaxGradient(new Color(0.3f, 0.35f, 0.4f));
+                main.scalingMode = ParticleSystemScalingMode.Hierarchy;
+
+                var temp = delusionActiveEffect.GetComponent<TemporaryVisualEffect>();
+                var delusion = delusionActiveEffect.AddComponent<DelusionTemporaryVisualEffect>();
+
+                temp.enterComponents = temp.enterComponents.Append(delusion).ToArray();
+                delusion.enabled = false;
+
+                AssetAsyncReferenceManager<PostProcessProfile>.LoadAsset(new AssetReferenceT<PostProcessProfile>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_title_PostProcessing.ppLocalDoppelganger_asset)).Completed += y =>
+                {
+                    PostProcessProfile ppProfile = ScriptableObject.Instantiate(y.Result);
+                    ppProfile.RemoveSettings<ColorGrading>();
+
+                    var pp = delusionActiveEffect.transform.GetChild(1).GetChild(0).GetComponent<PostProcessVolume>();
+                    RuntimeUtilities.DestroyProfile(pp.profile, true);
+                    pp.sharedProfile = ppProfile;
+                    pp.GetComponent<PostProcessDuration>().ppWeightCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 0.5f);
+                    delusionActiveEffect.GetComponent<PostProcessDuration>().ppWeightCurve = AnimationCurve.EaseInOut(0f, 0.5f, 1f, 0f);
+                };
+
+                TempVisualEffectAPI.AddTemporaryVisualEffect(delusionActiveEffect, (body) => { return body.HasBuff(Buffs.delusionActiveBuff); });
+            };
+
             #region Lunar Reactions
             Material lunarVFXSymbol = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matOmniRing1Generic_mat)).WaitForCompletion());
             lunarVFXSymbol.SetTexture("_MainTex", AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.lunarVFXSymbol).WaitForCompletion());
@@ -875,6 +935,7 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<Sprite> dendroSkillIcon = new AssetReferenceT<Sprite>("4e802f5ad484760438a8692950a15773");
 
             public static AssetReferenceT<GameObject> genericElementActivatedEffect = new("0dcaf09df2cb8ab4c838c88c6d997a39");
+            public static AssetReferenceT<GameObject> genericElementOrbEffect = new("383d58c1367764647bb30cbdd0339ac0");
 
             #region Reactions
             public static AssetReferenceT<GameObject> electroChargeTempVisualEffect = new("11147caefb6967a41ab27574e55d2a88");

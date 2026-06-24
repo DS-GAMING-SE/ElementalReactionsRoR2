@@ -1,9 +1,11 @@
 ﻿using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Reactions;
 using RoR2;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using static UnityEngine.ParticleSystem.PlaybackState;
 
 namespace ElementalReactionsMod
 {
@@ -16,7 +18,7 @@ namespace ElementalReactionsMod
         }
         public static void SpawnActivatedEffect(Vector3 position, Quaternion rotation, ElementIndex element, float duration, bool transmit)
         {
-            EffectManager.SpawnEffect(Assets.genericElementActivatedEffect, new EffectData { origin = position, rotation = rotation, genericUInt = (uint)element, genericFloat = duration }, transmit);
+            EffectManager.SpawnEffect(ElementalReactionManager.genericElementActivatedEffect.WaitForCompletion(), new EffectData { origin = position, rotation = rotation, genericUInt = (uint)element, genericFloat = duration }, transmit);
         }
         public static void SpawnActivatedEffect(Transform parent, ElementIndex element, bool transmit)
         {
@@ -24,7 +26,7 @@ namespace ElementalReactionsMod
         }
         public static void SpawnActivatedEffect(Transform parent, ElementIndex element, float duration, bool transmit)
         {
-            EffectManager.SpawnEffect(Assets.genericElementActivatedEffect, new EffectData { origin = parent.position, rootObject = parent.gameObject, genericUInt = (uint)element, genericFloat = duration }, transmit);
+            EffectManager.SpawnEffect(ElementalReactionManager.genericElementActivatedEffect.WaitForCompletion(), new EffectData { origin = parent.position, rootObject = parent.gameObject, genericUInt = (uint)element, genericFloat = duration }, transmit);
         }
 
         private EffectManagerHelper efh;
@@ -33,7 +35,8 @@ namespace ElementalReactionsMod
 
         public ParticleSystemRenderer icon;
         public ParticleSystem[] particlesToRecolor;
-        public bool scaleDuration;
+        public TrailRenderer[] trailsToRecolor;
+        public bool darkenTrailColor = true;
         private void Awake()
         {
             efh = GetComponent<EffectManagerHelper>();
@@ -53,7 +56,20 @@ namespace ElementalReactionsMod
                 ParticleSystem.MainModule main = particlesToRecolor[i].main;
                 main.startColor = new ParticleSystem.MinMaxGradient(element.color);
             }
-            if (scaleDuration && particleDuration)
+            for (int i = 0; i < trailsToRecolor.Length; i++)
+            {
+                var gradient = trailsToRecolor[i].GetColorGradientCopy();
+                Color trailColor = element.color;
+                if (darkenTrailColor)
+                {
+                    trailColor.r -= 0.4f;
+                    trailColor.g -= 0.4f;
+                    trailColor.b -= 0.4f;
+                }
+                gradient.colorKeys = [new GradientColorKey(trailColor, 0f)];
+                trailsToRecolor[i].SetColorGradient(gradient);
+            }
+            if (particleDuration)
             {
                 particleDuration.newDuration = effectComponent.effectData.genericFloat;
             }

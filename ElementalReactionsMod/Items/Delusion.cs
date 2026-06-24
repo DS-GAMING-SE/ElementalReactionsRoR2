@@ -75,6 +75,7 @@ namespace ElementalReactionsMod.Items
         {
             GameObject displayPrefab = AssetAsyncReferenceManager<GameObject>.LoadAsset(delusionDisplayModel).WaitForCompletion();
             displayPrefab.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = delusionMat;
+            displayPrefab.AddComponent<DelusionDisplay>();
             CreateItemDisplay(displayPrefab, CreateItemRendererInfo(displayPrefab, 0, visionHolderMaterial), CreateItemRendererInfo(displayPrefab, 1, delusionMat));
             ItemDisplayRuleDict itemDisplays = new ItemDisplayRuleDict();
             itemDisplays.Add("CommandoBody", new ItemDisplayRule
@@ -359,6 +360,7 @@ namespace ElementalReactionsMod.Items
     {
         protected float attackCooldown;
         public List<ElementDef> delusionElements;
+        public GameObject delusionDisplay;
 
         private void Start()
         {
@@ -407,7 +409,7 @@ namespace ElementalReactionsMod.Items
                         inflictedHurtbox = body.mainHurtBox,
                         damageColorIndex = DamageColorIndex.Item
                     });
-                    DelusionOrb.FireDelusionOrb(body, target, body.inventory.GetItemCountEffective(element.delusion), body.RollCrit(), element.index);
+                    DelusionOrb.FireDelusionOrb(body, delusionDisplay ? delusionDisplay.transform.position : body.corePosition, target, body.inventory.GetItemCountEffective(element.delusion), body.RollCrit(), element.index);
                     GenericElementEffectComponent.SpawnActivatedEffect(gameObject.transform, element.index, true);
                     yield return new WaitForSeconds((1 / StaticValues.delusionAttacksPerSecond) / DelusionManager.delusionToElement.Keys.Count);
                 }
@@ -426,5 +428,36 @@ namespace ElementalReactionsMod.Items
                 if (body.HasBuff(Buffs.delusionActiveBuff)) body.ClearTimedBuffs(Buffs.delusionActiveBuff);
             }
         } 
+    }
+    public class DelusionDisplay : MonoBehaviour
+    {
+        public DelusionBehaviour delusion;
+        private void Start()
+        {
+            CharacterModel characterModel = base.GetComponentInParent<CharacterModel>();
+            if (characterModel && characterModel.body && characterModel.body.TryGetComponent<DelusionBehaviour>(out delusion))
+            {
+                delusion.delusionDisplay = gameObject;
+            }
+        }
+    }
+
+    [RequireComponent(typeof(TemporaryVisualEffect))]
+    public class DelusionTemporaryVisualEffect : MonoBehaviour
+    {
+        public TemporaryVisualEffect tempVisualEffect;
+        private void Awake()
+        {
+            tempVisualEffect = GetComponent<TemporaryVisualEffect>();
+        }
+
+        private void OnEnable()
+        {
+            if (tempVisualEffect.healthComponent && tempVisualEffect.healthComponent.TryGetComponent<DelusionBehaviour>(out var delusion) && delusion.delusionDisplay)
+            {
+                tempVisualEffect.parentTransform = delusion.delusionDisplay.transform;
+                tempVisualEffect.radius = 0.65f;
+            }
+        }
     }
 }

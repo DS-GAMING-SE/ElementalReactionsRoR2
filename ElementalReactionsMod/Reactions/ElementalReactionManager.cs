@@ -20,6 +20,9 @@ namespace ElementalReactionsMod.Reactions
     {
         public static ElementalReactionManager instance;
 
+        #region Assets
+        public static AsyncOperationHandle<GameObject> genericElementActivatedEffect;
+        public static AsyncOperationHandle<GameObject> genericElementOrbEffect;
         public static AsyncOperationHandle<GameObject> overloadEffect;
         public static AsyncOperationHandle<GameObject> electroChargedTempVisualEffect;
         public static AsyncOperationHandle<GameObject> superconductEffect;
@@ -40,6 +43,7 @@ namespace ElementalReactionsMod.Reactions
         public static ComponentPoolManager lunarChargeEnemyPool;
         public static GameObject lunarChargeEnemyStrikePrefab;
         public static AsyncOperationHandle<GameObject> lunarBloomEffect;
+        #endregion
 
         public delegate void PreElementalReactionDelegate(ref ElementalReactionDef reaction, ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo);
         public static event PreElementalReactionDelegate onPreElementalReactionTriggered;
@@ -63,7 +67,6 @@ namespace ElementalReactionsMod.Reactions
             UnloadAssets();
             SingletonHelper.Unassign(ref instance, this);
         }
-        // Maybe switch to something using ambient level instead of attacker so there's less variation in damage?
         public static void ApplyElement(ElementDef element, CharacterBody target, float procCoefficient = 1f, GameObject overrideAttacker = null, bool alwaysPersist = false, float overrideICD = -1)
         {
             if (element && target)
@@ -132,7 +135,6 @@ namespace ElementalReactionsMod.Reactions
             }
             return false;
         }
-        // make lunar charge dodgeable
         // Lunar Wisp's secondary has damage falloff, so it doesn't always do enough damage to proc lunar bloom. Do something about this?
         private static void AddMoonWheelToLunarEnemies(SpawnCard.SpawnResult spawnResult)
         {
@@ -156,6 +158,8 @@ namespace ElementalReactionsMod.Reactions
 
         private static void PreloadAssets()
         {
+            genericElementActivatedEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.genericElementActivatedEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
+            genericElementOrbEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.genericElementOrbEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             overloadEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.overloadEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             electroChargedTempVisualEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.electroChargeTempVisualEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             superconductEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.superconductEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
@@ -172,6 +176,8 @@ namespace ElementalReactionsMod.Reactions
         }
         private static void UnloadAssets()
         {
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.genericElementActivatedEffect);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.genericElementOrbEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.overloadEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.electroChargeTempVisualEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.superconductEffect);

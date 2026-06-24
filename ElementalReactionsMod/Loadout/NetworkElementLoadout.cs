@@ -36,9 +36,9 @@ namespace ElementalReactionsMod.Loadout
         public void OnReceived()
         {
             GameObject gameObject = RoR2.Util.FindNetworkObject(this.netId);
-            if (gameObject && gameObject.TryGetComponent<ElementLoadoutComponent>(out var loadout))
+            if (gameObject && gameObject.TryGetComponent<MasterElementLoadout>(out var loadout))
             {
-                loadout.ApplyElementLoadout([primary, secondary, utility, special]);
+                loadout.GiveElementLoadoutItems([primary, secondary, utility, special]);
             }
         }
         public void Serialize(NetworkWriter writer)

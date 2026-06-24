@@ -80,6 +80,8 @@ namespace ElementalReactionsMod
 
             Crafting.Initialize();
 
+            MasterElementLoadout.Initialize();
+
             NetworkingAPI.RegisterMessageType<NetworkElementLoadout>();
             //NetworkingAPI.RegisterMessageType<NetworkPooledObjectSetActive>();
 
