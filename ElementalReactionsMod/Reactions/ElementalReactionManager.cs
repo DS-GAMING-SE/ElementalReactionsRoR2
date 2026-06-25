@@ -43,6 +43,9 @@ namespace ElementalReactionsMod.Reactions
         public static ComponentPoolManager lunarChargeEnemyPool;
         public static GameObject lunarChargeEnemyStrikePrefab;
         public static AsyncOperationHandle<GameObject> lunarBloomEffect;
+        public static AsyncOperationHandle<GameObject> lunarCrystallizeController;
+        public static AsyncOperationHandle<GameObject> lunarCrystallizeActivatedEffect;
+        public static ComponentPoolManager lunarCrystallizePool;
         #endregion
 
         public delegate void PreElementalReactionDelegate(ref ElementalReactionDef reaction, ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo);
@@ -63,6 +66,7 @@ namespace ElementalReactionsMod.Reactions
             //bloomPool.Kill();
             //crystallizePool.Kill();
             if (lunarChargeEnemyPool != null) lunarChargeEnemyPool.ResetPools();
+            if (lunarCrystallizePool != null) lunarCrystallizePool.ResetPools();
             SpawnCard.onSpawnedServerGlobal -= AddMoonWheelToLunarEnemies;
             UnloadAssets();
             SingletonHelper.Unassign(ref instance, this);
@@ -156,6 +160,16 @@ namespace ElementalReactionsMod.Reactions
             strike.CreateLightningStrike(attacker, team, damage, crit, position);
         }
 
+        public static void CreateLunarCrystallizeController(CharacterBody characterBody)
+        {
+            if (lunarCrystallizePool== null)
+            {
+                lunarCrystallizePool = new ComponentPoolManager(1, 3, false, true);
+            }
+            LunarCrystallizeController lunarCrystallize = (LunarCrystallizeController)lunarCrystallizePool.GetPooledObject(lunarCrystallizeController.WaitForCompletion());
+            lunarCrystallize.CreateLunarCrystallizeController(characterBody);
+        }
+
         private static void PreloadAssets()
         {
             genericElementActivatedEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.genericElementActivatedEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
@@ -173,6 +187,8 @@ namespace ElementalReactionsMod.Reactions
             hyperbloomOrb = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.hyperbloomOrb, AsyncReferenceHandleUnloadType.OnRunEnd);
             lunarChargedEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarChargedLightningEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             lunarBloomEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarBloomEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
+            lunarCrystallizeController = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarCrystallizeController, AsyncReferenceHandleUnloadType.OnRunEnd);
+            lunarCrystallizeActivatedEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarCrystallizeActivatedEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
         }
         private static void UnloadAssets()
         {
@@ -191,6 +207,8 @@ namespace ElementalReactionsMod.Reactions
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.hyperbloomOrb);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarChargedLightningEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarBloomEffect);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarCrystallizeController);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarCrystallizeActivatedEffect);
         }
         #region Pooling Attempts
         public static void CreatePool(ref PrefabComponentPool<ElementalReactionPooledObject> pool, GameObject prefab, int baseCap)

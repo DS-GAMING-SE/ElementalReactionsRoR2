@@ -49,6 +49,7 @@ namespace ElementalReactionsMod
             IL.EntityStates.Destructible.SulfurPodDeath.Explode += DestructibleObjectHydro;
             IL.EntityStates.Destructible.FusionCellDeath.Explode += DestructibleObjectElectro;
             IL.EntityStates.Destructible.LunarRainDeathState.Explode += DestructibleObjectElectro;
+            On.RoR2.CharacterBody.OnBuffFirstStackGained += CreateLunarCrystallize;
         }
         // Right after IOnincomingDamageReceiver does its thing, since that's where many things (including bloom dendro cores) reject damage
         private static void TakeDamageIL(ILContext il)
@@ -146,7 +147,7 @@ namespace ElementalReactionsMod
         }
         private static void ApplyElementToSkillDamage(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
         {
-            if (self && ElementalReactionManager.instance)
+            if (self && damageInfo != null && ElementalReactionManager.instance)
             {
                 ElementDef element = ElementCatalog.GetElementDef(damageInfo.damageType.GetElement());
                 if (element == DefaultElementDefs.physicalElement && damageInfo.attacker && damageInfo.attacker.TryGetComponent<CharacterBody>(out var body))
@@ -460,6 +461,14 @@ namespace ElementalReactionsMod
             else
             {
                 Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void CreateLunarCrystallize(On.RoR2.CharacterBody.orig_OnBuffFirstStackGained orig, CharacterBody self, BuffDef buff)
+        {
+            orig(self, buff);
+            if (ElementalReactionManager.instance && buff == Buffs.lunarCrystallizeBuff)
+            {
+                ElementalReactionManager.CreateLunarCrystallizeController(self);
             }
         }
     }

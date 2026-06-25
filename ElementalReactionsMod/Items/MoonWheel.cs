@@ -1,4 +1,5 @@
-﻿using ElementalReactionsMod.Reactions;
+﻿using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Reactions;
 using R2API;
 using RoR2;
 using RoR2.ContentManagement;
@@ -44,7 +45,7 @@ namespace ElementalReactionsMod.Items
                     {
                         reaction = DefaultElementalReactions.lunarBloom;
                     }
-                    else if (reaction == DefaultElementalReactions.crystallize)
+                    else if (reaction == DefaultElementalReactions.crystallize && (element1 == DefaultElementDefs.hydroElement || element2 == DefaultElementDefs.hydroElement))
                     {
                         reaction = DefaultElementalReactions.lunarCrystallize;
                     }
@@ -238,6 +239,60 @@ namespace ElementalReactionsMod.Items
                 localPos = new Vector3(0.02959F, -0.19342F, 0.30996F),
                 localAngles = new Vector3(331.3999F, 108.6055F, 68.72771F),
                 localScale = new Vector3(1F, 1F, 1F)
+            });
+            itemDisplays.Add("BrotherBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject("b06477748e168314abd4c861c4cbcd76"),
+                childName = "Head",
+                localPos = new Vector3(0.01749F, 0.07662F, -0.09656F),
+                localAngles = new Vector3(17.45016F, 252.3006F, 324.7871F),
+                localScale = new Vector3(0.08F, 0.08F, 0.08F)
+            });
+            itemDisplays.Add("ScavBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                childName = "Backpack",
+                localPos = new Vector3(-8.30025F, 4.75887F, -0.11149F),
+                localAngles = new Vector3(21.86793F, 78.82794F, 354.8484F),
+                localScale = new Vector3(10F, 10F, 10F)
+            });
+            itemDisplays.Add("NemCommandoBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                childName = "Chest",
+                localPos = new Vector3(0.71209F, 0.88104F, -1.73658F),
+                localAngles = new Vector3(358.8832F, 353.9355F, 0.15805F),
+                localScale = new Vector3(3F, 3F, 3F)
+            });
+            itemDisplays.Add("NemMercBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                childName = "Chest",
+                localPos = new Vector3(0.15075F, 0.08836F, 0.13905F),
+                localAngles = new Vector3(1.75716F, 34.06154F, 1.90495F),
+                localScale = new Vector3(0.7F, 0.7F, 0.7F)
+            });
+            itemDisplays.Add("Executioner2Body", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                childName = "Chest",
+                localPos = new Vector3(-0.13895F, 0.1785F, 0.158F),
+                localAngles = new Vector3(351.9363F, 342.002F, 349.7007F),
+                localScale = new Vector3(0.6F, 0.6F, 0.6F)
+            });
+            itemDisplays.Add("ChirrBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                childName = "Chest",
+                localPos = new Vector3(0.49649F, 0.61212F, 0.24153F),
+                localAngles = new Vector3(16.17279F, 282.3415F, 358.2969F),
+                localScale = new Vector3(1.2F, 1.2F, 1.2F)
             });
             return itemDisplays;
         }

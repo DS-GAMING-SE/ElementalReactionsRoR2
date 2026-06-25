@@ -87,6 +87,8 @@ namespace ElementalReactionsMod
 
         public const int lunarCrystallizeTriggersToAttack = 3;
         public const float lunarCrystallizeDamageCoefficient = 3f;
+        public const float lunarCrystallizePlayerResistMultiplier = 0.25f;
+        public const float lunarCrystallizeRadius = 50f;
         #endregion
         #endregion
     }

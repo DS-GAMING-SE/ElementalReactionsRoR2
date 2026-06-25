@@ -750,10 +750,88 @@ namespace ElementalReactionsMod
 
                 AddNewEffectDef(x.Result, "Play_seeker_skill4_win");
             };
+
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.lunarCrystallizeController).Completed += x =>
+            {
+                Material moondrift = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Grandparent.matGrandParentSunCore_mat)).WaitForCompletion());
+                moondrift.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_Common_ColorRamps.texRampConstructLaserTypeB_png)).WaitForCompletion());
+                moondrift.SetFloat("_Boost", 1.5f);
+                moondrift.SetFloat("_AlphaBoost", 7f);
+                moondrift.SetFloat("_AlphaBias", 0.5f);
+                moondrift.SetFloat("_FresnelPower", -1f);
+
+                Material glow = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Items_ExtraStatsOnLevelUp.matBeadsEnlightenGlow_mat)).WaitForCompletion());
+                glow.SetColor("_TintColor", new Color(1f, 0.5f, 0.3f));
+                glow.SetTextureScale("_MainTex", new Vector2(1, 0.5f));
+                glow.SetTextureOffset("_MainTex", new Vector2(0, 0.5f));
+                glow.SetTextureScale("_Cloud2Tex", new Vector2(5, -0.6f));
+                glow.SetTextureOffset("_Cloud2Tex", new Vector2(0, 0.6f));
+                glow.SetFloat("_Boost", 1f);
+                glow.SetFloat("_AlphaBoost", 0.5f);
+                glow.SetFloat("_FresnelPower", 0f);
+
+                var controller = x.Result.AddComponent<LunarCrystallizeController>();
+                controller.moondrift1 = x.Result.transform.GetChild(0).GetChild(0).gameObject;
+                CreateMoondrift(controller.moondrift1, moondrift, glow);
+                controller.moondrift2 = x.Result.transform.GetChild(1).GetChild(0).gameObject;
+                CreateMoondrift(controller.moondrift2, moondrift, glow);
+                controller.moondrift3 = x.Result.transform.GetChild(2).GetChild(0).gameObject;
+                CreateMoondrift(controller.moondrift3, moondrift, glow);
+            };
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.lunarCrystallizeActivatedEffect).Completed += x =>
+            {
+                EffectComponent effect = x.Result.AddComponent<EffectComponent>();
+                effect.positionAtReferencedTransform = true;
+                effect.parentToReferencedTransform = true;
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Medium;
+                vfx.DoNotPool = false;
+                ShakeEmitter shakeEmitter = x.Result.AddComponent<ShakeEmitter>();
+                shakeEmitter.amplitudeTimeDecay = true;
+                shakeEmitter.duration = 0.5f;
+                shakeEmitter.radius = 75f;
+                shakeEmitter.scaleShakeRadiusWithLocalScale = false;
+
+                shakeEmitter.wave = new Wave
+                {
+                    amplitude = 0.2f,
+                    frequency = 10f,
+                    cycleOffset = 0f
+                };
+                x.Result.AddComponent<NetworkIdentity>();
+                var distortion = x.Result.transform.Find("LunarCrystallizeSpinDistortion").GetComponent<ParticleSystemRenderer>();
+                distortion.mesh = ringMesh;
+                distortion.sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_ancientloft.matAncientLoft_WaterfallDistortion_mat)).WaitForCompletion();
+                var spin = x.Result.transform.Find("LunarCrystallizeSpin").GetComponent<ParticleSystemRenderer>();
+                spin.mesh = ringMesh;
+                spin.sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2.matGeodeCleanseVFX1_mat)).WaitForCompletion();
+                x.Result.transform.Find("LunarCrystallizeLunarSymbol").GetComponent<ParticleSystemRenderer>().sharedMaterial = lunarVFXSymbol;
+                var lunarLines = x.Result.transform.Find("LunarCrystallizeLunarLines").GetComponent<ParticleSystemRenderer>();
+                lunarLines.sharedMaterial = lunarLineMaterial;
+                lunarLines.mesh = lunarLineMesh;
+                var kuuvahkiRing = x.Result.transform.Find("LunarCrystallizeKuuvahkiRing");
+                kuuvahkiRing.GetComponent<ParticleSystemRenderer>().trailMaterial = kuuvahkiTrail;
+                var kuuvahkiRingRotate = kuuvahkiRing.gameObject.AddComponent<RotateObject>();
+                kuuvahkiRingRotate.rotationSpeed = new Vector3(0, 100, 0);
+                var light = x.Result.transform.Find("LunarCrystallizeLight");
+                vfx.optionalLights = [light.GetComponent<Light>()];
+                var lightCurve = light.gameObject.AddComponent<LightIntensityCurve>();
+                lightCurve.timeMax = 0.55f;
+                lightCurve.curve = AnimationCurve.EaseInOut(0, 1, 1, 0);
+                x.Result.AddComponent<DestroyOnTimer>().duration = 0.7f;
+
+                AddNewEffectDef(x.Result, "Play_Seeker_PalmBlast_HealImpact");
+            };
             // use more seeker sfx for lunar crystallize. shift enter for crystallize spawn, primary for attack?
             //Play_Seeker_PalmBlast_HealImpact for reaching 3 moondrifts
             #endregion
             #endregion
+        }
+        private static void CreateMoondrift(GameObject moondrift, Material material, Material glowMaterial)
+        {
+            moondrift.transform.GetComponent<MeshRenderer>().sharedMaterial = material;
+            moondrift.transform.GetChild(0).GetComponent<MeshRenderer>().sharedMaterial = glowMaterial;
         }
 
         public static Material CreateVisionMaterial(AssetReferenceT<Texture> icon, AssetReferenceT<Texture> remapTex, float alphaBoost = 1f)
@@ -994,6 +1072,9 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<GameObject> lunarBloomEffect = new("623c28827e49bf041ade36cdd7cdf922");
             public static AssetReferenceT<Sprite> lunarBloomBuffIcon = new("b14c2afa0ea1ba6449927fb72cbbd016");
             public static AssetReferenceT<Sprite> lunarBloomChargingBuffIcon = new("dc667ee18bd31314a9c85d4ba5590cbf");
+
+            public static AssetReferenceT<GameObject> lunarCrystallizeController = new("151ca516e4a36dc4b9071f8c9957d1e4");
+            public static AssetReferenceT<GameObject> lunarCrystallizeActivatedEffect = new("6eb753463343f764385e8aaad94cbecf");
             #endregion
             #endregion
         }

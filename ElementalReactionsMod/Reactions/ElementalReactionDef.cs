@@ -242,12 +242,7 @@ namespace ElementalReactionsMod.Reactions
             {
                 if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var characterBody))
                 {
-                    Util.GetRandomNode(damage.position, out var pos, 0.5f, 15f);
-                    //ElementalReactionPooledObject crystallize = ElementalReactionManager.CreatePooledDeployable(ElementalReactionManager.crystallizePool, characterBody, ElementalReactionManager.crystallizeDeployableSlot, pos);
-                    GameObject crystallize = GameObject.Instantiate(crystallizePickup.WaitForCompletion(), pos + (1.5f * Vector3.up), Quaternion.identity);
-                    if (characterBody.master) characterBody.master.AddDeployable(crystallize.GetComponent<Deployable>(), ElementalReactionManager.crystallizeDeployableSlot);
-                    if (crystallize) crystallize.GetComponent<TeamFilter>().teamIndex = characterBody.teamComponent.teamIndex;
-                    NetworkServer.Spawn(crystallize);
+                    characterBody.AddBuff(Buffs.lunarCrystallizeBuff);
                 }
             };
             lunarCrystallize.baseFirstReactionCoefficient = 0.5f;

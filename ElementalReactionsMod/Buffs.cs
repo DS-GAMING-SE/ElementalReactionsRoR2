@@ -17,6 +17,7 @@ namespace ElementalReactionsMod
 
         public static BuffDef lunarChargeBuff;
         public static BuffDefStockThresholdIcon lunarBloomBuff;
+        public static BuffDef lunarCrystallizeBuff;
 
         public static BuffDef instructorsTeaCupQualityBase;
         
@@ -41,6 +42,9 @@ namespace ElementalReactionsMod
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.lunarBloomChargingBuffIcon).WaitForCompletion(), Color.white, true, false);
             lunarBloomBuff.iconOverrides = [new BuffDefStockThresholdIcon.StackIconOverride { stackThreshold = StaticValues.lunarBloomVerdantDewCap,
                 iconOverride = Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.lunarBloomBuffIcon).WaitForCompletion(), colorOverride = Color.white }];
+
+            lunarCrystallizeBuff = Util.AddNewBuff("LunarCrystallizeMoondrift",
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionBuffIcon).WaitForCompletion(), Color.white, true, false, false, true);
 
             if (ElementalReactionsPlugin.qualityModExists)
             {

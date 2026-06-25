@@ -273,6 +273,14 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Common/VFX/GenericElementOrbEffect.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 151ca516e4a36dc4b9071f8c9957d1e4
+    m_Address: Assets/ElementalReactionsAssets/Items/Moonwheel/LunarReactions/LunarCrystallize/LunarCrystallizeController.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 6eb753463343f764385e8aaad94cbecf
+    m_Address: Assets/ElementalReactionsAssets/Items/Moonwheel/LunarReactions/LunarCrystallize/LunarCrystallizeActivateEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

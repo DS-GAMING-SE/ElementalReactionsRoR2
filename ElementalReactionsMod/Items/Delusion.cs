@@ -267,6 +267,42 @@ namespace ElementalReactionsMod.Items
                 localAngles = new Vector3(7.70729F, 20.07879F, 317.6756F),
                 localScale = new Vector3(0.11F, 0.11F, 0.11F)
             });
+            itemDisplays.Add("NemCommandoBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "Pelvis",
+                localPos = new Vector3(-0.51642F, 0.21685F, -0.47749F),
+                localAngles = new Vector3(352.9823F, 18.85301F, 194.7385F),
+                localScale = new Vector3(2.5F, 2.5F, 2.5F)
+            });
+            itemDisplays.Add("NemMercBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "UpperLegR",
+                localPos = new Vector3(-0.17763F, 0.32555F, -0.0382F),
+                localAngles = new Vector3(1.14985F, 91.64176F, 169.1972F),
+                localScale = new Vector3(0.6F, 0.6F, 0.6F)
+            });
+            itemDisplays.Add("Executioner2Body", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "ElbowR",
+                localPos = new Vector3(0.01307F, 0.1587F, -0.0572F),
+                localAngles = new Vector3(4.00469F, 342.2709F, 354.1962F),
+                localScale = new Vector3(0.6F, 0.6F, 0.6F)
+            });
+            itemDisplays.Add("ChirrBody", new ItemDisplayRule
+            {
+                ruleType = ItemDisplayRuleType.ParentedPrefab,
+                followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
+                childName = "Chest",
+                localPos = new Vector3(-0.49649F, 0.61212F, 0.24153F),
+                localAngles = new Vector3(16.17279F, 77.65852F, 358.2969F),
+                localScale = new Vector3(1.2F, 1.2F, 1.2F)
+            });
             return itemDisplays;
         }
     }
