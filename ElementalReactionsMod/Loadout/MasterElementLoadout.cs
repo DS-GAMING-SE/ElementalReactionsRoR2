@@ -10,10 +10,11 @@ using UnityEngine.AddressableAssets;
 
 namespace ElementalReactionsMod.Loadout
 {
-    [RequireComponent(typeof(CharacterMaster))]
+    [RequireComponent(typeof(PlayerCharacterMasterController))]
     public class MasterElementLoadout : MonoBehaviour
     {
-        CharacterMaster characterMaster;
+        PlayerCharacterMasterController characterMaster;
+        private bool loadoutSet;
         public static void Initialize()
         {
             Addressables.LoadAssetAsync<GameObject>(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Core.PlayerMaster_prefab)).WaitForCompletion().AddComponent<MasterElementLoadout>();
@@ -21,26 +22,30 @@ namespace ElementalReactionsMod.Loadout
 
         public void Awake()
         {
-            characterMaster = GetComponent<CharacterMaster>();
+            characterMaster = GetComponent<PlayerCharacterMasterController>();
         }
-
-        public void Start()
+        private void FixedUpdate()
         {
-            if (characterMaster.hasEffectiveAuthority)
+            if (!loadoutSet && characterMaster.hasEffectiveAuthority && characterMaster.networkUser)
             {
-                ElementDef[] elementLoadout = Config.GetElementLoadoutFromConfig(BodyCatalog.GetBodyName(BodyCatalog.FindBodyIndex(characterMaster.bodyPrefab)), out _);
-                if (NetworkServer.active)
-                {
-                    GiveElementLoadoutItems(elementLoadout);
-                }
-                else
-                {
-                    new NetworkElementLoadout(characterMaster.netId,
-                        elementLoadout[0].index,
-                        elementLoadout[1].index,
-                        elementLoadout[2].index,
-                        elementLoadout[3].index).Send(R2API.Networking.NetworkDestination.Server);
-                }
+                loadoutSet = true;
+                NetworkElementLoadout();
+            }
+        }
+        private void NetworkElementLoadout()
+        {
+            ElementDef[] elementLoadout = Config.GetElementLoadoutFromConfig(BodyCatalog.GetBodyName(characterMaster.networkUser.bodyIndexPreference), out _);
+            if (NetworkServer.active)
+            {
+                GiveElementLoadoutItems(elementLoadout);
+            }
+            else
+            {
+                new NetworkElementLoadout(characterMaster.netId,
+                    elementLoadout[0].index,
+                    elementLoadout[1].index,
+                    elementLoadout[2].index,
+                    elementLoadout[3].index).Send(R2API.Networking.NetworkDestination.Server);
             }
         }
         public bool GiveElementLoadoutItems(ElementIndex[] elements)
@@ -49,12 +54,12 @@ namespace ElementalReactionsMod.Loadout
         }
         public bool GiveElementLoadoutItems(ElementDef[] elements)
         {
-            if (characterMaster.inventory)
+            if (characterMaster.master.inventory)
             {
-                UpdateLoadoutItem(characterMaster.inventory, elements[0], ElementLoadoutComponent.primaryElementItem);
-                UpdateLoadoutItem(characterMaster.inventory, elements[1], ElementLoadoutComponent.secondaryElementItem);
-                UpdateLoadoutItem(characterMaster.inventory, elements[2], ElementLoadoutComponent.utilityElementItem);
-                UpdateLoadoutItem(characterMaster.inventory, elements[3], ElementLoadoutComponent.specialElementItem);
+                UpdateLoadoutItem(characterMaster.master.inventory, elements[0], ElementLoadoutComponent.primaryElementItem);
+                UpdateLoadoutItem(characterMaster.master.inventory, elements[1], ElementLoadoutComponent.secondaryElementItem);
+                UpdateLoadoutItem(characterMaster.master.inventory, elements[2], ElementLoadoutComponent.utilityElementItem);
+                UpdateLoadoutItem(characterMaster.master.inventory, elements[3], ElementLoadoutComponent.specialElementItem);
                 return true;
             }
             return false;

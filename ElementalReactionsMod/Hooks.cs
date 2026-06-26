@@ -147,10 +147,10 @@ namespace ElementalReactionsMod
         }
         private static void ApplyElementToSkillDamage(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
         {
-            if (self && damageInfo != null && ElementalReactionManager.instance)
+            if (self && ElementalReactionManager.instance)
             {
                 ElementDef element = ElementCatalog.GetElementDef(damageInfo.damageType.GetElement());
-                if (element == DefaultElementDefs.physicalElement && damageInfo.attacker && damageInfo.attacker.TryGetComponent<CharacterBody>(out var body))
+                if ((!element || element == DefaultElementDefs.physicalElement) && damageInfo.attacker && damageInfo.attacker.TryGetComponent<CharacterBody>(out var body))
                 {
                     damageInfo.damageType.SetElement(ElementLoadoutComponent.GetElement(body, damageInfo.damageType.damageSource).index);
                 }

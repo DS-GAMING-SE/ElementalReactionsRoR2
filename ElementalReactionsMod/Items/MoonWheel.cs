@@ -40,14 +40,17 @@ namespace ElementalReactionsMod.Items
                     if (reaction == DefaultElementalReactions.electroCharge)
                     {
                         reaction = DefaultElementalReactions.lunarCharge;
+                        return;
                     }
-                    else if (reaction == DefaultElementalReactions.bloom)
+                    if (reaction == DefaultElementalReactions.bloom)
                     {
                         reaction = DefaultElementalReactions.lunarBloom;
+                        return;
                     }
-                    else if (reaction == DefaultElementalReactions.crystallize && (element1 == DefaultElementDefs.hydroElement || element2 == DefaultElementDefs.hydroElement))
+                    if (reaction == DefaultElementalReactions.crystallize && (element1 == DefaultElementDefs.hydroElement || element2 == DefaultElementDefs.hydroElement))
                     {
                         reaction = DefaultElementalReactions.lunarCrystallize;
+                        return;
                     }
                 }
             };

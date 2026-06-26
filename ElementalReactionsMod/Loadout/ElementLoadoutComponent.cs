@@ -120,44 +120,44 @@ namespace ElementalReactionsMod.Loadout
                     if (inventory)
                     {
                         ElementDef inventoryElement = GetElementItem(inventory, primaryElementItem);
-                        if (inventoryElement != DefaultElementDefs.physicalElement) return inventoryElement;
+                        if (inventoryElement && inventoryElement != DefaultElementDefs.physicalElement) return inventoryElement;
                     }
                     if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadoutPrimary))
                     {
-                        if (loadoutPrimary && loadoutPrimary.primaryElement != DefaultElementDefs.physicalElement) return loadoutPrimary.primaryElement;
+                        if (loadoutPrimary && loadoutPrimary.primaryElement && loadoutPrimary.primaryElement != DefaultElementDefs.physicalElement) return loadoutPrimary.primaryElement;
                     }
                     break;
                 case DamageSource.Secondary:
                     if (inventory)
                     {
                         ElementDef inventoryElement = GetElementItem(inventory, secondaryElementItem);
-                        if (inventoryElement != DefaultElementDefs.physicalElement) return inventoryElement;
+                        if (inventoryElement && inventoryElement != DefaultElementDefs.physicalElement) return inventoryElement;
                     }
                     if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadoutSecondary))
                     {
-                        if (loadoutSecondary && loadoutSecondary.primaryElement != DefaultElementDefs.physicalElement) return loadoutSecondary.secondaryElement;
+                        if (loadoutSecondary && loadoutSecondary.secondaryElement && loadoutSecondary.secondaryElement != DefaultElementDefs.physicalElement) return loadoutSecondary.secondaryElement;
                     }
                     break;
                 case DamageSource.Utility:
                     if (inventory)
                     {
                         ElementDef inventoryElement = GetElementItem(inventory, utilityElementItem);
-                        if (inventoryElement != DefaultElementDefs.physicalElement) return inventoryElement;
+                        if (inventoryElement && inventoryElement != DefaultElementDefs.physicalElement) return inventoryElement;
                     }
                     if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadoutUtility))
                     {
-                        if (loadoutUtility && loadoutUtility.primaryElement != DefaultElementDefs.physicalElement) return loadoutUtility.utilityElement;
+                        if (loadoutUtility && loadoutUtility.utilityElement && loadoutUtility.utilityElement != DefaultElementDefs.physicalElement) return loadoutUtility.utilityElement;
                     }
                     break;
                 case DamageSource.Special:
                     if (inventory)
                     {
                         ElementDef inventoryElement = GetElementItem(inventory, specialElementItem);
-                        if (inventoryElement != DefaultElementDefs.physicalElement) return inventoryElement;
+                        if (inventoryElement && inventoryElement != DefaultElementDefs.physicalElement) return inventoryElement;
                     }
                     if (characterBody.TryGetComponent<ElementLoadoutComponent>(out var loadoutSpecial))
                     {
-                        if (loadoutSpecial && loadoutSpecial.primaryElement != DefaultElementDefs.physicalElement) return loadoutSpecial.specialElement;
+                        if (loadoutSpecial && loadoutSpecial.specialElement && loadoutSpecial.specialElement != DefaultElementDefs.physicalElement) return loadoutSpecial.specialElement;
                     }
                     break;
                 default:

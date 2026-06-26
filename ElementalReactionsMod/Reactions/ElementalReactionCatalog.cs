@@ -60,12 +60,14 @@ namespace ElementalReactionsMod.Reactions
                     {
                         reactionsOverSameElement.Add(reaction);
                         Log.Warning($"Reaction {reaction.ToString()} is trying to be added for two elements that already react. This reaction will need to be triggered manually to work");
-                        continue;
                     }
-                    elementalReactionGrid[(int)reaction.baseElement.index, (int)element.index] = reaction.index;
-                    elementalReactionGrid[(int)element.index, (int)reaction.baseElement.index] = reaction.index;
-                    reaction.baseElement.reactsWith[(int)element.index] = true;
-                    element.reactsWith[(int)reaction.baseElement.index] = true;
+                    else
+                    {
+                        elementalReactionGrid[(int)reaction.baseElement.index, (int)element.index] = reaction.index;
+                        elementalReactionGrid[(int)element.index, (int)reaction.baseElement.index] = reaction.index;
+                        reaction.baseElement.reactsWith[(int)element.index] = true;
+                        element.reactsWith[(int)reaction.baseElement.index] = true;
+                    }
 
                     element.reactions.AddDistinct(reaction.index);
                     reaction.baseElement.reactions.AddDistinct(reaction.index);

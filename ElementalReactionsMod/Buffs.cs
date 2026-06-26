@@ -43,8 +43,7 @@ namespace ElementalReactionsMod
             lunarBloomBuff.iconOverrides = [new BuffDefStockThresholdIcon.StackIconOverride { stackThreshold = StaticValues.lunarBloomVerdantDewCap,
                 iconOverride = Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.lunarBloomBuffIcon).WaitForCompletion(), colorOverride = Color.white }];
 
-            lunarCrystallizeBuff = Util.AddNewBuff("LunarCrystallizeMoondrift",
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionBuffIcon).WaitForCompletion(), Color.white, true, false, false, true);
+            lunarCrystallizeBuff = Util.AddNewBuff("LunarCrystallizeMoondrift", null, Color.white, true, false, false, true);
 
             if (ElementalReactionsPlugin.qualityModExists)
             {
