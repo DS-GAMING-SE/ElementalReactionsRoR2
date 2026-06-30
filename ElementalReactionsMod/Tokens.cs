@@ -1,4 +1,5 @@
-﻿using R2API;
+﻿using ElementalReactionsMod.Achievements;
+using R2API;
 using RoR2;
 using System;
 using System.Runtime.CompilerServices;
@@ -157,6 +158,11 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}EVENT_ELEMENTAL_RAIN_CRYO", "<style=cWorldEvent>The snow is rich with elemental energy.</style>");
             LanguageAPI.Add($"{prefix}EVENT_ELEMENTAL_RAIN_PYRO", "<style=cWorldEvent>The ash is rich with elemental energy.</style>");
             #endregion
+
+            #region Achievements
+            LanguageAPI.Add(GetAchievementNameToken(ElementalMasteryAchievement.identifier), "Elemental Mastery");
+            LanguageAPI.Add(GetAchievementDescriptionToken(ElementalMasteryAchievement.identifier), "Escape the kuuvahki empowered moon.");
+            #endregion
         }
         public static string DelusionPickup(string element)
         {
@@ -229,5 +235,20 @@ namespace ElementalReactionsMod
         public static string GeoText() => GeoText("Geo");
         public static string DendroText(string text) { return $"<color=#{ColorCatalog.GetColorHexString(ColorCatalog.ColorIndex.Healing)}>{text}</color>"; }
         public static string DendroText() => DendroText("Dendro");
+
+        /// <summary>
+        /// gets langauge token from achievement's registered identifier
+        /// </summary>
+        public static string GetAchievementNameToken(string identifier)
+        {
+            return $"ACHIEVEMENT_{identifier.ToUpperInvariant()}_NAME";
+        }
+        /// <summary>
+        /// gets langauge token from achievement's registered identifier
+        /// </summary>
+        public static string GetAchievementDescriptionToken(string identifier)
+        {
+            return $"ACHIEVEMENT_{identifier.ToUpperInvariant()}_DESCRIPTION";
+        }
     }
 }

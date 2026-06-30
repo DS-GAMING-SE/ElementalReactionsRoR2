@@ -15,7 +15,7 @@ namespace ElementalReactionsMod.Reactions
         private float damage;
         private bool crit;
         private Vector3 impactPosition;
-        private GameObject warningPrefab = Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_meridian_DisableSkillsLightning.LightningStrikePredictionEffect_prefab).WaitForCompletion();
+        public static GameObject warningPrefab;
 
         private float stepTimer;
         private bool struck;

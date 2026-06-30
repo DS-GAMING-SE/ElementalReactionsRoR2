@@ -75,7 +75,7 @@ namespace ElementalReactionsMod
 
         public const float moonWheelQualityChancePerQuality = 25f;
 
-        public const float lunarChargeDamageCoefficient = 5f;
+        public const float lunarChargeDamageCoefficient = 6f;
         public const float lunarChargeTimeBetweenAttacks = 1.5f;
         public const int lunarChargeAttacksPerDot = 4;
         public const float lunarChargeDotDuration = lunarChargeTimeBetweenAttacks * lunarChargeAttacksPerDot;
@@ -83,10 +83,10 @@ namespace ElementalReactionsMod
         public const float lunarChargeEnemyDelay = 0.75f;
 
         public const int lunarBloomVerdantDewCap = 3;
-        public const float lunarBloomDamageMultiplier = 1.5f;
+        public const float lunarBloomDamageMultiplier = 2f;
 
         public const int lunarCrystallizeTriggersToAttack = 3;
-        public const float lunarCrystallizeDamageCoefficient = 3f;
+        public const float lunarCrystallizeDamageCoefficient = 4f;
         public const float lunarCrystallizePlayerResistMultiplier = 0.25f;
         public const float lunarCrystallizeRadius = 50f;
         #endregion

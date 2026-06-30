@@ -15,6 +15,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using ThreeEyedGames;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
@@ -48,7 +49,7 @@ namespace ElementalReactionsMod
         public static void Initialize()
         {
             LoadAddressables();
-            
+
             elementalReactionManagerPrefab = PrefabAPI.CreateEmptyPrefab("ElementalReactionManager");
             elementalReactionManagerPrefab.AddComponent<ElementalReactionManager>();
             AddAkBank(elementalReactionManagerPrefab, RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSon.FalseSonBody_prefab);
@@ -92,7 +93,8 @@ namespace ElementalReactionsMod
                 scale.particleSystems = [iconParticle, rayParticle, glowParticle];
                 component.particleDuration = scale;
                 x.Result.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser3_mat)).WaitForCompletion();
-                
+                x.Result.AddComponent<ParentEffectToItemDisplay>();
+
                 AddNewEffectDef(x.Result);
             };
 
@@ -107,8 +109,8 @@ namespace ElementalReactionsMod
                 vfx.DoNotPool = false;
 
                 RoR2.Orbs.OrbEffect orb = x.Result.AddComponent<RoR2.Orbs.OrbEffect>();
-                orb.startVelocity1 = new Vector3(-15, -7f, -15f);
-                orb.startVelocity2 = new Vector3(15, 7f, 15f);
+                orb.startVelocity1 = new Vector3(-30, -7f, -30f);
+                orb.startVelocity2 = new Vector3(30, 7f, 30f);
                 orb.movementCurve = AnimationCurve.Linear(0, 0, 1, 1);
                 orb.endEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Treebot.OmniImpactVFXSlashSyringe_prefab)).WaitForCompletion();
 
@@ -630,6 +632,14 @@ namespace ElementalReactionsMod
             lunarLineMaterial.EnableKeyword("VERTEXCOLOR");
             Mesh lunarLineMesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.mdlVFXDonut1_fbx_donut1Mesh_)).WaitForCompletion();
 
+            Material lunarDecal = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_LunarExploder.matLunarExploderDeathDecal_mat)).WaitForCompletion());
+            lunarDecal.SetColor("_Color", new Color(8f, 8f, 8f));
+            lunarDecal.SetTexture("_MaskTex", AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.lunarDecal).WaitForCompletion());
+            lunarDecal.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampSporeGrenadeGas_png)).WaitForCompletion());
+            lunarDecal.SetFloat("_AlphaBoost", 0.3f);
+            lunarDecal.SetTexture("_Cloud1Tex", null);
+            lunarDecal.SetTexture("_Cloud2Tex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.texCloudWaterFoam3_tga)).WaitForCompletion());
+
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.lunarChargedLightningEffect).Completed += x =>
             {
                 EffectComponent effect = x.Result.AddComponent<EffectComponent>();
@@ -698,6 +708,49 @@ namespace ElementalReactionsMod
             ElementalReactionManager.lunarChargeEnemyStrikePrefab = PrefabAPI.CreateEmptyPrefab("LunarChargeEnemyInstance");
             ElementalReactionManager.lunarChargeEnemyStrikePrefab.AddComponent<EnemyLunarChargeInstance>();
 
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_meridian_DisableSkillsLightning.LightningStrikePredictionEffect_prefab)).Completed += x =>
+            {
+                EnemyLunarChargeInstance.warningPrefab = PrefabAPI.InstantiateClone(x.Result, "LunarChargeWarningEffect");
+                var retimer = EnemyLunarChargeInstance.warningPrefab.GetComponent<EffectRetimer>();
+                retimer.objectScaleCurves = null;
+                var light = EnemyLunarChargeInstance.warningPrefab.transform.GetChild(0).GetComponent<Light>();
+                light.color = new Color(0.6f, 0.3f, 1f);
+                light.intensity = 10f;
+                
+                var wall = EnemyLunarChargeInstance.warningPrefab.transform.GetChild(1);
+                GameObject.Destroy(wall.GetComponent<ObjectScaleCurve>());
+                var wallRenderer = wall.GetComponent<MeshRenderer>();
+                Material wallMat = new Material(wall.GetComponent<MeshRenderer>().sharedMaterial);
+                wallMat.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTeslaCoil_png)).WaitForCompletion());
+                wallRenderer.sharedMaterial = wallMat;
+                var wallGlowRenderer = wall.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
+                Material wallGlowMat = new Material(wallGlowRenderer.sharedMaterial);
+                wallGlowMat.SetColor("_TintColor", new Color(1f, 0.5f, 2f));
+                wallGlowRenderer.sharedMaterial = wallGlowMat;
+                
+                // don't get the decal from team indicator, there is no team
+                var decalObject = new GameObject("LunarChargeWarningDecal", typeof(MeshFilter), typeof(Decal), typeof(DecaliciousRenderer), typeof(AnimateShaderAlpha), typeof(MeshRenderer));
+                decalObject.transform.SetParent(EnemyLunarChargeInstance.warningPrefab.transform);
+                decalObject.transform.localPosition = Vector3.zero;
+                decalObject.transform.localScale = new Vector3(1.6f, 1.6f, 1.6f);
+                decalObject.GetComponent<MeshFilter>().sharedMesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.Decalicious.DecalCube_asset)).WaitForCompletion();
+
+                decalObject.GetComponent<DecaliciousRenderer>();
+                var decal = decalObject.GetComponent<Decal>();
+                decal.DrawAlbedo = true;
+                decal.DrawNormalAndGloss = false;
+                decal.Material = lunarDecal;
+                decal.Fade = 0f;
+                var decalAlpha = decal.gameObject.GetComponent<AnimateShaderAlpha>();
+                decalAlpha.decal = decal;
+                decalAlpha.alphaCurve = AnimationCurve.Linear(0, 0, 1f, 1f);
+                retimer.animateShaderAlphas.Add(decalAlpha);
+                decal.GetComponent<MeshRenderer>().sharedMaterial = lunarDecal;
+
+                EnemyLunarChargeInstance.warningPrefab.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().trailMaterial = electroTrailMaterial;
+
+                AddNewEffectDef(EnemyLunarChargeInstance.warningPrefab);
+            };
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.lunarBloomEffect).Completed += x =>
             {
                 EffectComponent effect = x.Result.AddComponent<EffectComponent>();
@@ -832,6 +885,14 @@ namespace ElementalReactionsMod
         {
             moondrift.transform.GetComponent<MeshRenderer>().sharedMaterial = material;
             moondrift.transform.GetChild(0).GetComponent<MeshRenderer>().sharedMaterial = glowMaterial;
+            var mainAlpha = moondrift.AddComponent<AnimateShaderAlpha>();
+            mainAlpha.timeMax = 0.2f;
+            mainAlpha.alphaCurve = AnimationCurve.EaseInOut(0, 0, 1f, 1f);
+            var glowAlpha = moondrift.transform.GetChild(0).gameObject.AddComponent<AnimateShaderAlpha>();
+            glowAlpha.timeMax = 0.4f;
+            glowAlpha.alphaCurve = AnimationCurve.EaseInOut(0, 0, 1f, 1f);
+            moondrift.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matInverseDistortion_mat)).WaitForCompletion();
+            moondrift.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matGenericFlash_mat)).WaitForCompletion();
         }
 
         public static Material CreateVisionMaterial(AssetReferenceT<Texture> icon, AssetReferenceT<Texture> remapTex, float alphaBoost = 1f)
@@ -885,7 +946,8 @@ namespace ElementalReactionsMod
             genericElementEffectMaterial.SetFloat("_DepthOffset", -5f);
             genericElementEffectMaterial.SetFloat("_ZTest", 8f);
             genericElementEffectMaterial.SetTexture("_Cloud1Tex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_TiledTextures.texCloudDifferenceBW2_png)).WaitForCompletion());
-            genericElementEffectMaterial.SetVector("_CutoffScroll", new Vector4(10f, -25f, 0, 0));
+            genericElementEffectMaterial.SetTexture("_Cloud2Tex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_TiledTextures.texCloudOrganicNormal_png)).WaitForCompletion());
+            genericElementEffectMaterial.SetVector("_CutoffScroll", new Vector4(10f, -25f, 0, -10));
         }
         public static Material CreateElementEffectMaterial(Texture icon)
         {
@@ -1049,6 +1111,14 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<Texture> delusionLogo = new AssetReferenceT<Texture>("8c75207915d01ff4280ac8f0e15b5aad");
             public static AssetReferenceT<Sprite> delusionItemIcon = new AssetReferenceT<Sprite>("884bdf224e0646e43b6dc1b6a2675c92");
 
+            public static AssetReferenceT<Sprite> delusionPyroItemIcon = new AssetReferenceT<Sprite>("c43b3123149962f4ba691794e52b3e43");
+            public static AssetReferenceT<Sprite> delusionHydroItemIcon = new AssetReferenceT<Sprite>("cf1b789b5d942b142bd2ceff8f57f3a7");
+            public static AssetReferenceT<Sprite> delusionElectroItemIcon = new AssetReferenceT<Sprite>("6556071d8b734a34c9ed73fe8f085b54");
+            public static AssetReferenceT<Sprite> delusionCryoItemIcon = new AssetReferenceT<Sprite>("c18bd1206fb57a545b75e8ebe1277ae4");
+            public static AssetReferenceT<Sprite> delusionAnemoItemIcon = new AssetReferenceT<Sprite>("d2783fcd777fdc443b2413bea0a67ee4");
+            public static AssetReferenceT<Sprite> delusionGeoItemIcon = new AssetReferenceT<Sprite>("41fc2191bdd38634aa9d5d2f99a338c4");
+            public static AssetReferenceT<Sprite> delusionDendroItemIcon = new AssetReferenceT<Sprite>("3bedb54f341b8b448b9c0a1cd9dcdd7b");
+
             public static AssetReferenceT<Sprite> delusionBuffIcon = new AssetReferenceT<Sprite>("6eea3353a4d395843b4cd63335aa6de1");
             #endregion
             #region Instructor's Tea Cup
@@ -1063,8 +1133,10 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<Texture> moonWheelVisionIcon = new("af83aeca078a68443bf1583507eab088");
             public static AssetReferenceT<Texture> moonWheelVisionRamp = new("1f819082df45cdf44b5b8f019b4a90b5");
             public static AssetReferenceT<Sprite> moonWheelItemIcon = new("00f1f0088ad92dc4eb41b80b7aef67f2");
+            public static AssetReferenceT<Sprite> elementalMasteryAchievementIcon = new("9547acf0f18b5a547a0533b84299b100");
 
             public static AssetReferenceT<Texture> lunarVFXSymbol = new("044f325621315c64a8a6b0b7277ff9b3");
+            public static AssetReferenceT<Texture> lunarDecal = new("4cff496a700287245a5591fc5f7e1906");
 
             public static AssetReferenceT<GameObject> lunarChargedLightningEffect = new("558b1898670f29e4f8aba548a3357090");
             public static AssetReferenceT<Sprite> lunarChargeBuffIcon = new("ef41e115d6e9b3b45816e1afb73c5a0f");

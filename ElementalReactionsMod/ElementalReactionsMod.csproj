@@ -37,6 +37,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Reference Include="Decalicious">
+	    <HintPath>..\lib\Decalicious.dll</HintPath>
+	  </Reference>
 	  <Reference Include="ItemQualities">
 	    <HintPath>..\lib\ItemQualities.dll</HintPath>
 	  </Reference>

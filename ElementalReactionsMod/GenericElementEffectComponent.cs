@@ -28,6 +28,10 @@ namespace ElementalReactionsMod
         {
             EffectManager.SpawnEffect(ElementalReactionManager.genericElementActivatedEffect.WaitForCompletion(), new EffectData { origin = parent.position, rootObject = parent.gameObject, genericUInt = (uint)element, genericFloat = duration }, transmit);
         }
+        public static void SpawnActivatedEffect(Transform parent, ParentEffectToItemDisplay.ItemDisplayParent itemDisplayParent, ElementIndex element, float duration, bool transmit)
+        {
+            EffectManager.SpawnEffect(ElementalReactionManager.genericElementActivatedEffect.WaitForCompletion(), new EffectData { origin = parent.position, rootObject = parent.gameObject, genericUInt = (uint)element, genericFloat = duration, genericBool = true, modelChildIndex = (short)itemDisplayParent }, transmit);
+        }
 
         private EffectManagerHelper efh;
         private EffectComponent effectComponent;

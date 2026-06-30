@@ -237,7 +237,7 @@ namespace ElementalReactionsMod.Reactions
             lunarBloom.baseLastReactionCoefficient = 2f;
             lunarBloom.showInLoadoutMenu = false;
 
-            lunarCrystallize = ElementalReactionDef.CreateElementalReactionDef("LunarCrystallize", $"{ElementalReactionsPlugin.PREFIX}REACTION_LUNAR_CRYSTALLIZE", geoElement, [pyroElement, hydroElement, electroElement, cryoElement]);
+            lunarCrystallize = ElementalReactionDef.CreateElementalReactionDef("LunarCrystallize", $"{ElementalReactionsPlugin.PREFIX}REACTION_LUNAR_CRYSTALLIZE", geoElement, hydroElement);
             lunarCrystallize.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var characterBody))

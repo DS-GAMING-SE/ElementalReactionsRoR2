@@ -72,6 +72,8 @@ namespace ElementalReactionsMod
 
             DamageTypes.Initialize();
 
+            Achievements.Unlockables.Initialize();
+
             Items.Items.Initialize();
 
             Hooks.Initialize();

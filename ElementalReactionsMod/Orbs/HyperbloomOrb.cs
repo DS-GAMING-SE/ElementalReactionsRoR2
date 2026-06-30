@@ -39,16 +39,15 @@ namespace ElementalReactionsMod.Orbs
                 target = target,
                 damageType = new DamageTypeCombo(),
                 procCoefficient = 0.5f,
-                teamIndex = attackerTeam
+                teamIndex = attackerTeam,
+                speed = 90f
             };
             hyperbloomOrb.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
             OrbManager.instance.AddOrb(hyperbloomOrb);
         }
         public override void Begin()
         {
-            speed = 90f;
-            base.duration = base.distanceToTarget / this.speed;
-            base.duration += 0.1f;
+            base.duration = (base.distanceToTarget / this.speed) + 0.1f;
             if (this.GetOrbEffect())
             {
                 EffectData effectData = new EffectData

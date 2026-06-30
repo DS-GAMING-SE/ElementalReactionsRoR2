@@ -281,6 +281,42 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Items/Moonwheel/LunarReactions/LunarCrystallize/LunarCrystallizeActivateEffect.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 9547acf0f18b5a547a0533b84299b100
+    m_Address: Assets/ElementalReactionsAssets/Items/Moonwheel/texElementalMasteryAchievementIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 4cff496a700287245a5591fc5f7e1906
+    m_Address: Assets/ElementalReactionsAssets/Items/Moonwheel/texLunarDecal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 3bedb54f341b8b448b9c0a1cd9dcdd7b
+    m_Address: Assets/ElementalReactionsAssets/Items/Delusion/texDelusionDendroItemIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: cf1b789b5d942b142bd2ceff8f57f3a7
+    m_Address: Assets/ElementalReactionsAssets/Items/Delusion/texDelusionHydroItemIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: d2783fcd777fdc443b2413bea0a67ee4
+    m_Address: Assets/ElementalReactionsAssets/Items/Delusion/texDelusionAnemoItemIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 41fc2191bdd38634aa9d5d2f99a338c4
+    m_Address: Assets/ElementalReactionsAssets/Items/Delusion/texDelusionGeoItemIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c18bd1206fb57a545b75e8ebe1277ae4
+    m_Address: Assets/ElementalReactionsAssets/Items/Delusion/texDelusionCryoItemIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 6556071d8b734a34c9ed73fe8f085b54
+    m_Address: Assets/ElementalReactionsAssets/Items/Delusion/texDelusionElectroItemIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c43b3123149962f4ba691794e52b3e43
+    m_Address: Assets/ElementalReactionsAssets/Items/Delusion/texDelusionPyroItemIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

@@ -227,27 +227,30 @@ namespace ElementalReactionsMod
                     nodeIndex = list[UnityEngine.Random.Range(0, Mathf.Max(1, list.Count))];
                 }
             }
-            if (list.Count <= 0)
+            if (list.Count <= 0 && alwaysFindNode)
             {
-                if (alwaysFindNode)
+                if (Physics.Raycast(origin, Vector3.down, out var hit, float.PositiveInfinity, LayerIndex.world.intVal, QueryTriggerInteraction.UseGlobal))
                 {
-                    nodeIndex = nodeGraph.FindClosestNode(origin, HullClassification.Human);
-                    if (nodeIndex == NodeGraph.NodeIndex.invalid)
+                    list = nodeGraph.FindNodesInRange(hit.point, minDistance, maxDistance, HullMask.Human);
+                    if (list.Count > 0)
                     {
-                        destination = origin;
-                        return false;
+                        nodeIndex = list[UnityEngine.Random.Range(0, list.Count)];
                     }
                 }
                 else
                 {
-                    destination = origin;
-                    return false;
+                    nodeIndex = nodeGraph.FindClosestNode(origin, HullClassification.Human);
                 }
             }
 
-            nodeGraph.GetNodePosition(nodeIndex, out Vector3 vector3);
-            destination = vector3;
-            return true;
+            if (nodeIndex != NodeGraph.NodeIndex.invalid)
+            {
+                nodeGraph.GetNodePosition(nodeIndex, out Vector3 vector3);
+                destination = vector3;
+                return true;
+            }
+            destination = origin;
+            return false;
         }
 
         public static int GetItemCountWithQuality(this Inventory inventory, ItemDef item)

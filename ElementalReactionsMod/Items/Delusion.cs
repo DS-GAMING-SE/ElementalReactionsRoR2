@@ -43,7 +43,7 @@ namespace ElementalReactionsMod.Items
         public static ItemDef CreateNewDelusion(ElementDef element)
         {
             ItemDef delusion = AddNewItem($"Delusion{element.cachedName}", $"DELUSION_{element.cachedName.ToUpper()}", true, Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.LunarTierDef_asset).WaitForCompletion(),
-                Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, null, ItemTag.Damage, ItemTag.WorldUnique, ItemTag.AllowedForUseAsCraftingIngredient);
+                element.delusionItemIcon ? element.delusionItemIcon : Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, null, ItemTag.Damage, ItemTag.WorldUnique, ItemTag.AllowedForUseAsCraftingIngredient);
             ItemAPI.ApplyTagToItem(delusionItemTag, delusion);
             delusionToElement.Add(delusion, element);
             return delusion;
@@ -348,7 +348,7 @@ namespace ElementalReactionsMod.Items
                     }
                     if (DelusionManager.delusionToElement.TryGetValue(ItemCatalog.GetItemDef(results.givenItem.itemIndex), out var element))
                     {
-                        GenericElementEffectComponent.SpawnActivatedEffect(gameObject.transform, element.index, 1.5f, true);
+                        GenericElementEffectComponent.SpawnActivatedEffect(gameObject.transform, ParentEffectToItemDisplay.ItemDisplayParent.Delusion, element.index, 1.5f, true);
                     };
                 }
                 else
@@ -446,7 +446,7 @@ namespace ElementalReactionsMod.Items
                         damageColorIndex = DamageColorIndex.Item
                     });
                     DelusionOrb.FireDelusionOrb(body, delusionDisplay ? delusionDisplay.transform.position : body.corePosition, target, body.inventory.GetItemCountEffective(element.delusion), body.RollCrit(), element.index);
-                    GenericElementEffectComponent.SpawnActivatedEffect(gameObject.transform, element.index, true);
+                    GenericElementEffectComponent.SpawnActivatedEffect(gameObject.transform, ParentEffectToItemDisplay.ItemDisplayParent.Delusion, element.index, 0.7f, true);
                     yield return new WaitForSeconds((1 / StaticValues.delusionAttacksPerSecond) / DelusionManager.delusionToElement.Keys.Count);
                 }
             }

@@ -62,7 +62,7 @@ namespace ElementalReactionsMod.Orbs
                 damageType = new DamageTypeCombo(),
                 procCoefficient = 1,
                 teamIndex = attacker.teamComponent.teamIndex,
-                speed = 75
+                speed = 100 + UnityEngine.Random.Range(0f, 10f)
             };
             lunarCrystallizeOrb.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
             lunarCrystallizeOrb.damageType.AddModdedDamageType(DamageTypes.lunarDamageType);
@@ -70,7 +70,7 @@ namespace ElementalReactionsMod.Orbs
         }
         public override void Begin()
         {
-            duration = (distanceToTarget / speed);
+            duration = (distanceToTarget / speed) + 0.1f;
             if (this.GetOrbEffect())
             {
                 EffectData effectData = new EffectData

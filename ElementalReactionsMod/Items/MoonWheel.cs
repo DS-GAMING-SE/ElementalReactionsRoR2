@@ -30,6 +30,7 @@ namespace ElementalReactionsMod.Items
             moonWheel = AddNewItem("MoonWheel", "MOON_WHEEL", true,
                 Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.Tier3Def_asset).WaitForCompletion(),
                 moonWheelItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), moonWheelPickupModel, InitializeItemDisplays(), ItemTag.Damage, ItemTag.CanBeTemporary, ItemTag.AllowedForUseAsCraftingIngredient, ItemTag.DevotionBlacklist);
+            moonWheel.unlockableDef = Achievements.Unlockables.elementalMasteryUnlockableDef;
             hiddenMoonWheel = AddNewItem("HiddenMoonWheel", "MOON_WHEEL", false, null,
                 null, moonWheelPickupModel, null, ItemTag.CannotSteal, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.WorldUnique, ItemTag.IgnoreForDropList);
 
@@ -37,19 +38,19 @@ namespace ElementalReactionsMod.Items
             {
                 if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var attackerBody) && attackerBody.inventory && attackerBody.inventory.GetItemCountWithQuality(Items.moonWheel) > 0)
                 {
-                    if (reaction == DefaultElementalReactions.electroCharge)
+                    if (reaction == DefaultElementalReactions.crystallize && (element1 == DefaultElementDefs.hydroElement || element2 == DefaultElementDefs.hydroElement))
+                    {
+                        reaction = DefaultElementalReactions.lunarCrystallize;
+                        return;
+                    }
+                    else if (reaction == DefaultElementalReactions.electroCharge)
                     {
                         reaction = DefaultElementalReactions.lunarCharge;
                         return;
                     }
-                    if (reaction == DefaultElementalReactions.bloom)
+                    else if (reaction == DefaultElementalReactions.bloom)
                     {
                         reaction = DefaultElementalReactions.lunarBloom;
-                        return;
-                    }
-                    if (reaction == DefaultElementalReactions.crystallize && (element1 == DefaultElementDefs.hydroElement || element2 == DefaultElementDefs.hydroElement))
-                    {
-                        reaction = DefaultElementalReactions.lunarCrystallize;
                         return;
                     }
                 }
