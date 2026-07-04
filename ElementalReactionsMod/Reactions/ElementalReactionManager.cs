@@ -28,6 +28,7 @@ namespace ElementalReactionsMod.Reactions
         public static AsyncOperationHandle<GameObject> superconductEffect;
         public static AsyncOperationHandle<GameObject> superconductTempVisualEffect;
         public static AsyncOperationHandle<GameObject> swirlEffect;
+        public static AsyncOperationHandle<GameObject> crystallizeSpawnOrbEffect;
         public static AsyncOperationHandle<GameObject> crystallizePickup;
         public static DeployableSlot crystallizeDeployableSlot;
         //public static PrefabComponentPool<ElementalReactionPooledObject> crystallizePool;
@@ -179,6 +180,7 @@ namespace ElementalReactionsMod.Reactions
             superconductEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.superconductEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             superconductTempVisualEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.superconductTempVisualEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             swirlEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.swirlEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
+            crystallizeSpawnOrbEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.crystallizeSpawnOrbEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             crystallizePickup = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.crystallizePickup, AsyncReferenceHandleUnloadType.OnRunEnd);
             quickenTempVisualEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.quickenTempVisualEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             bloomCore = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.bloomObject, AsyncReferenceHandleUnloadType.OnRunEnd);
@@ -199,6 +201,7 @@ namespace ElementalReactionsMod.Reactions
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.superconductEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.superconductTempVisualEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.swirlEffect);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.crystallizeSpawnOrbEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.crystallizePickup);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.quickenTempVisualEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.bloomObject);

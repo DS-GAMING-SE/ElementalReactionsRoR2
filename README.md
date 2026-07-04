@@ -32,7 +32,7 @@ This mod also adds a few new items that interact with the elements.
 | Icon | Item |
 | ---- | ----------- |
 | <img src="https://github.com/DS-GAMING-SE/ElementalReactionsRoR2/blob/master/ElementalReactionsUnityProject/Assets/ElementalReactionsAssets/Items/InstructorsTeaCup/texInstructorsTeaCupItemIcon.png?raw=true" width="128"> | **Common - Instructor's Tea Cup**<br>*Deal bonus damage from elemental reactions.*<br><br>Increases elemental reaction damage by 20% (+20% per stack). |
-| <img src="https://github.com/DS-GAMING-SE/ElementalReactionsRoR2/blob/master/ElementalReactionsUnityProject/Assets/ElementalReactionsAssets/Items/Moonwheel/texMoonWheelItemIcon.png?raw=true" width="128"> | **Legendary - Moon Wheel**<br>*Upgrades the Hydro reactions between Electro, Dendro, and Geo into powerful Lunar Reactions*<br><br>Upgrades the Electro-Charge, Bloom, and Hydro-Crystallize reactions into Lunar Reactions that can critically strike. Increases Lunar Reaction damage by 0% (+50% per stack).<br><br>Lunar-Charged: Continuously strike the target with lightning, dealing 4x500% damage.<br>Lunar-Bloom: Create a Dendro Core and gain a Verdant Dew, up to 3. Dealing more than 400% damage while having 3 Verdant Dews will consume them and increase the damage dealt by 150%.<br>Lunar-Crystallize: Create a Moondrift. Creating 3 Moondrifts will fire them at nearby enemies, dealing 3x300% damage.<br><br>Unlocked after completing the **Elemental Mastery** achievement. |
+| <img src="https://github.com/DS-GAMING-SE/ElementalReactionsRoR2/blob/master/ElementalReactionsUnityProject/Assets/ElementalReactionsAssets/Items/Moonwheel/texMoonWheelItemIcon.png?raw=true" width="128"> | **Legendary - Moon Wheel**<br>*Upgrades the Hydro reactions between Electro, Dendro, and Geo into powerful Lunar Reactions*<br><br>Upgrades the Electro-Charge, Bloom, and Hydro-Crystallize reactions into Lunar Reactions that can critically strike. Increases Lunar Reaction damage by 0% (+50% per stack).<br><br>Lunar-Charged: Continuously strike the target with lightning, dealing 4x600% damage.<br>Lunar-Bloom: Create a Dendro Core and gain a Verdant Dew, up to 3. Dealing more than 400% damage while having 3 Verdant Dews will consume them and increase the damage dealt by 200%.<br>Lunar-Crystallize: Create a Moondrift. Creating 3 Moondrifts will fire them at nearby enemies, dealing 3x400% damage.<br><br>Unlocked after completing the **Elemental Mastery** achievement. |
 | <img src="https://github.com/DS-GAMING-SE/ElementalReactionsRoR2/blob/master/ElementalReactionsUnityProject/Assets/ElementalReactionsAssets/Items/Delusion/texDelusionItemIcon.png?raw=true" width="128"> | **Lunar - Delusion**<br>*Resonates with a new element on pickup. Activating your Special skill will make any skill damage fire attacks of the Delusion's elemental damage...* **BUT at the cost of your health**.<br><br>On pickup, resonate with a random element you don't have. Activating your Special skill will activate the Delusion for 10s. While active, damaging enemies with any skill will periodically fire an attack of the Delusion's element, dealing 600% base damage (+600% per same-element stack), while also draining your health by **5%** (+5% per same-element stack). While the Delusion is active, **healing received is reduced by 20%** (+20% per stack). A separate attack will be fired for each Delusion you have of a unique element. |
 
 ## Supported Mods
@@ -42,6 +42,12 @@ This mod also adds a few new items that interact with the elements.
 	- Instructor's Tea Cup and Moon Wheel have quality variants
 - [ZetAspects](https://thunderstore.io/c/riskofrain2/p/William758/ZetAspects/)
 	- ZetAspects elite aspects (like normal aspects) grant elemental power
+- [Starstorm 2](https://thunderstore.io/package/TeamMoonstorm/Starstorm2/)
+    - Storms have unique interactions with the elements (Beta content hasn't been considered)
+    - Item(s) from this mod are usable in a Wandering Chef recipe
+	- Survivors have item displays
+- [Sandswept](https://thunderstore.io/c/riskofrain2/p/SandsweptTeam/Sandswept/)
+    - Item(s) from this mod are usable in a Wandering Chef recipe
 	
 Enemies added by the following mods will be able to use the elements
 - [EnemiesReturns](https://thunderstore.io/package/Risky_Sleeps/EnemiesReturns/)

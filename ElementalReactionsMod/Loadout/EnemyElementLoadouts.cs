@@ -80,7 +80,7 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("VagrantTrackingBomb", electroElement, electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("VoidInfestorBody", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("VultureHunterBody", anemoElement, pyroElement, anemoElement, anemoElement);
-            CreateLoadout("ArifactShellBody", electroElement);
+            //CreateLoadout("ArifactShellBody", electroElement);
             AddMoonWheel(CreateLoadout("FalseSonBossBody", geoElement, electroElement, electroElement, geoElement));
             AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.FalseSonFissurePillar_prefab, pyroElement);
             // false son statue
@@ -138,9 +138,9 @@ namespace ElementalReactionsMod.Loadout
             // Enemies Returns
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Viliger.EnemiesReturns"))
             {
-                CreateLoadout("MechanicalSpiderBody", electroElement);
-                CreateLoadout("MechanicalSpiderDroneBody", electroElement); // Ally
-                CreateLoadout("MechanicalSpiderTurretBody", electroElement); // Ally
+                //CreateLoadout("MechanicalSpiderBody", electroElement);
+                //CreateLoadout("MechanicalSpiderDroneBody", electroElement); // Ally
+                //CreateLoadout("MechanicalSpiderTurretBody", electroElement); // Ally
                 CreateLoadout("SwiftBody", geoElement);
                 CreateLoadout("LynxScoutBody", dendroElement);
                 CreateLoadout("LynxScoutAllyBody", dendroElement); // Ally

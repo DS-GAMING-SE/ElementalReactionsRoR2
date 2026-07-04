@@ -103,7 +103,7 @@ namespace ElementalReactionsMod.Elements
                 Addressables.LoadAssetAsync<Texture>(Assets.AssetReferences.pyroIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.pyroSkillIcon).WaitForCompletion(), 
                 true, true,
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionCryoItemIcon).WaitForCompletion());
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionPyroItemIcon).WaitForCompletion());
             hydroElement = ElementDef.CreateElementDef("Hydro", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_HYDRO", ColorCatalog.GetColor(ColorCatalog.ColorIndex.LunarItem),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.hydroBuffIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Texture>(Assets.AssetReferences.hydroIcon).WaitForCompletion(),

@@ -24,10 +24,6 @@ namespace ElementalReactionsMod.Environment
             elementalRainPrefab = PrefabAPI.CreateEmptyPrefab("ElementalRainManager");
             elementalRainPrefab.AddComponent<ElementalRain>();
             Stage.onServerStageBegin += TrySpawnElementalRain;
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(SS2.SS2Main.GUID))
-            {
-                SS2StormElementalRain.InitializeSS2Storm();
-            }
         }
         private static void TrySpawnElementalRain(Stage stage)
         {

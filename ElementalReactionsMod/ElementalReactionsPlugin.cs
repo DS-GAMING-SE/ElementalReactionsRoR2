@@ -30,6 +30,7 @@ namespace ElementalReactionsMod
     [BepInDependency(RiskOfOptions.PluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(ItemQualities.ItemQualitiesPlugin.PluginGUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(SS2.SS2Main.GUID, BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency(Sandswept.Main.ModGuid, BepInDependency.DependencyFlags.SoftDependency)]
 
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class ElementalReactionsPlugin : BaseUnityPlugin
@@ -83,6 +84,15 @@ namespace ElementalReactionsMod
             Crafting.Initialize();
 
             MasterElementLoadout.Initialize();
+
+            if (Chainloader.PluginInfos.ContainsKey(SS2.SS2Main.GUID))
+            {
+                SS2Support.Initialize();
+            }
+            if (Chainloader.PluginInfos.ContainsKey(Sandswept.Main.ModGuid))
+            {
+                SandsweptSupport.Initialize();
+            }
 
             NetworkingAPI.RegisterMessageType<NetworkElementLoadout>();
             //NetworkingAPI.RegisterMessageType<NetworkPooledObjectSetActive>();

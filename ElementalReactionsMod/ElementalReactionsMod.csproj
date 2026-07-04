@@ -52,6 +52,9 @@
 	  <Reference Include="RiskOfOptions">
 	    <HintPath>..\lib\RiskOfOptions.dll</HintPath>
 	  </Reference>
+	  <Reference Include="Sandswept">
+	    <HintPath>..\lib\Sandswept.dll</HintPath>
+	  </Reference>
 	  <Reference Include="Starstorm2">
 	    <HintPath>..\lib\Starstorm2.dll</HintPath>
 	  </Reference>

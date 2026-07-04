@@ -154,10 +154,11 @@ namespace ElementalReactionsMod.Reactions
                 {
                     Util.GetRandomNode(damage.position, out var pos, 0.5f, 15f);
                     //ElementalReactionPooledObject crystallize = ElementalReactionManager.CreatePooledDeployable(ElementalReactionManager.crystallizePool, characterBody, ElementalReactionManager.crystallizeDeployableSlot, pos);
-                    GameObject crystallize = GameObject.Instantiate(crystallizePickup.WaitForCompletion(), pos + (2f * Vector3.up), Quaternion.identity);
+                    /*GameObject crystallize = GameObject.Instantiate(crystallizePickup.WaitForCompletion(), pos + (2f * Vector3.up), Quaternion.identity);
                     if (characterBody.master) characterBody.master.AddDeployable(crystallize.GetComponent<Deployable>(), crystallizeDeployableSlot);
                     if (crystallize) crystallize.GetComponent<TeamFilter>().teamIndex = characterBody.teamComponent.teamIndex;
-                    NetworkServer.Spawn(crystallize);
+                    NetworkServer.Spawn(crystallize);*/
+                    if (characterBody.master) CrystallizeSpawnOrb.SpawnCrystallize(characterBody.master, characterBody.teamComponent.teamIndex, pos + (2f * Vector3.up), damage.position);
                 }
             };
             crystallize.baseFirstReactionCoefficient = 0.5f;

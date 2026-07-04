@@ -26,7 +26,7 @@ namespace ElementalReactionsMod.Orbs
                 start = targetPosition,
                 genericFloat = base.duration
             };
-            EffectManager.SpawnEffect(ElementalReactionManager.bloomSpawnOrb, effectData, true);
+            EffectManager.SpawnEffect(ElementalReactionManager.crystallizeSpawnOrbEffect.WaitForCompletion(), effectData, true);
         }
         public override void OnArrival()
         {

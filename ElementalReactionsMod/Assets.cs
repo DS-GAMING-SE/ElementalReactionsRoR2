@@ -503,6 +503,22 @@ namespace ElementalReactionsMod
 
                 AddNewEffectDef(x.Result);
             };
+
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.crystallizeSpawnOrbEffect).Completed += x =>
+            {
+                EffectComponent effect = x.Result.AddComponent<EffectComponent>();
+                effect.positionAtReferencedTransform = false;
+                effect.parentToReferencedTransform = false;
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+                vfx.DoNotPool = false;
+                RoR2.Orbs.OrbEffect orb = x.Result.AddComponent<RoR2.Orbs.OrbEffect>();
+                orb.startVelocity1 = new Vector3(-3, 20f, -3f);
+                orb.startVelocity2 = new Vector3(3, 25f, 3f);
+                orb.movementCurve = AnimationCurve.Linear(0, 0, 1, 1);
+                AddNewEffectDef(x.Result);
+            };
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.crystallizePickup).Completed += x =>
             {
                 x.Result.AddComponent<NetworkIdentity>();
@@ -586,7 +602,7 @@ namespace ElementalReactionsMod
 
             AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Tonic.TonicBuffEffect_prefab)).Completed += x =>
             {
-                GameObject delusionActiveEffect = PrefabAPI.InstantiateClone(x.Result, "DelusionActiveEffect");
+                GameObject delusionActiveEffect = PrefabAPI.InstantiateClone(x.Result, "DelusionActiveEffect", false);
                 VFXAttributes vfx = delusionActiveEffect.AddComponent<VFXAttributes>();
                 vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
                 vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
@@ -633,6 +649,7 @@ namespace ElementalReactionsMod
             Mesh lunarLineMesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.mdlVFXDonut1_fbx_donut1Mesh_)).WaitForCompletion();
 
             Material lunarDecal = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_LunarExploder.matLunarExploderDeathDecal_mat)).WaitForCompletion());
+            lunarDecal.name = "matLunarDecal";
             lunarDecal.SetColor("_Color", new Color(8f, 8f, 8f));
             lunarDecal.SetTexture("_MaskTex", AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.lunarDecal).WaitForCompletion());
             lunarDecal.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampSporeGrenadeGas_png)).WaitForCompletion());
@@ -711,6 +728,7 @@ namespace ElementalReactionsMod
             AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_meridian_DisableSkillsLightning.LightningStrikePredictionEffect_prefab)).Completed += x =>
             {
                 EnemyLunarChargeInstance.warningPrefab = PrefabAPI.InstantiateClone(x.Result, "LunarChargeWarningEffect");
+                EnemyLunarChargeInstance.warningPrefab.AddComponent<NetworkIdentity>();
                 var retimer = EnemyLunarChargeInstance.warningPrefab.GetComponent<EffectRetimer>();
                 retimer.objectScaleCurves = null;
                 var light = EnemyLunarChargeInstance.warningPrefab.transform.GetChild(0).GetComponent<Light>();
@@ -737,13 +755,15 @@ namespace ElementalReactionsMod
 
                 decalObject.GetComponent<DecaliciousRenderer>();
                 var decal = decalObject.GetComponent<Decal>();
+                decal.RenderMode = Decal.DecalRenderMode.Deferred;
                 decal.DrawAlbedo = true;
                 decal.DrawNormalAndGloss = false;
                 decal.Material = lunarDecal;
-                decal.Fade = 0f;
+                decal.Fade = 1f;
                 var decalAlpha = decal.gameObject.GetComponent<AnimateShaderAlpha>();
                 decalAlpha.decal = decal;
                 decalAlpha.alphaCurve = AnimationCurve.Linear(0, 0, 1f, 1f);
+                decalAlpha.timeMax = 0.75f;
                 retimer.animateShaderAlphas.Add(decalAlpha);
                 decal.GetComponent<MeshRenderer>().sharedMaterial = lunarDecal;
 
@@ -1088,6 +1108,7 @@ namespace ElementalReactionsMod
 
             public static AssetReferenceT<GameObject> swirlEffect = new("7afc921af72c23941980c334193ee394");
 
+            public static AssetReferenceT<GameObject> crystallizeSpawnOrbEffect = new("b71c0d9d0e04e4f42a27e5067bc57920");
             public static AssetReferenceT<GameObject> crystallizePickup = new("677d6b93d9a81fa44b68adbcd2288857");
 
             public static AssetReferenceT<Sprite> bloomIcon = new("cd5c3c5b432da044d8ab88e45c4ca562");

@@ -33,7 +33,7 @@ namespace ElementalReactionsMod
                 // Using negatives for the model child index so it fails to parent the effect to the normal transform in effectdata
                 if (effectComponent.effectData.modelChildIndex == (short)ItemDisplayParent.Delusion)
                 {
-                    if (effectComponent.effectData.rootObject && effectComponent.effectData.rootObject.TryGetComponent<DelusionBehaviour>(out var delusion))
+                    if (effectComponent.effectData.rootObject && effectComponent.effectData.rootObject.TryGetComponent<DelusionBehaviour>(out var delusion) && delusion.delusionDisplay)
                     {
                         parentTransform = delusion.delusionDisplay.transform;
                         return;
