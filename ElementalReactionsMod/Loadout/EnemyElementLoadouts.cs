@@ -174,6 +174,11 @@ namespace ElementalReactionsMod.Loadout
                 CreateLoadout("SkyDraconBody", pyroElement);
                 CreateLoadout("DemineurBody", hydroElement, hydroElement, hydroElement, hydroElement);
             }
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(Sandswept.Main.ModGuid))
+            {
+                CreateLoadout("CannonJellyBody", physicalElement, physicalElement, physicalElement, physicalElement, pyroElement);
+                SandsweptSupport.AddElementToCannonballJellyfishDeath();
+            }
 
             LogEnemyElementStats();
         }

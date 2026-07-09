@@ -44,12 +44,13 @@ This mod also adds a few new items that interact with the elements.
 	- ZetAspects elite aspects (like normal aspects) grant elemental power
 - [Starstorm 2](https://thunderstore.io/package/TeamMoonstorm/Starstorm2/)
     - Storms have unique interactions with the elements (Beta content hasn't been considered)
-    - Item(s) from this mod are usable in a Wandering Chef recipe
+    - Item(s) from this mod are usable in Wandering Chef recipes
 	- Survivors have item displays
 - [Sandswept](https://thunderstore.io/c/riskofrain2/p/SandsweptTeam/Sandswept/)
-    - Item(s) from this mod are usable in a Wandering Chef recipe
+    - Item(s) from this mod are usable in Wandering Chef recipes
 	
 Enemies added by the following mods will be able to use the elements
 - [EnemiesReturns](https://thunderstore.io/package/Risky_Sleeps/EnemiesReturns/)
 - [Starstorm 2](https://thunderstore.io/package/TeamMoonstorm/Starstorm2/)
 - [BootlegBestiary](https://thunderstore.io/package/Skeletogne/BootlegBestiary/)
+- [Sandswept](https://thunderstore.io/c/riskofrain2/p/SandsweptTeam/Sandswept/)

@@ -57,6 +57,7 @@ namespace ElementalReactionsMod.Orbs
         public override void OnArrival()
         {
             Util.CreateBlastAttack(attacker, teamIndex, damageValue, isCrit, StaticValues.genericReactionExplosionRadius, BlastAttack.FalloffModel.Linear, procCoefficient, damageType, lastKnownTargetPosition, 0f).Fire();
+            EffectManager.SpawnEffect(ElementalReactionManager.delusionHitEffect.WaitForCompletion(), new EffectData { origin = lastKnownTargetPosition, genericUInt = (uint)element }, true);
         }
         public void FixedUpdate()
         {

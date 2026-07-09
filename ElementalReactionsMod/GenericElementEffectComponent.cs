@@ -40,6 +40,7 @@ namespace ElementalReactionsMod
         public ParticleSystemRenderer icon;
         public ParticleSystem[] particlesToRecolor;
         public TrailRenderer[] trailsToRecolor;
+        public Light lightToRecolor;
         public bool darkenTrailColor = true;
         private void Awake()
         {
@@ -76,6 +77,10 @@ namespace ElementalReactionsMod
             if (particleDuration)
             {
                 particleDuration.newDuration = effectComponent.effectData.genericFloat;
+            }
+            if (lightToRecolor)
+            {
+                lightToRecolor.color = element.color;
             }
         }
 

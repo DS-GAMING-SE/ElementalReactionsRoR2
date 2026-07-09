@@ -218,16 +218,7 @@ namespace ElementalReactionsMod
             {
                 nodeIndex = list[UnityEngine.Random.Range(0, list.Count)];
             }
-            if (nodeIndex == NodeGraph.NodeIndex.invalid)
-            {
-                list ??= new();
-                nodeGraph.GetActiveNodesForHullMask(HullMask.Human, list);
-                if (list.Count > 0)
-                {
-                    nodeIndex = list[UnityEngine.Random.Range(0, Mathf.Max(1, list.Count))];
-                }
-            }
-            if (list.Count <= 0 && alwaysFindNode)
+            else if (alwaysFindNode)
             {
                 if (Physics.Raycast(origin, Vector3.down, out var hit, float.PositiveInfinity, LayerIndex.world.intVal, QueryTriggerInteraction.UseGlobal))
                 {

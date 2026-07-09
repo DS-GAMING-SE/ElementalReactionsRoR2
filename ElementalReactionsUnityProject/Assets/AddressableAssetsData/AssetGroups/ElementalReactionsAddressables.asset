@@ -321,6 +321,18 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Reactions/Crystallize/CrystallizeSpawnOrbEffect.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 18f28cc4480fabe408617d74510efcb1
+    m_Address: Assets/ElementalReactionsAssets/Items/Delusion/texRampDelusionOrb.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 77c55f158f600e048ab3cecb73f7b2b6
+    m_Address: Assets/ElementalReactionsAssets/Items/Delusion/texRampDelusion.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 65c647fb4bb695846b19becd2e583081
+    m_Address: Assets/ElementalReactionsAssets/Items/Delusion/DelusionHitEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

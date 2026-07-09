@@ -48,7 +48,7 @@ namespace ElementalReactionsMod
 
         public static ConfigEntry<bool> CanWeatherUseElements()
         {
-            return ElementalReactionsPlugin.instance.Config.Bind<bool>("Environment", "Elemental Weather", true, "Whether certain weather effects, such as the rain on the moon, will be able to apply elements.\nHost's config takes priority.");
+            return ElementalReactionsPlugin.instance.Config.Bind<bool>("Environment", "Elemental Weather", true, "Whether weather effects in certain environments, such as the rain on the moon, will be able to apply elements.\nHost's config takes priority.");
         }
         public static ConfigEntry<bool> CanSS2StormsUseElements()
         {

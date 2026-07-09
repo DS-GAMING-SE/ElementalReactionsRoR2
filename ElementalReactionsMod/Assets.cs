@@ -150,6 +150,12 @@ namespace ElementalReactionsMod
             bloomCoreExplosionMat.SetInt("_SrcBlend", 5);
             bloomCoreExplosionMat.SetInt("_DstBlend", 1);
 
+            Material genericRingMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BFG.matBeamSphereBeam_mat)).WaitForCompletion());
+            genericRingMat.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTwotoneEnvironment_jpg)).WaitForCompletion());
+            genericRingMat.SetFloat("_AlphaBoost", 3f);
+            genericRingMat.EnableKeyword("VERTEXCOLOR");
+            genericRingMat.SetVector("_CutoffScroll", new Vector4(25, 0, -10, 0));
+
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.electroChargeTempVisualEffect).Completed += x =>
             {
                 VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
@@ -282,14 +288,7 @@ namespace ElementalReactionsMod
                 ParticleSystemRenderer swirlRingParticleRenderer = x.Result.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
                 component.particlesToRecolor = [swirlRingParticleRenderer.GetComponent<ParticleSystem>()];
                 swirlRingParticleRenderer.mesh = ringMesh;
-                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BFG.matBeamSphereBeam_mat)).Completed += y =>
-                {
-                    Material swirlMat = new Material(y.Result);
-                    swirlMat.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTritoneSmoothed_png)).WaitForCompletion());
-                    swirlMat.EnableKeyword("VERTEXCOLOR");
-                    swirlMat.SetVector("_CutoffScroll", new Vector4(25, 0, -10, 0));
-                    swirlRingParticleRenderer.sharedMaterial = swirlMat;
-                };
+                swirlRingParticleRenderer.sharedMaterial = genericRingMat;
                 x.Result.AddComponent<DestroyOnTimer>().duration = 0.4f;
 
                 AddNewEffectDef(x.Result, "Play_bandit2_shift_enter");
@@ -313,6 +312,7 @@ namespace ElementalReactionsMod
             {
                 ElementalReactionManager.bloomSpawnOrb = PrefabAPI.InstantiateClone(x.Result, "BloomSpawnOrbEffect");
                 ElementalReactionManager.bloomSpawnOrb.AddComponent<Orbs.OrbEffectTargetPosition>();
+                ElementalReactionManager.bloomSpawnOrb.AddComponent<NetworkIdentity>();
                 GameObject.Destroy(ElementalReactionManager.bloomSpawnOrb.GetComponent<AkEvent>());
                 GameObject.Destroy(ElementalReactionManager.bloomSpawnOrb.GetComponent<AkGameObj>());
 
@@ -599,6 +599,73 @@ namespace ElementalReactionsMod
                     x.Result.SetTexture("_FresnelRamp", y.Result);
                 };
             };
+            #region Delusion
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.delusionHitEffect).Completed += x =>
+            {
+                EffectComponent effect = x.Result.AddComponent<EffectComponent>();
+                effect.positionAtReferencedTransform = true;
+                effect.parentToReferencedTransform = false;
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Medium;
+                vfx.DoNotPool = false;
+                ShakeEmitter shakeEmitter = x.Result.AddComponent<ShakeEmitter>();
+                shakeEmitter.amplitudeTimeDecay = true;
+                shakeEmitter.duration = 0.25f;
+                shakeEmitter.radius = 75f;
+                shakeEmitter.scaleShakeRadiusWithLocalScale = false;
+
+                shakeEmitter.wave = new Wave
+                {
+                    amplitude = 0.2f,
+                    frequency = 10f,
+                    cycleOffset = 0f
+                };
+                x.Result.AddComponent<NetworkIdentity>();
+                Texture delusionRamp = AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.delusionRamp).WaitForCompletion();
+                Material delusionHitspark = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matOmniHitspark3Generic_mat)).WaitForCompletion());
+                delusionHitspark.SetTexture("_RemapTex", delusionRamp);
+                delusionHitspark.SetFloat("_AlphaBoost", 1.2f);
+                x.Result.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBrightTransparent_mat)).WaitForCompletion();
+                x.Result.transform.GetChild(3).GetComponent<ParticleSystemRenderer>().sharedMaterial = delusionHitspark;
+                Material delusionOrb = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_VoidSurvivor.matVoidSurvivorBlasterSphereAreaIndicator_mat)).WaitForCompletion());
+                delusionOrb.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.delusionOrbRamp).WaitForCompletion());
+                delusionOrb.EnableKeyword("VERTEXCOLOR");
+                x.Result.transform.GetChild(4).GetComponent<ParticleSystemRenderer>().sharedMaterial = delusionOrb;
+                x.Result.transform.GetChild(5).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matOmniHitspark2Generic_mat)).WaitForCompletion();
+                x.Result.transform.GetChild(6).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matInverseDistortion_mat)).WaitForCompletion();
+                Material delusionSparkle = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matWideGlow_mat)).WaitForCompletion());
+                delusionSparkle.SetTexture("_RemapTex", delusionRamp);
+                delusionSparkle.SetFloat("_InvFade", 0.25f);
+                delusionSparkle.SetFloat("_Boost", 2f);
+                delusionSparkle.SetInt("_ZTest", 8);
+                delusionSparkle.SetFloat("_DepthOffset", -3f);
+                x.Result.transform.GetChild(7).GetComponent<ParticleSystemRenderer>().sharedMaterial = delusionSparkle;
+                x.Result.transform.GetChild(8).GetComponent<ParticleSystemRenderer>().sharedMaterial = delusionSparkle;
+                var light = x.Result.transform.Find("DelusionHitLight").GetComponent<Light>();
+                vfx.optionalLights = [light];
+                var lightCurve = light.gameObject.AddComponent<LightIntensityCurve>();
+                lightCurve.timeMax = 0.35f;
+                lightCurve.curve = AnimationCurve.EaseInOut(0, 1, 1, 0);
+                GenericElementEffectComponent component = x.Result.AddComponent<GenericElementEffectComponent>();
+                ParticleSystemRenderer delusionRingParticleRenderer = x.Result.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
+                delusionRingParticleRenderer.mesh = ringMesh;
+                delusionRingParticleRenderer.sharedMaterial = genericRingMat;
+                component.icon = x.Result.transform.GetChild(9).GetComponent<ParticleSystemRenderer>();
+                component.particlesToRecolor = [
+                    delusionRingParticleRenderer.GetComponent<ParticleSystem>(),
+                    x.Result.transform.GetChild(1).GetComponent<ParticleSystem>(),
+                    x.Result.transform.GetChild(2).GetComponent<ParticleSystem>(),
+                    x.Result.transform.GetChild(3).GetComponent<ParticleSystem>(),
+                    x.Result.transform.GetChild(4).GetComponent<ParticleSystem>(),
+                    x.Result.transform.GetChild(7).GetComponent<ParticleSystem>(),
+                    x.Result.transform.GetChild(8).GetComponent<ParticleSystem>(),
+                    x.Result.transform.GetChild(9).GetComponent<ParticleSystem>()];
+                component.lightToRecolor = light;
+                x.Result.AddComponent<DestroyOnTimer>().duration = 0.6f;
+
+                AddNewEffectDef(x.Result, "Play_seeker_skill1_impact");
+            };
 
             AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Tonic.TonicBuffEffect_prefab)).Completed += x =>
             {
@@ -632,6 +699,7 @@ namespace ElementalReactionsMod
 
                 TempVisualEffectAPI.AddTemporaryVisualEffect(delusionActiveEffect, (body) => { return body.HasBuff(Buffs.delusionActiveBuff); });
             };
+            #endregion
 
             #region Lunar Reactions
             Material lunarVFXSymbol = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matOmniRing1Generic_mat)).WaitForCompletion());
@@ -1141,6 +1209,10 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<Sprite> delusionDendroItemIcon = new AssetReferenceT<Sprite>("3bedb54f341b8b448b9c0a1cd9dcdd7b");
 
             public static AssetReferenceT<Sprite> delusionBuffIcon = new AssetReferenceT<Sprite>("6eea3353a4d395843b4cd63335aa6de1");
+
+            public static AssetReferenceT<GameObject> delusionHitEffect = new("65c647fb4bb695846b19becd2e583081");
+            public static AssetReferenceT<Texture> delusionRamp = new("77c55f158f600e048ab3cecb73f7b2b6");
+            public static AssetReferenceT<Texture> delusionOrbRamp = new("18f28cc4480fabe408617d74510efcb1");
             #endregion
             #region Instructor's Tea Cup
             public static AssetReferenceT<GameObject> instructorsTeaCupPickupModel = new("b51b42d6d9466d845a1d09da7a916642");

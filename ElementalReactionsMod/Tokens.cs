@@ -88,9 +88,11 @@ namespace ElementalReactionsMod
                 
                 I know you can hear me.
 
-                But can you hear them?
-
-                The ones you rule. You reshaped the entire world just for them. Going to such extreme lengths could almost convince me of how much you claim to care about them. 
+                But can you hear them? 
+                
+                The ones you rule.
+                
+                You reshaped the entire world just for them. Going to such extreme lengths could almost convince me of how much you claim to care about them. 
                 
                 But that cannot be, can it? Your actions do not come from benevolence. After all, how could you ignore all those who cry out in anguish?
                 

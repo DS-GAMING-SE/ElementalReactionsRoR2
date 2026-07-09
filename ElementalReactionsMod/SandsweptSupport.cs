@@ -6,6 +6,7 @@ using System.Text;
 using RoR2;
 using Sandswept;
 using ElementalReactionsMod.Items;
+using ElementalReactionsMod.Elements;
 
 namespace ElementalReactionsMod
 {
@@ -22,6 +23,14 @@ namespace ElementalReactionsMod
 
                 Crafting.AppendDelusionRecipe(Crafting.delusionGeo, ItemCatalog.GetItemDef(ItemCatalog.FindItemIndex("ITEM_SANDSWEPT_CROWNS_DIAMOND")));
             };
+        }
+        [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
+        public static void AddElementToCannonballJellyfishDeath()
+        {
+            if (Sandswept.Enemies.CannonballJellyfish.CannonballJellyfish.JellyCoreProjectile.TryGetComponent<RoR2.Projectile.ProjectileDamage>(out var damage))
+            {
+                damage.damageType.SetElement(DefaultElementDefs.pyroElement.index);
+            }
         }
     }
 }
