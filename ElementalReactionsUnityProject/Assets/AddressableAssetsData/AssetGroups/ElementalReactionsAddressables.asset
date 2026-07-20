@@ -333,6 +333,14 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Items/Delusion/DelusionHitEffect.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: aa757ec80808fa94f8b3e34811f93f35
+    m_Address: Assets/ElementalReactionsAssets/Items/InstructorsTeaCup/DisplayInstructorsTeaCup.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 55f9388a5a1f5834c9ee3506b9141ba8
+    m_Address: Assets/ElementalReactionsAssets/Common/VFX/ElementalWeatherScreenEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

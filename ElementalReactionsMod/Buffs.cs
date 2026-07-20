@@ -20,6 +20,8 @@ namespace ElementalReactionsMod
         public static BuffDef lunarCrystallizeBuff;
 
         public static BuffDef instructorsTeaCupQualityBase;
+
+        public static BuffDef elementalEnvironmentHiddenBuff;
         
         public static void Initialize()
         {
@@ -44,6 +46,8 @@ namespace ElementalReactionsMod
                 iconOverride = Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.lunarBloomBuffIcon).WaitForCompletion(), colorOverride = Color.white }];
 
             lunarCrystallizeBuff = Util.AddNewBuff("LunarCrystallizeMoondrift", null, Color.white, true, false, false, true);
+
+            elementalEnvironmentHiddenBuff = Util.AddNewBuff("HiddenElementalEnvironment", null, Color.white, false, false, false, true);
 
             if (ElementalReactionsPlugin.qualityModExists)
             {

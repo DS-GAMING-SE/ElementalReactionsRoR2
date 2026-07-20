@@ -76,6 +76,7 @@ namespace ElementalReactionsMod
                 EffectComponent effect = x.Result.AddComponent<EffectComponent>();
                 effect.positionAtReferencedTransform = true;
                 effect.parentToReferencedTransform = true;
+                effect.applyScale = true;
                 VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
                 vfx.vfxPriority = VFXAttributes.VFXPriority.Medium;
                 vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
@@ -122,6 +123,44 @@ namespace ElementalReactionsMod
                 component.particlesToRecolor = [wideGlow, x.Result.transform.GetChild(2).GetComponent<ParticleSystem>()];
 
                 AddNewEffectDef(x.Result);
+            };
+
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.elementEnvironmentScreenEffect).Completed += x =>
+            {
+                Mesh donut = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.mdlVFXDonut1_fbx_donut1Mesh_)).WaitForCompletion();
+                Material stars = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_Common_VFX.matOmniHitspark1GenericAdditive_mat)).WaitForCompletion());
+                Texture mask = AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX_ParticleMasks.texGlowPaintMask_png)).WaitForCompletion();
+                stars.SetTexture("_MainTex", mask);
+                stars.SetTextureOffset("_MainTex", new Vector2(0, 0.1f));
+                stars.SetColor("_TintColor", Color.white);
+                stars.SetTexture("_Cloud1Tex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Nullifier.texNullifierSkySparse_png)).WaitForCompletion());
+                stars.SetTextureScale("_Cloud1Tex", new Vector2(6f, 0.7f));
+                stars.SetVector("_CutoffScroll", new Vector4(0, 2f, 0, 0f));
+                stars.SetInt("_ZTest", 0);
+                stars.EnableKeyword("USE_CLOUDS");
+                stars.SetFloat("_Boost", 2f);
+                Material largeLines = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Items_SpeedBoostPickup.matSpeedBoostPickupTraill_mat)).WaitForCompletion());
+                largeLines.SetTexture("_MainTex", mask);
+                largeLines.SetTextureScale("_MainTex", new Vector2(1f, 1f));
+                largeLines.SetColor("_TintColor", Color.white);
+                largeLines.SetTexture("_Cloud1Tex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Items_SpeedBoostPickup.texNegateAttackTrail_png)).WaitForCompletion());
+                largeLines.SetTextureScale("_Cloud1Tex", new Vector2(2f, 4f));
+                largeLines.SetVector("_CutoffScroll", new Vector4(5f, 10f, -20f, 4f));
+                largeLines.SetInt("_ZTest", 0);
+                largeLines.SetFloat("_AlphaBoost", 0.09f);
+
+                var left = x.Result.transform.GetChild(0);
+                var right = x.Result.transform.GetChild(1);
+
+                var controller = x.Result.AddComponent<Environment.ElementalEnvironmentScreenEffect>();
+                controller.halfL = left.GetComponent<MeshRenderer>();
+                controller.halfR = right.GetComponent<MeshRenderer>();
+
+                controller.halfL.sharedMaterials = [stars, largeLines];
+                left.GetComponent<MeshFilter>().sharedMesh = donut;
+
+                controller.halfR.sharedMaterials = [stars, largeLines];
+                right.GetComponent<MeshFilter>().sharedMesh = donut;
             };
 
             #region Reactions
@@ -664,7 +703,7 @@ namespace ElementalReactionsMod
                 component.lightToRecolor = light;
                 x.Result.AddComponent<DestroyOnTimer>().duration = 0.6f;
 
-                AddNewEffectDef(x.Result, "Play_seeker_skill1_impact");
+                AddNewEffectDef(x.Result, "Play_item_lunar_secondaryReplace_explode");
             };
 
             AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Tonic.TonicBuffEffect_prefab)).Completed += x =>
@@ -720,8 +759,8 @@ namespace ElementalReactionsMod
             lunarDecal.name = "matLunarDecal";
             lunarDecal.SetColor("_Color", new Color(8f, 8f, 8f));
             lunarDecal.SetTexture("_MaskTex", AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.lunarDecal).WaitForCompletion());
-            lunarDecal.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampSporeGrenadeGas_png)).WaitForCompletion());
-            lunarDecal.SetFloat("_AlphaBoost", 0.3f);
+            lunarDecal.SetTexture("_RemapTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampGalaxy_png)).WaitForCompletion());
+            lunarDecal.SetFloat("_AlphaBoost", 0.5f);
             lunarDecal.SetTexture("_Cloud1Tex", null);
             lunarDecal.SetTexture("_Cloud2Tex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.texCloudWaterFoam3_tga)).WaitForCompletion());
 
@@ -815,13 +854,12 @@ namespace ElementalReactionsMod
                 wallGlowRenderer.sharedMaterial = wallGlowMat;
                 
                 // don't get the decal from team indicator, there is no team
-                var decalObject = new GameObject("LunarChargeWarningDecal", typeof(MeshFilter), typeof(Decal), typeof(DecaliciousRenderer), typeof(AnimateShaderAlpha), typeof(MeshRenderer));
+                var decalObject = new GameObject("LunarChargeWarningDecal", typeof(MeshFilter), typeof(Decal), typeof(AnimateShaderAlpha), typeof(MeshRenderer));
                 decalObject.transform.SetParent(EnemyLunarChargeInstance.warningPrefab.transform);
                 decalObject.transform.localPosition = Vector3.zero;
                 decalObject.transform.localScale = new Vector3(1.6f, 1.6f, 1.6f);
                 decalObject.GetComponent<MeshFilter>().sharedMesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.Decalicious.DecalCube_asset)).WaitForCompletion();
 
-                decalObject.GetComponent<DecaliciousRenderer>();
                 var decal = decalObject.GetComponent<Decal>();
                 decal.RenderMode = Decal.DecalRenderMode.Deferred;
                 decal.DrawAlbedo = true;
@@ -964,8 +1002,6 @@ namespace ElementalReactionsMod
 
                 AddNewEffectDef(x.Result, "Play_Seeker_PalmBlast_HealImpact");
             };
-            // use more seeker sfx for lunar crystallize. shift enter for crystallize spawn, primary for attack?
-            //Play_Seeker_PalmBlast_HealImpact for reaching 3 moondrifts
             #endregion
             #endregion
         }
@@ -1164,6 +1200,7 @@ namespace ElementalReactionsMod
 
             public static AssetReferenceT<GameObject> genericElementActivatedEffect = new("0dcaf09df2cb8ab4c838c88c6d997a39");
             public static AssetReferenceT<GameObject> genericElementOrbEffect = new("383d58c1367764647bb30cbdd0339ac0");
+            public static AssetReferenceT<GameObject> elementEnvironmentScreenEffect = new("55f9388a5a1f5834c9ee3506b9141ba8");
 
             #region Reactions
             public static AssetReferenceT<GameObject> electroChargeTempVisualEffect = new("11147caefb6967a41ab27574e55d2a88");
@@ -1216,6 +1253,7 @@ namespace ElementalReactionsMod
             #endregion
             #region Instructor's Tea Cup
             public static AssetReferenceT<GameObject> instructorsTeaCupPickupModel = new("b51b42d6d9466d845a1d09da7a916642");
+            public static AssetReferenceT<GameObject> instructorsTeaCupDisplayModel = new("aa757ec80808fa94f8b3e34811f93f35");
             public static AssetReferenceT<Material> instructorsTeaCupMaterial = new("21fcdb5cd2cf4b44fa0b04fe96e09702");
             public static AssetReferenceT<Texture> instructorsTeaCupFresnelMask = new("053b6932d6b15d5488c3626eb00c31ec");
             public static AssetReferenceT<Sprite> instructorsTeaCupItemIcon = new("371e6f4214277484c90a8755fa3e42e1");

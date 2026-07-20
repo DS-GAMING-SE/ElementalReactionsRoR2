@@ -91,6 +91,7 @@ namespace ElementalReactionsMod.Reactions
                     if (characterBody.GetBuffCount(Buffs.lunarCrystallizeBuff) > lastMoondriftCount)
                     {
                         RoR2.Util.PlaySound("Play_seeker_skill2_alt_fire", gameObject);
+                        RoR2.Util.PlaySound("Play_moonBrother_m1_laser_shoot", gameObject);
                     }
                     moondrift1.SetActive(characterBody.GetBuffCount(Buffs.lunarCrystallizeBuff) >= 1);
                     moondrift2.SetActive(characterBody.GetBuffCount(Buffs.lunarCrystallizeBuff) >= 2);

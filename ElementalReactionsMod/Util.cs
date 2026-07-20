@@ -37,6 +37,15 @@ namespace ElementalReactionsMod
             }
         }
 
+        public static bool CanUseElements(CharacterBody characterBody)
+        {
+            bool player = characterBody.isPlayerControlled || (characterBody.inventory && characterBody.inventory.GetItemCountEffective(Loadout.ElementLoadoutComponent.damageIsFromPlayerItem) > 0);
+            return characterBody && characterBody.teamComponent &&
+                ((characterBody.teamComponent.teamIndex == TeamIndex.Player && player && Config.CanSurvivorsUseElements().Value) ||
+                (characterBody.teamComponent.teamIndex == TeamIndex.Player && !player && Config.CanAlliesUseElements().Value) ||
+                (characterBody.teamComponent.teamIndex != TeamIndex.Player && Config.CanEnemiesUseElements().Value));
+        }
+
         public static bool IsElementalDamage(this DamageTypeCombo damageTypeCombo)
         {
             foreach (var item in ElementCatalog.elementIndexDamageTypeBits)

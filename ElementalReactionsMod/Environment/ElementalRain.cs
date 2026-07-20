@@ -24,6 +24,24 @@ namespace ElementalReactionsMod.Environment
             elementalRainPrefab = PrefabAPI.CreateEmptyPrefab("ElementalRainManager");
             elementalRainPrefab.AddComponent<ElementalRain>();
             Stage.onServerStageBegin += TrySpawnElementalRain;
+
+            // SS2 backthruster code yoinked for the screen effect
+            CameraRigController.onCameraEnableGlobal += AddEnvironmentScreenEffect;
+            CameraRigController.onCameraDisableGlobal += RemoveEnvironmentScreenEffect;
+            SceneCamera.onSceneCameraPreCull += (sceneCam) =>
+            {
+                if (camerasToScreenEffects.TryGetValue(sceneCam.cameraRigController, out ElementalEnvironmentScreenEffect effect))
+                {
+                    effect.gameObject.layer = LayerIndex.defaultLayer.intVal;
+                }
+            };
+            SceneCamera.onSceneCameraPostRender += (sceneCam) =>
+            {
+                if (camerasToScreenEffects.TryGetValue(sceneCam.cameraRigController, out ElementalEnvironmentScreenEffect effect))
+                {
+                    effect.gameObject.layer = LayerIndex.noDraw.intVal;
+                }
+            };
         }
         private static void TrySpawnElementalRain(Stage stage)
         {
@@ -39,16 +57,34 @@ namespace ElementalReactionsMod.Environment
             }
             if (stage.sceneDef.cachedName == "meridian")
             {
-                Transform rainParent = GameObject.Find("Weather, Meridian/CAMERA PARTICLES: RainParticles").transform;
+                GameObject rainParent = GameObject.Find("Weather, Meridian/CAMERA PARTICLES: RainParticles");
                 if (rainParent)
                 {
-                    Instantiate(elementalRainPrefab, rainParent);
+                    Instantiate(elementalRainPrefab, rainParent.transform);
                 }
             }
         }
-        // For character specific rain effects, give bodies in rain a hidden "in rain" buff and use LocalCameraEffect to enable SobelRain PostProcessing
-        // Get rid of the SobelRain built in to Prime Meridian so I can handle it entirely with my thing
-        // Maybe write my own version of LocalCameraEffect so I can use particles?
+        internal static Dictionary<CameraRigController, ElementalEnvironmentScreenEffect> camerasToScreenEffects = new Dictionary<CameraRigController, ElementalEnvironmentScreenEffect>();
+        private static void AddEnvironmentScreenEffect(CameraRigController camera)
+        {
+            if (ElementalReactionManager.instance)
+            {
+                if (!camerasToScreenEffects.ContainsKey(camera))
+                {
+                    GameObject screenEffect = GameObject.Instantiate(ElementalReactionManager.elementalEnvironmentScreenEffect.WaitForCompletion(), camera.sceneCam.transform);
+                    screenEffect.transform.localPosition = ElementalReactionManager.elementalEnvironmentScreenEffect.WaitForCompletion().transform.position;
+                    screenEffect.transform.localRotation = ElementalReactionManager.elementalEnvironmentScreenEffect.WaitForCompletion().transform.rotation;
+                    camerasToScreenEffects.Add(camera, screenEffect.GetComponent<ElementalEnvironmentScreenEffect>());
+                }
+            }
+        }
+        private static void RemoveEnvironmentScreenEffect(CameraRigController camera)
+        {
+            if (camerasToScreenEffects.ContainsKey(camera))
+            {
+                camerasToScreenEffects.Remove(camera);
+            }
+        }
         public static ElementalRain instance;
         public bool raining { get { return _raining; } 
             set 
@@ -114,9 +150,17 @@ namespace ElementalReactionsMod.Environment
                 });
                 return;
             }
+            if (element == DefaultElementDefs.hydroElement)
+            {
+                Chat.SendBroadcastChat(new Chat.SimpleChatMessage
+                {
+                    baseToken = $"{ElementalReactionsPlugin.PREFIX}EVENT_ELEMENTAL_RAIN_HYDRO"
+                });
+                return;
+            }
             Chat.SendBroadcastChat(new Chat.SimpleChatMessage
             {
-                baseToken = $"{ElementalReactionsPlugin.PREFIX}EVENT_ELEMENTAL_RAIN_HYDRO"
+                baseToken = $"{ElementalReactionsPlugin.PREFIX}EVENT_ELEMENTAL_RAIN"
             });
         }
 
@@ -152,6 +196,7 @@ namespace ElementalReactionsMod.Environment
                 if (characterBodies[i] && (rainRaycastHitBuffer[i].colliderInstanceID == 0 || (colliderInstanceIDsToIgnore != null && colliderInstanceIDsToIgnore.Contains(rainRaycastHitBuffer[i].colliderInstanceID))))
                 {
                     ElementalReactionManager.ApplyElement(element, characterBodies[i], 0.25f, null, false, 1f);
+                    characterBodies[i].AddTimedBuff(Buffs.elementalEnvironmentHiddenBuff.buffIndex, rainInterval * 1.5f);
                 }
             }
             rainRaycastCommands.Dispose();

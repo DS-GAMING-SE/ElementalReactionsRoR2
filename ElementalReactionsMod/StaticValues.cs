@@ -34,7 +34,7 @@ namespace ElementalReactionsMod
 
         public const float swirlDamageCoefficient = 1.5f;
 
-        public const float quickenDamageAddCoefficient = 0.3f;
+        public const float quickenDamageAddCoefficient = 0.5f;
 
         public const int crystallizeCap = 3;
         public const float crystallizeBarrierPercent = 0.1f;

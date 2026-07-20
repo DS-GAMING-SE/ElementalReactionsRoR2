@@ -7,11 +7,12 @@ using UnityEngine;
 using UnityEngine.Networking;
 using R2API.Networking.Interfaces;
 using UnityEngine.AddressableAssets;
+using JetBrains.Annotations;
 
 namespace ElementalReactionsMod.Loadout
 {
     [RequireComponent(typeof(PlayerCharacterMasterController))]
-    public class MasterElementLoadout : MonoBehaviour
+    public class MasterElementLoadout : MonoBehaviour, MasterSummon.IInventorySetupCallback
     {
         PlayerCharacterMasterController characterMaster;
         private bool loadoutSet;
@@ -64,7 +65,7 @@ namespace ElementalReactionsMod.Loadout
             }
             return false;
         }
-        private void UpdateLoadoutItem(Inventory inventory, ElementDef elementDef, ItemDef item)
+        public static void UpdateLoadoutItem(Inventory inventory, ElementDef elementDef, ItemDef item)
         {
             if (inventory.GetItemCountPermanent(item) != (int)elementDef.index)
             {
@@ -76,6 +77,19 @@ namespace ElementalReactionsMod.Loadout
                 {
                     inventory.GiveItemPermanent(item, (int)elementDef.index - inventory.GetItemCountPermanent(item));
                 }
+            }
+        }
+        // Engineer Turrets
+        public void SetupSummonedInventory([NotNull] MasterSummon masterSummon, [NotNull] Inventory summonedInventory)
+        {
+            if (masterSummon.summonerBodyObject && masterSummon.summonerBodyObject.TryGetComponent<CharacterBody>(out var body) && body.inventory)
+            {
+                ElementDef element = ElementLoadoutComponent.GetElement(body, DamageSource.Special);
+                UpdateLoadoutItem(summonedInventory, element, ElementLoadoutComponent.primaryElementItem);
+                UpdateLoadoutItem(summonedInventory, element, ElementLoadoutComponent.secondaryElementItem);
+                UpdateLoadoutItem(summonedInventory, element, ElementLoadoutComponent.utilityElementItem);
+                UpdateLoadoutItem(summonedInventory, element, ElementLoadoutComponent.specialElementItem);
+                summonedInventory.GiveItemPermanent(ElementLoadoutComponent.damageIsFromPlayerItem);
             }
         }
     }

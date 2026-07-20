@@ -29,7 +29,6 @@ namespace ElementalReactionsMod
             PickupCatalog.availability.onAvailable += () =>
             {
                 Crafting.AppendDelusionRecipe(Crafting.delusionElectro, ItemCatalog.GetItemDef(ItemCatalog.FindItemIndex("LightningOnKill")));
-                //Crafting.AppendDelusionRecipe(Crafting.delusionElectro, SS2Assets.LoadAsset<ItemDef>("LightningOnKill", SS2Bundle.Items));
             };
 
             new Hook(typeof(EntityStates.Events.Storm).GetMethod(nameof(EntityStates.Events.Storm.OnEnter)), SS2StormStartWeather);

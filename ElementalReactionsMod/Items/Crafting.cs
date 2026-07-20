@@ -71,18 +71,6 @@ namespace ElementalReactionsMod.Items
             ];
             Content.AddCraftableDef(instructorsTeaCup);
             #region Delusion Conversion
-            /* Delusion Element Converting Ideas
-             * - Pyro = Kjaro's Band, Ignition Tank, Will o Wisp
-             * - Hydro = Squid Pog? Breaching Fin?
-             * - Electro = Ukelele, Luminous Shot, Faraday Spur, Man o War SS2
-             * - Cryo = Runald's Band
-             * - Anemo = Hopoo Feather
-             * - Geo = Ghor's Tome, Crown's Diamond Sandswept
-             * - Dendro = Lepton Daisy, Leeching Seed
-             * - Uncommon Scrap returns default Delusion, allowing for reroll?
-             */
-
-            // ADD PROJECT REF AND SOFT DEP TO SS2 AND SANDSWEPT TO ADD THEM TO RECIPES
             delusionPyro = CreateDelusionConversion(DefaultElementDefs.pyroElement.delusion, 
                 new RecipeIngredient() // Kjaro's Band
             {
@@ -110,7 +98,8 @@ namespace ElementalReactionsMod.Items
                     type = IngredientTypeIndex.AssetReference
                 });
 
-            delusionElectro = CreateDelusionConversion(DefaultElementDefs.electroElement.delusion, new RecipeIngredient() // Ukelele
+            delusionElectro = CreateDelusionConversion(DefaultElementDefs.electroElement.delusion, 
+                new RecipeIngredient() // Ukelele
             {
                 pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_ChainLightning.ChainLightning_asset).WaitForCompletion(),
                 type = IngredientTypeIndex.AssetReference
@@ -139,9 +128,14 @@ namespace ElementalReactionsMod.Items
                     type = IngredientTypeIndex.AssetReference
                 });
 
-            delusionGeo = CreateDelusionConversion(DefaultElementDefs.geoElement.delusion, new RecipeIngredient() // Ghor's Tome
+            delusionGeo = CreateDelusionConversion(DefaultElementDefs.geoElement.delusion, 
+            new RecipeIngredient() // Ghor's Tome
             {
                 pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_BonusGoldPackOnKill.BonusGoldPackOnKill_asset).WaitForCompletion(),
+                type = IngredientTypeIndex.AssetReference
+            }, new RecipeIngredient() // Chance Doll
+            {
+                pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Items_ExtraShrineItem.ExtraShrineItem_asset).WaitForCompletion(),
                 type = IngredientTypeIndex.AssetReference
             });
             // SandsweptSupport adds Crown's Diamond
@@ -154,6 +148,10 @@ namespace ElementalReactionsMod.Items
                 }, new RecipeIngredient() // Leeching Seed
                 {
                     pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Seed.Seed_asset).WaitForCompletion(),
+                    type = IngredientTypeIndex.AssetReference
+                }, new RecipeIngredient() // Noxious Thorn
+                {
+                    pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Items_TriggerEnemyDebuffs.TriggerEnemyDebuffs_asset).WaitForCompletion(),
                     type = IngredientTypeIndex.AssetReference
                 });
             #endregion
@@ -187,7 +185,7 @@ namespace ElementalReactionsMod.Items
         public static void AppendDelusionRecipe(CraftableDef delusion, ItemDef item)
         {
             if (!item) return;
-            AppendDelusionRecipe(delusion, new RecipeIngredient() // Lepton Daisy
+            AppendDelusionRecipe(delusion, new RecipeIngredient()
             {
                 pickup = item,
                 type = IngredientTypeIndex.AssetReference

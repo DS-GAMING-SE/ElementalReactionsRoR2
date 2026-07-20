@@ -39,6 +39,7 @@ namespace ElementalReactionsMod.Loadout
         public static ItemDef secondaryElementItem;
         public static ItemDef utilityElementItem;
         public static ItemDef specialElementItem;
+        public static ItemDef damageIsFromPlayerItem;
 
         public bool permanentElementWasApplied;
         private float permanentElementStopwatch;
@@ -225,6 +226,8 @@ namespace ElementalReactionsMod.Loadout
             utilityElementItem = Items.Items.AddNewItem("ElementUtility", "ELEMENT_UTILITY", false, null,
                 null, null, null, ItemTag.WorldUnique, ItemTag.IgnoreForDropList);
             specialElementItem = Items.Items.AddNewItem("ElementSpecial", "ELEMENT_SPECIAL", false, null,
+                null, null, null, ItemTag.WorldUnique, ItemTag.IgnoreForDropList);
+            damageIsFromPlayerItem = Items.Items.AddNewItem("ElementPlayer", "ELEMENT_PLAYER", false, null,
                 null, null, null, ItemTag.WorldUnique, ItemTag.IgnoreForDropList);
         }
 

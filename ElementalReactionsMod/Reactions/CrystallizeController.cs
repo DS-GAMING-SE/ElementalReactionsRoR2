@@ -25,6 +25,7 @@ namespace ElementalReactionsMod.Reactions
         }
         private void Start()
         {
+            RoR2.Util.PlaySound("Play_moonBrother_m1_laser_shoot", gameObject);
             if (NetworkServer.active)
             {
                 gravitateCollider.radius = teamFilter.teamIndex == TeamIndex.Player ? StaticValues.crystallizePlayerGravitateRange : StaticValues.crystallizeEnemyGravitateRange;

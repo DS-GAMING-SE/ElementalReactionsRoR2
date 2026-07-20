@@ -18,14 +18,12 @@ namespace ElementalReactionsMod.Items
     public static class Items
     {
         public static ItemDef delusion;
-        public static ItemDef instructorsTeaCup;
+        public static ItemDef instructorsTeaCup => InstructorsTeaCup.instructorsTeaCup;
         public static ItemDef moonWheel => MoonWheel.moonWheel;
 
         public static void Initialize()
         {
-            instructorsTeaCup = AddNewItem("InstructorsTeaCup", "INSTRUCTORS_TEA_CUP", true,
-                Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.Tier1Def_asset).WaitForCompletion(),
-                instructorsTeaCupItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), instructorsTeaCupPickupModel, null, ItemTag.Damage, ItemTag.CanBeTemporary);
+            InstructorsTeaCup.Initialize();
 
             MoonWheel.Initialize();
 

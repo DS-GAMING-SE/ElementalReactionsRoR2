@@ -330,30 +330,65 @@ namespace ElementalReactionsMod.Items
         {
             if (NetworkServer.active && Run.FixedTimeStamp.now > transformTimeStamp && body.inventory)
             {
-                if (new Inventory.ItemTransformation
+                if (RoR2.Artifacts.CommandArtifactManager.IsCommandArtifactEnabled)
                 {
-                    originalItemIndex = GetItemDef().itemIndex,
-                    newItemIndex = DecideDelusionElement().itemIndex,
-                    maxToTransform = 1,
-                    transformationType = 0
-                }.TryTransform(body.inventory, out var results))
-                {
-                    PickupIndex pickup = PickupCatalog.FindPickupIndex(results.givenItem.itemIndex);
-                    if (pickup != PickupIndex.none)
+                    body.inventory.RemoveItemPermanent(Items.delusion);
+                    PickupPickerController.Option[] delusionOptions = new PickupPickerController.Option[DelusionManager.delusionToElement.Count];
+                    ItemDef[] delusions = DelusionManager.delusionToElement.Keys.ToArray();
+                    for (int i = 0; i < DelusionManager.delusionToElement.Count; i++)
                     {
-                        if (body.master && body.master.playerCharacterMasterController && body.master.playerCharacterMasterController.networkUser != null && body.master.playerCharacterMasterController.networkUser.localUser != null)
+                        delusionOptions[i] = new PickupPickerController.Option
                         {
-                            body.master.playerCharacterMasterController.networkUser.localUser.userProfile.DiscoverPickup(pickup);
-                        }
+                            pickup = new UniquePickup
+                            {
+                                pickupIndex = PickupCatalog.FindPickupIndex(delusions[i].itemIndex)
+                            },
+                            available = true,
+                            overrideSelectedBGColor = DelusionManager.delusionToElement[delusions[i]].color
+                        };
                     }
-                    if (DelusionManager.delusionToElement.TryGetValue(ItemCatalog.GetItemDef(results.givenItem.itemIndex), out var element))
+                    GenericPickupController.CreatePickupInfo pickupInfo = new GenericPickupController.CreatePickupInfo
                     {
-                        GenericElementEffectComponent.SpawnActivatedEffect(gameObject.transform, ParentEffectToItemDisplay.ItemDisplayParent.Delusion, element.index, 1.5f, true);
+                        pickerOptions = delusionOptions,
+                        // Trying to use the command cube prefab breaks the whole thing??
+                        prefabOverride = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_OptionPickup.OptionPickup_prefab)).WaitForCompletion(),
+                        position = transform.position + Vector3.up * 1f,
+                        pickup = new UniquePickup
+                        {
+                            pickupIndex = delusionOptions[0].pickup.pickupIndex
+                        },
+                        artifactFlag = GenericPickupController.PickupArtifactFlag.DELUSION, // Haha, Delusion. Prevents command from rerolling it
                     };
+                    PickupDropletController.CreatePickupDroplet(pickupInfo, pickupInfo.position, Vector3.up * 20f);
                 }
                 else
                 {
-                    transformTimeStamp += 1f;
+                    if (new Inventory.ItemTransformation
+                    {
+                        originalItemIndex = GetItemDef().itemIndex,
+                        newItemIndex = DecideDelusionElement().itemIndex,
+                        maxToTransform = 1,
+                        transformationType = 0
+                    }.TryTransform(body.inventory, out var results))
+                    {
+                        PickupIndex pickup = PickupCatalog.FindPickupIndex(results.givenItem.itemIndex);
+                        if (pickup != PickupIndex.none)
+                        {
+                            if (body.master && body.master.playerCharacterMasterController && body.master.playerCharacterMasterController.networkUser != null && body.master.playerCharacterMasterController.networkUser.localUser != null)
+                            {
+                                body.master.playerCharacterMasterController.networkUser.localUser.userProfile.DiscoverPickup(pickup);
+                            }
+                        }
+                        if (DelusionManager.delusionToElement.TryGetValue(ItemCatalog.GetItemDef(results.givenItem.itemIndex), out var element))
+                        {
+                            GenericElementEffectComponent.SpawnActivatedEffect(gameObject.transform, ParentEffectToItemDisplay.ItemDisplayParent.Delusion, element.index, 1.5f, true);
+                        }
+                    ;
+                    }
+                    else
+                    {
+                        transformTimeStamp += 1f;
+                    }
                 }
             }
         }

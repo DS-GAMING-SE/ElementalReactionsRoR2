@@ -23,6 +23,7 @@ namespace ElementalReactionsMod.Reactions
         #region Assets
         public static AsyncOperationHandle<GameObject> genericElementActivatedEffect;
         public static AsyncOperationHandle<GameObject> genericElementOrbEffect;
+        public static AsyncOperationHandle<GameObject> elementalEnvironmentScreenEffect;
         public static AsyncOperationHandle<GameObject> overloadEffect;
         public static AsyncOperationHandle<GameObject> electroChargedTempVisualEffect;
         public static AsyncOperationHandle<GameObject> superconductEffect;
@@ -176,6 +177,7 @@ namespace ElementalReactionsMod.Reactions
         {
             genericElementActivatedEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.genericElementActivatedEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             genericElementOrbEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.genericElementOrbEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
+            elementalEnvironmentScreenEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.elementEnvironmentScreenEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             overloadEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.overloadEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             electroChargedTempVisualEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.electroChargeTempVisualEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             superconductEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.superconductEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
@@ -198,6 +200,7 @@ namespace ElementalReactionsMod.Reactions
         {
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.genericElementActivatedEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.genericElementOrbEffect);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.elementEnvironmentScreenEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.overloadEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.electroChargeTempVisualEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.superconductEffect);

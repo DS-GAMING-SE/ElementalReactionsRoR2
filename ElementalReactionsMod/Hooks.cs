@@ -12,6 +12,7 @@ using R2API.Utils;
 using RoR2;
 using RoR2.EntitlementManagement;
 using RoR2.ExpansionManagement;
+using SS2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +51,10 @@ namespace ElementalReactionsMod
             IL.EntityStates.Destructible.FusionCellDeath.Explode += DestructibleObjectElectro;
             IL.EntityStates.Destructible.LunarRainDeathState.Explode += DestructibleObjectElectro;
             On.RoR2.CharacterBody.OnBuffFirstStackGained += CreateLunarCrystallize;
+            On.RoR2.ScavengerItemGranter.Start += ScavengerRandomElement;
+            On.EntityStates.ScavMonster.PrepEnergyCannon.OnEnter += ScavengerChargeAttackElement;
+            On.RoR2.CameraRigController.LateUpdate += EnvironmentScreenEffect;
+            IL.RoR2.CharacterBody.HandleConstructTurret += EngiTurretElements;
         }
         // Right after IOnincomingDamageReceiver does its thing, since that's where many things (including bloom dendro cores) reject damage
         private static void TakeDamageIL(ILContext il)
@@ -67,10 +72,7 @@ namespace ElementalReactionsMod
                         ElementDef element = ElementCatalog.GetElementDef(damage.damageType.GetElement());
                         CharacterBody attackerBody = damage.attacker ? damage.attacker.GetComponent<CharacterBody>() : null;
 
-                        if (element != DefaultElementDefs.physicalElement && attackerBody && attackerBody.teamComponent &&
-                        ((attackerBody.teamComponent.teamIndex == TeamIndex.Player && attackerBody.isPlayerControlled && !Config.CanSurvivorsUseElements().Value) ||
-                        (attackerBody.teamComponent.teamIndex == TeamIndex.Player && !attackerBody.isPlayerControlled && !Config.CanAlliesUseElements().Value) ||
-                        (attackerBody.teamComponent.teamIndex != TeamIndex.Player && !Config.CanEnemiesUseElements().Value)))
+                        if (element != DefaultElementDefs.physicalElement && !Util.CanUseElements(attackerBody))
                         {
                             element = DefaultElementDefs.physicalElement;
                         }
@@ -469,6 +471,74 @@ namespace ElementalReactionsMod
             if (ElementalReactionManager.instance && buff == Buffs.lunarCrystallizeBuff)
             {
                 ElementalReactionManager.CreateLunarCrystallizeController(self);
+            }
+        }
+
+        private static void ScavengerRandomElement(On.RoR2.ScavengerItemGranter.orig_Start orig, ScavengerItemGranter self)
+        {
+            orig(self);
+            Inventory inventory = self.GetComponent<Inventory>();
+            if (inventory.GetItemCountPermanent(ElementLoadoutComponent.primaryElementItem) == 0)
+            {
+                if (inventory.GetItemCountWithQuality(MoonWheel.moonWheel) > 0)
+                {
+                    MasterElementLoadout.UpdateLoadoutItem(inventory, DefaultElementDefs.hydroElement, ElementLoadoutComponent.primaryElementItem);
+                }
+                else
+                {
+                    MasterElementLoadout.UpdateLoadoutItem(inventory, ElementCatalog.elementCatalog[ScavengerItemGranter.rng.RangeInt(1, ElementCatalog.elementCatalog.Length)], ElementLoadoutComponent.primaryElementItem);
+                }
+            }
+        }
+        private static void ScavengerChargeAttackElement(On.EntityStates.ScavMonster.PrepEnergyCannon.orig_OnEnter orig, EntityStates.ScavMonster.PrepEnergyCannon self)
+        {
+            orig(self);
+            ElementDef element = ElementLoadoutComponent.GetElement(self.characterBody, DamageSource.Primary);
+            if (self.muzzleTransform && element != DefaultElementDefs.physicalElement)
+            {
+                EffectManager.SpawnEffect(ElementalReactionManager.genericElementActivatedEffect.WaitForCompletion(),
+                    new EffectData
+                    {
+                        rootObject = self.muzzleTransform.gameObject,
+                        origin = self.muzzleTransform.position,
+                        genericFloat = self.duration * 0.85f,
+                        genericUInt = (uint)element.index,
+                        scale = 12f
+                    }, false);
+            }
+        }
+        private static void EnvironmentScreenEffect(On.RoR2.CameraRigController.orig_LateUpdate orig, CameraRigController self)
+        {
+            orig(self);
+            bool showEffect = self.targetBody && self.targetBody.HasBuff(Buffs.elementalEnvironmentHiddenBuff);
+            if (Environment.ElementalRain.camerasToScreenEffects.TryGetValue(self, out Environment.ElementalEnvironmentScreenEffect screenEffect))
+            {
+                screenEffect.SetActive(showEffect);
+            }
+        }
+        private static void EngiTurretElements(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            int masterIndex = -1;
+            if (c.TryGotoNext(x => x.MatchCallOrCallvirt(AccessTools.PropertyGetter(typeof(CharacterBody), nameof(CharacterBody.master)))) &&
+                c.TryGotoNext(x => x.MatchStloc(out masterIndex)) &&
+                c.TryGotoNext(x => x.MatchCallOrCallvirt(typeof(MasterSummon), nameof(MasterSummon.Perform))))
+            {
+                c.Emit(OpCodes.Dup);
+                c.Emit(OpCodes.Ldloc, masterIndex);
+                c.EmitDelegate<Func<CharacterMaster, MasterSummon.IInventorySetupCallback>>((master) =>
+                {
+                    if (master.TryGetComponent<MasterElementLoadout>(out var element))
+                    {
+                        return element;
+                    }
+                    return null;
+                });
+                c.Emit<MasterSummon>(OpCodes.Stfld, nameof(MasterSummon.inventorySetupCallback));
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
             }
         }
     }

@@ -148,8 +148,23 @@ namespace ElementalReactionsMod
                 moonWheelQualityChancePerQuality * 3,
                 moonWheelQualityChancePerQuality * 4);
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_LORE", """"""
-                ---the "traitor" moons were destroyed in the war of funerary flame---
-                ---the moon's downfall was celebrated, as it was seen as the traitor, but providence is really the traitor---
+                Before the first, and last, voyage they would take to the moon, the Moon Wheel was made.
+
+                It was the first of many devices that allowed communication between the planet and the moon.
+                
+                However, after what transpired on the day of that voyage, the Moon Wheel was considered taboo and owning one was punishable by death.
+
+                Despite this, the very enforcer of this taboo always carried his with him, hidden under his cloak.
+
+                Though he would not speak, he would always listen to the other side.
+
+                ..to anger and fury.
+
+                ..to threats of absolute destruction.
+
+                ..to cries of loneliness and betrayal.
+
+                As a final act of respect towards his brother, he'd listen to it all.
                 """""");
             LanguageAPI.Add($"{prefix}REACTION_LUNAR_BLOOM_NAME", "Lunar Bloom");
             LanguageAPI.Add($"{prefix}REACTION_LUNAR_CHARGE_NAME", "Lunar Charge");
@@ -159,6 +174,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}EVENT_ELEMENTAL_RAIN_HYDRO", "<style=cWorldEvent>The rain is rich with Hydro energy.</style>");
             LanguageAPI.Add($"{prefix}EVENT_ELEMENTAL_RAIN_CRYO", "<style=cWorldEvent>The snow is rich with Cryo energy.</style>");
             LanguageAPI.Add($"{prefix}EVENT_ELEMENTAL_RAIN_PYRO", "<style=cWorldEvent>The ash is rich with Pyro energy.</style>");
+            LanguageAPI.Add($"{prefix}EVENT_ELEMENTAL_RAIN", "<style=cWorldEvent>The environment is rich with elemental energy.</style>");
             #endregion
 
             #region Achievements
