@@ -33,17 +33,22 @@ namespace ElementalReactionsMod
         {
             return ElementalReactionsPlugin.instance.Config.Bind<bool>("Characters", "Elemental Characters", true, "Whether certain characters will naturally have an element permanently applied to them. (Eg. Wisps always have Pyro applied to them).\nHost's config takes priority.");
         }
-        public static ConfigEntry<float> PlayerReactionResistance()
-        {
-            return ElementalReactionsPlugin.instance.Config.Bind<float>("Characters", "Player Reaction Resistance", 50f, "The percent of the normal elemental reaction damage that will be dealt when hitting players.\nHost's config takes priority.");
-        }
-        public static ConfigEntry<float> PlayerBloomResistance()
-        {
-            return ElementalReactionsPlugin.instance.Config.Bind<float>("Characters", "Player Bloom Resistance", 20f, "The percent of the normal Bloom reaction damage that will be dealt when hitting players. This is applied on top of the Player Reaction Resistance config.\nHost's config takes priority.");
-        }
         public static ConfigEntry<bool> LunarEnemyLunarReactions()
         {
             return ElementalReactionsPlugin.instance.Config.Bind<bool>("Characters", "Lunar Enemies", true, "Whether certain enemies will naturally have the Moon Wheel item, allowing them to trigger Lunar Reactions.\nHost's config takes priority.");
+        }
+
+        public static ConfigEntry<float> PlayerReactionResistance()
+        {
+            return ElementalReactionsPlugin.instance.Config.Bind<float>("Reactions", "Player Reaction Resistance", 50f, "The percent of the normal elemental reaction damage that will be dealt when hitting players.\nHost's config takes priority.");
+        }
+        public static ConfigEntry<float> PlayerBloomResistance()
+        {
+            return ElementalReactionsPlugin.instance.Config.Bind<float>("Reactions", "Player Bloom Resistance", 50f, "The percent of the normal Bloom reaction damage that will be dealt when hitting players. This is applied on top of all other bloom/reaction resistance configs.\nHost's config takes priority.");
+        }
+        public static ConfigEntry<float> FriendlyFireBloomResistance()
+        {
+            return ElementalReactionsPlugin.instance.Config.Bind<float>("Reactions", "Friendly Fire Bloom Resistance", 50f, "The percent of the normal Bloom reaction damage that will be dealt when hitting yourself or allies. This is applied on top of all other bloom/reaction resistance configs.\nHost's config takes priority.");
         }
 
         public static ConfigEntry<bool> CanWeatherUseElements()
@@ -169,9 +174,10 @@ namespace ElementalReactionsMod
             ModSettingsManager.AddOption(new CheckBoxOption(Config.CanEnemiesUseElements()));
             ModSettingsManager.AddOption(new CheckBoxOption(Config.CanAlliesUseElements()));
             ModSettingsManager.AddOption(new CheckBoxOption(Config.CanEnemiesBeElemental()));
+            ModSettingsManager.AddOption(new CheckBoxOption(Config.LunarEnemyLunarReactions()));
             ModSettingsManager.AddOption(new SliderOption(Config.PlayerReactionResistance(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));
             ModSettingsManager.AddOption(new SliderOption(Config.PlayerBloomResistance(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));
-            ModSettingsManager.AddOption(new CheckBoxOption(Config.LunarEnemyLunarReactions()));
+            ModSettingsManager.AddOption(new SliderOption(Config.FriendlyFireBloomResistance(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));
 
             ModSettingsManager.AddOption(new CheckBoxOption(Config.CanWeatherUseElements()));
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(SS2.SS2Main.GUID)) ModSettingsManager.AddOption(new CheckBoxOption(Config.CanSS2StormsUseElements()));

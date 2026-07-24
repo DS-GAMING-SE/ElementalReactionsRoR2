@@ -60,7 +60,7 @@ namespace ElementalReactionsMod.Items
         {
             GameObject displayPrefab = AssetAsyncReferenceManager<GameObject>.LoadAsset(moonWheelDisplayModel).WaitForCompletion();
             displayPrefab.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = moonWheelMat;
-            CreateItemDisplay(displayPrefab, CreateItemRendererInfo(displayPrefab, 0, visionHolderMaterial), CreateItemRendererInfo(displayPrefab, 1, moonWheelMat));
+            CreateItemDisplay(displayPrefab, CreateItemRendererInfo(displayPrefab, 0, Assets.visionMaterial), CreateItemRendererInfo(displayPrefab, 1, moonWheelMat));
             ItemDisplayRuleDict itemDisplays = new ItemDisplayRuleDict();
             itemDisplays.Add("CommandoBody", new ItemDisplayRule
             {

@@ -34,7 +34,6 @@ namespace ElementalReactionsMod.Elements
 
         public bool hasDelusion;
         public ItemDef delusion;
-        public Sprite delusionItemIcon;
 
         [Tooltip("Set at runtime, do not set manually")]
         public ElementIndex index
@@ -72,8 +71,7 @@ namespace ElementalReactionsMod.Elements
             elementDef.iconVFX = Assets.CreateElementEffectMaterial(vfxIcon);
             elementDef.canPersist = canPersist;
             elementDef.hasDelusion = hasDelusion;
-            elementDef.delusionItemIcon = delusionItemIcon;
-            if (hasDelusion) elementDef.delusion = DelusionManager.CreateNewDelusion(elementDef);
+            if (hasDelusion) elementDef.delusion = DelusionManager.CreateNewDelusion(elementDef, delusionItemIcon);
             return elementDef;
         }
     }

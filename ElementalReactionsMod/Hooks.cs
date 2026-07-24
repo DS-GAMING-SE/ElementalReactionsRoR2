@@ -55,6 +55,7 @@ namespace ElementalReactionsMod
             On.EntityStates.ScavMonster.PrepEnergyCannon.OnEnter += ScavengerChargeAttackElement;
             On.RoR2.CameraRigController.LateUpdate += EnvironmentScreenEffect;
             IL.RoR2.CharacterBody.HandleConstructTurret += EngiTurretElements;
+            IL.EntityStates.Tanker.GreasePuddle.IgniteGrease.OnEnter += SolusScorcherPyro;
         }
         // Right after IOnincomingDamageReceiver does its thing, since that's where many things (including bloom dendro cores) reject damage
         private static void TakeDamageIL(ILContext il)
@@ -477,6 +478,8 @@ namespace ElementalReactionsMod
         private static void ScavengerRandomElement(On.RoR2.ScavengerItemGranter.orig_Start orig, ScavengerItemGranter self)
         {
             orig(self);
+            if (!ElementalReactionManager.instance) return;
+
             Inventory inventory = self.GetComponent<Inventory>();
             if (inventory.GetItemCountPermanent(ElementLoadoutComponent.primaryElementItem) == 0)
             {
@@ -494,7 +497,7 @@ namespace ElementalReactionsMod
         {
             orig(self);
             ElementDef element = ElementLoadoutComponent.GetElement(self.characterBody, DamageSource.Primary);
-            if (self.muzzleTransform && element != DefaultElementDefs.physicalElement)
+            if (self.muzzleTransform && element != DefaultElementDefs.physicalElement && Util.CanUseElements(self.characterBody))
             {
                 EffectManager.SpawnEffect(ElementalReactionManager.genericElementActivatedEffect.WaitForCompletion(),
                     new EffectData
@@ -519,22 +522,39 @@ namespace ElementalReactionsMod
         private static void EngiTurretElements(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            int masterIndex = -1;
+            int bodyIndex = -1;
             if (c.TryGotoNext(x => x.MatchCallOrCallvirt(AccessTools.PropertyGetter(typeof(CharacterBody), nameof(CharacterBody.master)))) &&
-                c.TryGotoNext(x => x.MatchStloc(out masterIndex)) &&
+                c.TryGotoPrev(x => x.MatchLdloc(out bodyIndex)) &&
                 c.TryGotoNext(x => x.MatchCallOrCallvirt(typeof(MasterSummon), nameof(MasterSummon.Perform))))
             {
                 c.Emit(OpCodes.Dup);
-                c.Emit(OpCodes.Ldloc, masterIndex);
-                c.EmitDelegate<Func<CharacterMaster, MasterSummon.IInventorySetupCallback>>((master) =>
+                c.Emit(OpCodes.Ldloc, bodyIndex);
+                c.EmitDelegate<Func<CharacterBody, MasterSummon.IInventorySetupCallback>>((body) =>
                 {
-                    if (master.TryGetComponent<MasterElementLoadout>(out var element))
-                    {
-                        return element;
-                    }
-                    return null;
+                    return body.GetComponent<EngineerTurretElements>();
                 });
                 c.Emit<MasterSummon>(OpCodes.Stfld, nameof(MasterSummon.inventorySetupCallback));
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void SolusScorcherPyro(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            if (c.TryGotoNext(x => x.MatchStfld<RoR2.Projectile.FireProjectileInfo>(nameof(RoR2.Projectile.FireProjectileInfo.damageTypeOverride))))
+            {
+                c.EmitDelegate<Func<DamageTypeCombo?, DamageTypeCombo?>>((damageType) =>
+                {
+                    if (ElementalReactionManager.instance)
+                    {
+                        DamageTypeCombo damageTypeNotNull = damageType.GetValueOrDefault();
+                        damageTypeNotNull.SetElement(DefaultElementDefs.pyroElement.index);
+                        return damageTypeNotNull;
+                    }
+                    return damageType;
+                });
             }
             else
             {

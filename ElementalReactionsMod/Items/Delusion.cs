@@ -40,10 +40,10 @@ namespace ElementalReactionsMod.Items
                 Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, InitializeItemDisplays(), ItemTag.Damage, ItemTag.AllowedForUseAsCraftingIngredient);
             ItemAPI.ApplyTagToItem(delusionItemTag, delusion);
         }
-        public static ItemDef CreateNewDelusion(ElementDef element)
+        public static ItemDef CreateNewDelusion(ElementDef element, Sprite itemIcon)
         {
             ItemDef delusion = AddNewItem($"Delusion{element.cachedName}", $"DELUSION_{element.cachedName.ToUpper()}", true, Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.LunarTierDef_asset).WaitForCompletion(),
-                element.delusionItemIcon ? element.delusionItemIcon : Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, null, ItemTag.Damage, ItemTag.WorldUnique, ItemTag.AllowedForUseAsCraftingIngredient);
+                itemIcon ? itemIcon : Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, null, ItemTag.Damage, ItemTag.WorldUnique, ItemTag.AllowedForUseAsCraftingIngredient);
             ItemAPI.ApplyTagToItem(delusionItemTag, delusion);
             delusionToElement.Add(delusion, element);
             return delusion;
@@ -76,7 +76,7 @@ namespace ElementalReactionsMod.Items
             GameObject displayPrefab = AssetAsyncReferenceManager<GameObject>.LoadAsset(delusionDisplayModel).WaitForCompletion();
             displayPrefab.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = delusionMat;
             displayPrefab.AddComponent<DelusionDisplay>();
-            CreateItemDisplay(displayPrefab, CreateItemRendererInfo(displayPrefab, 0, visionHolderMaterial), CreateItemRendererInfo(displayPrefab, 1, delusionMat));
+            CreateItemDisplay(displayPrefab, CreateItemRendererInfo(displayPrefab, 0, Assets.visionMaterial), CreateItemRendererInfo(displayPrefab, 1, delusionMat));
             ItemDisplayRuleDict itemDisplays = new ItemDisplayRuleDict();
             itemDisplays.Add("CommandoBody", new ItemDisplayRule
             {
@@ -453,7 +453,6 @@ namespace ElementalReactionsMod.Items
         {
             if (body.HasBuff(Buffs.delusionActiveBuff) && damageReport.damageInfo.damageType.IsDamageSourceSkillBased && attackCooldown == 0 && damageReport.victimBody)
             {
-                attackCooldown = 1 / StaticValues.delusionAttacksPerSecond;
                 StartCoroutine(FireDelusionsOrbs(damageReport.victimBody.mainHurtBox));
             }
         }
@@ -482,6 +481,7 @@ namespace ElementalReactionsMod.Items
                     });
                     DelusionOrb.FireDelusionOrb(body, delusionDisplay ? delusionDisplay.transform.position : body.corePosition, target, body.inventory.GetItemCountEffective(element.delusion), body.RollCrit(), element.index);
                     GenericElementEffectComponent.SpawnActivatedEffect(gameObject.transform, ParentEffectToItemDisplay.ItemDisplayParent.Delusion, element.index, 0.7f, true);
+                    attackCooldown = 1 / StaticValues.delusionAttacksPerSecond;
                     yield return new WaitForSeconds((1 / StaticValues.delusionAttacksPerSecond) / DelusionManager.delusionToElement.Keys.Count);
                 }
             }

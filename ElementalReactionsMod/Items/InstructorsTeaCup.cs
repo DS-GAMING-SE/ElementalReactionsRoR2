@@ -23,14 +23,33 @@ namespace ElementalReactionsMod.Items
         public static ItemDef instructorsTeaCup;
         public static void Initialize()
         {
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(instructorsTeaCupPickupModel).Completed += x =>
+            {
+                Items.AddModelPanelParameters(x.Result);
+            };
+            Material instructorsTeaCupMat = AssetAsyncReferenceManager<Material>.LoadAsset(instructorsTeaCupMaterial).WaitForCompletion();
+            instructorsTeaCupMat.SetHopooMaterial().Specular(0.6f, 3f, false);
+            instructorsTeaCupMat.SetNormal(1.5f);
+            instructorsTeaCupMat.EnableKeyword("FRESNEL_EMISSION");
+            instructorsTeaCupMat.SetFloat("_FresnelBoost", 1f);
+            instructorsTeaCupMat.SetFloat("_FresnelPower", 2f);
+            AssetAsyncReferenceManager<Texture>.LoadAsset(instructorsTeaCupFresnelMask).Completed += y =>
+            {
+                instructorsTeaCupMat.SetTexture("_FresnelMask", y.Result);
+            };
+            AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampDroneFire_png)).Completed += y =>
+            {
+                instructorsTeaCupMat.SetTexture("_FresnelRamp", y.Result);
+            };
+
             instructorsTeaCup = AddNewItem("InstructorsTeaCup", "INSTRUCTORS_TEA_CUP", true,
                 Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.Tier1Def_asset).WaitForCompletion(),
-                instructorsTeaCupItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), instructorsTeaCupPickupModel, InitializeItemDisplays(), ItemTag.Damage, ItemTag.CanBeTemporary);
+                instructorsTeaCupItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), instructorsTeaCupPickupModel, InitializeItemDisplays(instructorsTeaCupMat), ItemTag.Damage, ItemTag.CanBeTemporary);
         }
-        public static ItemDisplayRuleDict InitializeItemDisplays()
+        public static ItemDisplayRuleDict InitializeItemDisplays(Material mat)
         {
             GameObject displayPrefab = AssetAsyncReferenceManager<GameObject>.LoadAsset(instructorsTeaCupDisplayModel).WaitForCompletion();
-            CreateItemDisplay(displayPrefab, CreateItemRendererInfo(displayPrefab, 0, instructorsTeaCupMaterial));
+            CreateItemDisplay(displayPrefab, CreateItemRendererInfo(displayPrefab, 0, mat));
             ItemDisplayRuleDict itemDisplays = new ItemDisplayRuleDict();
             itemDisplays.Add("CommandoBody", new ItemDisplayRule
             {

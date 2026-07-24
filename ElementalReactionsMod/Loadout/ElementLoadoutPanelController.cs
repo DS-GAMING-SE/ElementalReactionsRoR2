@@ -188,10 +188,10 @@ namespace ElementalReactionsMod.Loadout
                 if (this.userProfile != owner.userProfile) return;
                 
                 ElementDef[] loadout = Config.GetElementLoadoutFromConfig(owner.bodyName, out _);
-                if (owner.bodyElementLoadout)
+                /*if (owner.bodyElementLoadout)
                 {
                     owner.bodyElementLoadout.ApplyElementLoadout(loadout);
-                }
+                }*/
                 for (int i = 0; i < this.rowData.Count; i++)
                 {
                     ColorBlock colors = this.rowData[i].button.colors;

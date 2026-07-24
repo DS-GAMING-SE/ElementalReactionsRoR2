@@ -98,7 +98,9 @@ namespace ElementalReactionsMod.Reactions
             overload.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 EffectManager.SimpleEffect(overloadEffect.WaitForCompletion(), damage.position, Quaternion.identity, true);
-                Util.CreateBlastAttack(damage, overloadDamageCoefficient * damage.procCoefficient, genericReactionExplosionRadius, genericReactionProcCoefficient, ElementIndex.Physical, true, 1000f).Fire();
+                DamageTypeCombo damageType = new DamageTypeCombo(DamageType.AOE, DamageTypeExtended.FireNoIgnite, DamageSource.NoneSpecified);
+                damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
+                Util.CreateBlastAttack(damage, overloadDamageCoefficient * damage.procCoefficient, genericReactionExplosionRadius, genericReactionProcCoefficient, damageType, 1000f).Fire();
             };
 
             electroCharge = ElementalReactionDef.CreateElementalReactionDef("ElectroCharge", $"{ElementalReactionsPlugin.PREFIX}REACTION_ELECTRO_CHARGE", electroElement, hydroElement);
@@ -113,9 +115,9 @@ namespace ElementalReactionsMod.Reactions
             frozen = ElementalReactionDef.CreateElementalReactionDef("Frozen", $"{ElementalReactionsPlugin.PREFIX}REACTION_FROZEN", cryoElement, hydroElement);
             frozen.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
-                if (victim && victim.healthComponent && victim.healthComponent.alive && victim.TryGetComponent<SetStateOnHurt>(out var freeze))
+                if (damage.procCoefficient > 0.15f && victim && victim.healthComponent && victim.healthComponent.alive && victim.TryGetComponent<SetStateOnHurt>(out var freeze))
                 {
-                    freeze.SetFrozen(1f);
+                    freeze.SetFrozen(Mathf.Max(1f * damage.procCoefficient, 0.4f));
                 }
             };
 

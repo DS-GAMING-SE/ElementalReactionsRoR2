@@ -148,27 +148,17 @@ namespace ElementalReactionsMod
                 moonWheelQualityChancePerQuality * 3,
                 moonWheelQualityChancePerQuality * 4);
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_LORE", """"""
-                Before the first, and last, voyage they would take to the moon, the Moon Wheel was made.
+                ---
 
-                It was the first of many devices that allowed communication between the planet and the moon.
-                
-                However, after what transpired on the day of that voyage, the Moon Wheel was considered taboo and owning one was punishable by death.
+                The moon no longer belongs in the world our savior has created. All that was once connected to it has been left to fade with the erosion of time.
 
-                Despite this, the very enforcer of this taboo always carried his with him, hidden under his cloak.
+                Though the world may forget the transgressions of the past...
 
-                Though he would not speak, he would always listen to the other side.
-
-                ..to anger and fury.
-
-                ..to threats of absolute destruction.
-
-                ..to cries of loneliness and betrayal.
-
-                As a final act of respect towards his brother, he'd listen to it all.
+                ---something alluding to wanderer irminsul past not able to be undone, use the word 'scars'?---. The grudge born from that betrayal will remain - everlasting as the moon.
                 """""");
-            LanguageAPI.Add($"{prefix}REACTION_LUNAR_BLOOM_NAME", "Lunar Bloom");
-            LanguageAPI.Add($"{prefix}REACTION_LUNAR_CHARGE_NAME", "Lunar Charge");
-            LanguageAPI.Add($"{prefix}REACTION_LUNAR_CRYSTALLIZE_NAME", "Lunar Crystallize");
+            LanguageAPI.Add($"{prefix}REACTION_LUNAR_BLOOM_NAME", "Lunar-Bloom");
+            LanguageAPI.Add($"{prefix}REACTION_LUNAR_CHARGE_NAME", "Lunar-Charge");
+            LanguageAPI.Add($"{prefix}REACTION_LUNAR_CRYSTALLIZE_NAME", "Lunar-Crystallize");
             #endregion
             #region Events
             LanguageAPI.Add($"{prefix}EVENT_ELEMENTAL_RAIN_HYDRO", "<style=cWorldEvent>The rain is rich with Hydro energy.</style>");

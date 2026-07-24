@@ -39,8 +39,8 @@ namespace ElementalReactionsMod
 
         public static bool CanUseElements(CharacterBody characterBody)
         {
-            bool player = characterBody.isPlayerControlled || (characterBody.inventory && characterBody.inventory.GetItemCountEffective(Loadout.ElementLoadoutComponent.damageIsFromPlayerItem) > 0);
-            return characterBody && characterBody.teamComponent &&
+            bool player = characterBody && (characterBody.isPlayerControlled || (characterBody.inventory && characterBody.inventory.GetItemCountEffective(Loadout.ElementLoadoutComponent.damageIsFromPlayerItem) > 0));
+            return !characterBody || !characterBody.teamComponent ||
                 ((characterBody.teamComponent.teamIndex == TeamIndex.Player && player && Config.CanSurvivorsUseElements().Value) ||
                 (characterBody.teamComponent.teamIndex == TeamIndex.Player && !player && Config.CanAlliesUseElements().Value) ||
                 (characterBody.teamComponent.teamIndex != TeamIndex.Player && Config.CanEnemiesUseElements().Value));
@@ -143,7 +143,7 @@ namespace ElementalReactionsMod
             };
             return blastAttack;
         }
-        public static void ManualBlastAttack(Vector3 origin, float radius, GameObject attacker, TeamIndex attackerTeam, float damage, float damageToPlayer, bool crit, DamageTypeCombo damageType, bool friendlyFire)
+        public static void ManualBlastAttack(Vector3 origin, float radius, GameObject attacker, TeamIndex attackerTeam, float damage, bool crit, DamageTypeCombo damageType, bool friendlyFire, bool playerResist)
         {
             Collider[] colliders;
             int overlapCount = HGPhysics.OverlapSphere(out colliders, origin, radius, LayerIndex.entityPrecise.mask, QueryTriggerInteraction.Collide);
@@ -158,10 +158,22 @@ namespace ElementalReactionsMod
                     {
                         continue;
                     }
+                    float finalDamage = damage;
+                    if (characterBody.teamComponent)
+                    {
+                        if (characterBody.teamComponent.teamIndex == attackerTeam)
+                        {
+                            finalDamage *= (Config.FriendlyFireBloomResistance().Value / 100f);
+                        }
+                        if (playerResist && characterBody.teamComponent.teamIndex == TeamIndex.Player)
+                        {
+                            finalDamage *= (Config.PlayerBloomResistance().Value / 100f);
+                        }
+                    }
                     DamageInfo damageInfo = new DamageInfo();
                     damageInfo.attacker = attacker;
                     damageInfo.crit = crit;
-                    damageInfo.damage = characterBody.teamComponent && characterBody.teamComponent.teamIndex == TeamIndex.Player ? damageToPlayer : damage;
+                    damageInfo.damage = finalDamage;
                     damageInfo.force = Vector3.zero;
                     damageInfo.inflictor = attacker;
                     damageInfo.position = colliders[i].transform.position;

@@ -54,12 +54,12 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("RoboBallGreenBuddyBody", electroElement, electroElement, electroElement, electroElement); // ally
             CreateLoadout("RoboBallRedBuddyBody", electroElement, electroElement, electroElement, electroElement); // ally
             CreateLoadout("TankerBody", pyroElement);
-            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Tanker.TankerAccelerantProjectile_prefab, pyroElement);
+            //AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Tanker.TankerAccelerantProjectile_prefab, pyroElement);
             CreateLoadout("IronHaulerBody", anemoElement, anemoElement, anemoElement, anemoElement);
             CreateLoadout("GolemBody", geoElement, electroElement);
             CreateLoadout("VoidBarnacleBody", hydroElement);
-            CreateLoadout("VoidJailerBody", hydroElement, hydroElement);
-            CreateLoadout("VoidJailerAllyBody", hydroElement, hydroElement); // ally
+            CreateLoadout("VoidJailerBody", hydroElement, anemoElement);
+            CreateLoadout("VoidJailerAllyBody", hydroElement, anemoElement); // ally
             CreateLoadout("NullifierBody", hydroElement);
             CreateLoadout("NullifierAllyBody", hydroElement); // ally
             CreateLoadout("GrandParentBody", geoElement, null, null, null, pyroElement);
@@ -74,8 +74,8 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("SuperRoboBallBossBody", electroElement, electroElement, electroElement, anemoElement);
             CreateLoadout("TitanBody", geoElement, geoElement, electroElement, electroElement);
             CreateLoadout("TitanGoldBody", geoElement, geoElement, electroElement, electroElement);
-            CreateLoadout("VoidMegaCrabBody", hydroElement, hydroElement, hydroElement, hydroElement);
-            CreateLoadout("VoidMegaCrabAllyBody", hydroElement, hydroElement, hydroElement, hydroElement); // ally
+            CreateLoadout("VoidMegaCrabBody", hydroElement, electroElement, hydroElement, hydroElement);
+            CreateLoadout("VoidMegaCrabAllyBody", hydroElement, electroElement, hydroElement, hydroElement); // ally
             CreateLoadout("VagrantBody", electroElement, electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("VagrantTrackingBomb", electroElement, electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("VoidInfestorBody", hydroElement, hydroElement, hydroElement, hydroElement);
@@ -167,6 +167,7 @@ namespace ElementalReactionsMod.Loadout
                 CreateLoadout("RunshroomBody", dendroElement, dendroElement, dendroElement, dendroElement);
                 CreateLoadout("LampBody", pyroElement, pyroElement, pyroElement, pyroElement);
                 CreateLoadout("LampBossBody", pyroElement, pyroElement, pyroElement, pyroElement);
+                CreateLoadout("ClayMongerBody", hydroElement, hydroElement, hydroElement, hydroElement, hydroElement);
             }
             // Bootleg Bestiary
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("Skeletogne.BootlegBestiary"))
@@ -180,7 +181,7 @@ namespace ElementalReactionsMod.Loadout
                 SandsweptSupport.AddElementToCannonballJellyfishDeath();
             }
 
-            LogEnemyElementStats();
+            //LogEnemyElementStats();
         }
 
         public static GameObject CreateLoadout(string bodyName, ElementDef primary = null, ElementDef secondary = null, ElementDef utility = null, ElementDef special = null, ElementDef applied = null)

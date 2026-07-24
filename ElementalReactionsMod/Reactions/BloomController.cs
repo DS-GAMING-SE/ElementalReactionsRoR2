@@ -74,7 +74,7 @@ namespace ElementalReactionsMod.Reactions
                 float damage = StaticValues.bloomDamageCoefficient * projectileDamage.damage;
 
                 ManualBlastAttack(characterBody.corePosition, StaticValues.bloomRadius, projectileController.owner, projectileController.teamFilter.teamIndex,
-                    damage, damage * (Config.PlayerBloomResistance().Value / 100f), false, damageType, true);
+                    damage, false, damageType, true, true);
 
                 EffectManager.SimpleEffect(ElementalReactionManager.bloomExplosion.WaitForCompletion(), characterBody.corePosition, Quaternion.identity, true);
             }
@@ -88,14 +88,14 @@ namespace ElementalReactionsMod.Reactions
             {
                 triedExplode = true;
 
-                DamageTypeCombo damageType = DamageType.AOE;
+                DamageTypeCombo damageType = new DamageTypeCombo(DamageType.AOE, DamageTypeExtended.FireNoIgnite, DamageSource.NoneSpecified);
                 damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
 
                 float damage = StaticValues.burgeonDamageCoefficient;
                 damage *= attacker.TryGetComponent<CharacterBody>(out var attackerBody) ? attackerBody.damage : projectileDamage.damage;
 
                 ManualBlastAttack(characterBody.corePosition, StaticValues.burgeonRadius, projectileController.owner, projectileController.teamFilter.teamIndex,
-                    damage, damage * (Config.PlayerBloomResistance().Value / 100f), false, damageType, true);
+                    damage, false, damageType, true, true);
 
                 EffectManager.SimpleEffect(ElementalReactionManager.burgeonExplosion.WaitForCompletion(), characterBody.corePosition, Quaternion.identity, true);
             }

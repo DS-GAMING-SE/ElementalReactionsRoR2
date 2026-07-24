@@ -33,6 +33,7 @@ namespace ElementalReactionsMod
 
         public static GameObject elementLoadoutRowUI;
 
+        public static Material visionMaterial; // Because apparently item displays don't support material addressable paths
         public static Material electroTrailMaterial;
         public static Material darkElectricTrailMaterial;
 
@@ -330,7 +331,7 @@ namespace ElementalReactionsMod
                 swirlRingParticleRenderer.sharedMaterial = genericRingMat;
                 x.Result.AddComponent<DestroyOnTimer>().duration = 0.4f;
 
-                AddNewEffectDef(x.Result, "Play_bandit2_shift_enter");
+                AddNewEffectDef(x.Result, "Play_bandit2_shift_exit");
             };
 
             AssetAsyncReferenceManager<Material>.LoadAsset(AssetReferences.bloomMaterial).Completed += x =>
@@ -613,31 +614,10 @@ namespace ElementalReactionsMod
             #endregion
 
             #region Items
-            Material visionHolderMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(AssetReferences.visionHolderMaterial).WaitForCompletion();
-            visionHolderMaterial.SetHopooMaterial().Specular(0.4f, 3f, false);
-            visionHolderMaterial.SetNormal(1.3f);
-            visionHolderMaterial.SetFloat("_RampInfo", 1);
-
-            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.instructorsTeaCupPickupModel).Completed += x =>
-            {
-                Items.Items.AddModelPanelParameters(x.Result);
-            };
-            AssetAsyncReferenceManager<Material>.LoadAsset(AssetReferences.instructorsTeaCupMaterial).Completed += x =>
-            {
-                x.Result.SetHopooMaterial().Specular(0.6f, 3f, false);
-                x.Result.SetNormal(1.5f);
-                x.Result.EnableKeyword("FRESNEL_EMISSION");
-                x.Result.SetFloat("_FresnelBoost", 1f);
-                x.Result.SetFloat("_FresnelPower", 2f);
-                AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.instructorsTeaCupFresnelMask).Completed += y =>
-                {
-                    x.Result.SetTexture("_FresnelMask", y.Result);
-                };
-                AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampDroneFire_png)).Completed += y =>
-                {
-                    x.Result.SetTexture("_FresnelRamp", y.Result);
-                };
-            };
+            visionMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(AssetReferences.visionHolderMaterial).WaitForCompletion();
+            visionMaterial.SetHopooMaterial().Specular(0.4f, 3f, false);
+            visionMaterial.SetNormal(1.3f);
+            visionMaterial.SetFloat("_RampInfo", 1);
             #region Delusion
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.delusionHitEffect).Completed += x =>
             {
@@ -1016,7 +996,7 @@ namespace ElementalReactionsMod
             glowAlpha.timeMax = 0.4f;
             glowAlpha.alphaCurve = AnimationCurve.EaseInOut(0, 0, 1f, 1f);
             moondrift.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matInverseDistortion_mat)).WaitForCompletion();
-            moondrift.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matGenericFlash_mat)).WaitForCompletion();
+            moondrift.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Child.matChildStarGlow_mat)).WaitForCompletion();
         }
 
         public static Material CreateVisionMaterial(AssetReferenceT<Texture> icon, AssetReferenceT<Texture> remapTex, float alphaBoost = 1f)

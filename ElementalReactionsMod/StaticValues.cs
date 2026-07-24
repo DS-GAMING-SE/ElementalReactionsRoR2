@@ -47,7 +47,7 @@ namespace ElementalReactionsMod
         public const float bloomDamageCoefficient = 3.5f;
         public const float bloomDuration = 5f;
         public const float bloomRadius = 17f;
-        public const float hyperBloomDamageCoefficient = 6f;
+        public const float hyperBloomDamageCoefficient = 9f;
         public const float burgeonDamageCoefficient = 6f;
         public const float burgeonRadius = 22f;
         public const float hyperBloomRadius = 30f;
@@ -55,7 +55,6 @@ namespace ElementalReactionsMod
 
         #region Items
         public const int delusionDuration = 10;
-        public const int delusionCooldown = 10;
         public const float delusionDamageCoefficient = 6f;
         public const float delusionStackDamageCoefficient = 6f;
         public const float delusionAttacksPerSecond = 0.5f;
@@ -86,7 +85,7 @@ namespace ElementalReactionsMod
         public const float lunarBloomDamageMultiplier = 2f;
 
         public const int lunarCrystallizeTriggersToAttack = 3;
-        public const float lunarCrystallizeDamageCoefficient = 4f;
+        public const float lunarCrystallizeDamageCoefficient = 5f;
         public const float lunarCrystallizePlayerResistMultiplier = 0.25f;
         public const float lunarCrystallizeRadius = 50f;
         #endregion
