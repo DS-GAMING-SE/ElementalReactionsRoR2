@@ -8,7 +8,6 @@ using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Networking;
 using RoR2;
-using ElementalReactionsMod.Reactions;
 using System.Linq;
 using R2API;
 using UnityEngine.Jobs;
@@ -212,7 +211,7 @@ namespace ElementalReactionsMod.Environment
             // Copy all CharacterBody transforms to TransformAccessArray
             for (int i = 0; i < CharacterBody.readOnlyInstancesList.Count; i++)
             {
-                if (BodyAffectedByRain(CharacterBody.readOnlyInstancesList[i])) // cache elementloadoutcomponents? memoizedgetcomponent? write your own?
+                if (BodyAffectedByRain(CharacterBody.readOnlyInstancesList[i]))
                 {
                     characterBodies.Add(CharacterBody.readOnlyInstancesList[i]);
                     transformAccessArray.Add(CharacterBody.readOnlyInstancesList[i].transform);

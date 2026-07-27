@@ -1,11 +1,12 @@
 ﻿using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Items;
 using ElementalReactionsMod.Reactions;
+using RoR2;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using RoR2;
-using ElementalReactionsMod.Items;
+using static ElementalReactionsMod.Items.MoonWheel;
 
 namespace ElementalReactionsMod
 {
@@ -28,10 +29,10 @@ namespace ElementalReactionsMod
         }
         private void ReparentEffect()
         {
-            if (!effectComponent.noEffectData && effectComponent.effectData.genericBool)
+            if (effectComponent.effectData.genericBool)
             {
                 // Using negatives for the model child index so it fails to parent the effect to the normal transform in effectdata
-                if (effectComponent.effectData.modelChildIndex == (short)ItemDisplayParent.Delusion)
+                if (effectComponent.effectData.modelChildIndex - 256 ==(short)ItemDisplayParent.Delusion)
                 {
                     if (effectComponent.effectData.rootObject && effectComponent.effectData.rootObject.TryGetComponent<DelusionBehaviour>(out var delusion) && delusion.delusionDisplay)
                     {
@@ -39,9 +40,13 @@ namespace ElementalReactionsMod
                         return;
                     }
                 }
-                else if (effectComponent.effectData.modelChildIndex == (short)ItemDisplayParent.MoonWheel)
+                else if (effectComponent.effectData.modelChildIndex - 256 ==(short)ItemDisplayParent.MoonWheel)
                 {
-
+                    if (effectComponent.effectData.rootObject && effectComponent.effectData.rootObject.TryGetComponent<MoonWheel.MoonWheelBehaviour>(out var moonWheel) && moonWheel.moonWheelDisplay)
+                    {
+                        parentTransform = moonWheel.moonWheelDisplay.transform;
+                        return;
+                    }
                 }
             }
             parentTransform = null;
@@ -56,8 +61,8 @@ namespace ElementalReactionsMod
         }
         public enum ItemDisplayParent : short
         {
-            Delusion = -1,
-            MoonWheel = -2
+            Delusion = -2,
+            MoonWheel = -3
         }
     }
 }

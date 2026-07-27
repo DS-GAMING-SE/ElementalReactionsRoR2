@@ -57,12 +57,12 @@ namespace ElementalReactionsMod.Environment
                 dirty = false;
             }
         }
-        // WHY IS CHANGING TWO PROPERTIES ON TWO MATERIALS FUCKING IMPOSSIBLE? I'VE BEEN AT THIS FOR DAYS
+        // this shit was not worth the effort
         private void SetProperty(ref MeshRenderer renderer)
         {
             propertyBlock.Clear();
-            propertyBlock.SetColor(tintColorKey, color);
             propertyBlock.SetFloat(alphaKey, alpha);
+            propertyBlock.SetColor(tintColorKey, color);
             renderer.SetPropertyBlock(propertyBlock);
         }
 

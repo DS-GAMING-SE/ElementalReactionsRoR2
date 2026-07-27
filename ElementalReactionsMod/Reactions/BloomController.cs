@@ -1,5 +1,4 @@
-﻿using ElementalReactionsMod;
-using ElementalReactionsMod.Elements;
+﻿using ElementalReactionsMod.Elements;
 using ElementalReactionsMod.Orbs;
 using HG;
 using R2API;

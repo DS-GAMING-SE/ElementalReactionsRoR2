@@ -76,7 +76,7 @@ namespace ElementalReactionsMod.Reactions
             for (int i = 0; i < ElementCatalog.elementCatalog.Length; i++) // Filling out keyword tokens
             {
                 StringBuilder stringBuilder = HG.StringBuilderPool.RentStringBuilder();
-                stringBuilder.Append("<size=85%>");
+                stringBuilder.Append("<size=82%>");
                 for (int j = 0; j < ElementCatalog.elementCatalog[i].reactions.Count; j++)
                 {
                     ElementalReactionDef reactionDef = GetElementalReaction(ElementCatalog.elementCatalog[i].reactions[j]);

@@ -1,7 +1,6 @@
 ﻿using ElementalReactionsMod.Elements;
 using ElementalReactionsMod.Environment;
 using ElementalReactionsMod.Items;
-using ElementalReactionsMod.Reactions;
 using EntityStates.Events;
 using HarmonyLib;
 using MonoMod.RuntimeDetour;

@@ -132,7 +132,7 @@ namespace ElementalReactionsMod
                 Material stars = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_Common_VFX.matOmniHitspark1GenericAdditive_mat)).WaitForCompletion());
                 Texture mask = AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX_ParticleMasks.texGlowPaintMask_png)).WaitForCompletion();
                 stars.SetTexture("_MainTex", mask);
-                stars.SetTextureOffset("_MainTex", new Vector2(0, 0.1f));
+                stars.SetTextureOffset("_MainTex", new Vector2(0.1f, 0.1f));
                 stars.SetColor("_TintColor", Color.white);
                 stars.SetTexture("_Cloud1Tex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Nullifier.texNullifierSkySparse_png)).WaitForCompletion());
                 stars.SetTextureScale("_Cloud1Tex", new Vector2(6f, 0.7f));
@@ -143,12 +143,14 @@ namespace ElementalReactionsMod
                 Material largeLines = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Items_SpeedBoostPickup.matSpeedBoostPickupTraill_mat)).WaitForCompletion());
                 largeLines.SetTexture("_MainTex", mask);
                 largeLines.SetTextureScale("_MainTex", new Vector2(1f, 1f));
+                largeLines.SetTextureOffset("_MainTex", new Vector2(0.25f, 0f));
                 largeLines.SetColor("_TintColor", Color.white);
                 largeLines.SetTexture("_Cloud1Tex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Items_SpeedBoostPickup.texNegateAttackTrail_png)).WaitForCompletion());
                 largeLines.SetTextureScale("_Cloud1Tex", new Vector2(2f, 4f));
                 largeLines.SetVector("_CutoffScroll", new Vector4(5f, 10f, -20f, 4f));
                 largeLines.SetInt("_ZTest", 0);
                 largeLines.SetFloat("_AlphaBoost", 0.09f);
+                largeLines.DisableKeyword("DISABLEREMAP"); // THIS motherfucker breaks the fading away effect. TOOK ME LIKE A WEEK TO FIND THIS SHIT
 
                 var left = x.Result.transform.GetChild(0);
                 var right = x.Result.transform.GetChild(1);
@@ -756,7 +758,7 @@ namespace ElementalReactionsMod
                 ShakeEmitter shakeEmitter = x.Result.AddComponent<ShakeEmitter>();
                 shakeEmitter.amplitudeTimeDecay = true;
                 shakeEmitter.duration = 0.25f;
-                shakeEmitter.radius = 40f;
+                shakeEmitter.radius = 80f;
                 shakeEmitter.scaleShakeRadiusWithLocalScale = false;
 
                 shakeEmitter.wave = new Wave
@@ -869,7 +871,7 @@ namespace ElementalReactionsMod
                 ShakeEmitter shakeEmitter = x.Result.AddComponent<ShakeEmitter>();
                 shakeEmitter.amplitudeTimeDecay = true;
                 shakeEmitter.duration = 1f;
-                shakeEmitter.radius = 75f;
+                shakeEmitter.radius = 125f;
                 shakeEmitter.scaleShakeRadiusWithLocalScale = false;
 
                 shakeEmitter.wave = new Wave

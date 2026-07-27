@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using RoR2;
-using ElementalReactionsMod.Reactions;
 
 namespace ElementalReactionsMod.Achievements
 {

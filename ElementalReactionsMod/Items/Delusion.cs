@@ -330,7 +330,7 @@ namespace ElementalReactionsMod.Items
         {
             if (NetworkServer.active && Run.FixedTimeStamp.now > transformTimeStamp && body.inventory)
             {
-                if (RoR2.Artifacts.CommandArtifactManager.IsCommandArtifactEnabled)
+                if ((RoR2.Artifacts.CommandArtifactManager.IsCommandArtifactEnabled || Config.AlwaysChooseDelusion().Value) && body.isPlayerControlled)
                 {
                     body.inventory.RemoveItemPermanent(Items.delusion);
                     PickupPickerController.Option[] delusionOptions = new PickupPickerController.Option[DelusionManager.delusionToElement.Count];
@@ -360,6 +360,7 @@ namespace ElementalReactionsMod.Items
                         artifactFlag = GenericPickupController.PickupArtifactFlag.DELUSION, // Haha, Delusion. Prevents command from rerolling it
                     };
                     PickupDropletController.CreatePickupDroplet(pickupInfo, pickupInfo.position, Vector3.up * 20f);
+                    transformTimeStamp += 1f;
                 }
                 else
                 {

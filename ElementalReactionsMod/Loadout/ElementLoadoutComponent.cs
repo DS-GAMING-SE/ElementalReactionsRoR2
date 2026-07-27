@@ -1,5 +1,4 @@
 ﻿using ElementalReactionsMod.Elements;
-using ElementalReactionsMod.Reactions;
 using HG;
 using R2API.Networking.Interfaces;
 using RoR2;

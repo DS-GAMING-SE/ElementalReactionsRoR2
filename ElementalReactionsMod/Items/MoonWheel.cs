@@ -1,8 +1,11 @@
 ﻿using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Loadout;
 using ElementalReactionsMod.Reactions;
+using HG;
 using R2API;
 using RoR2;
 using RoR2.ContentManagement;
+using RoR2.Items;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -59,6 +62,7 @@ namespace ElementalReactionsMod.Items
         public static ItemDisplayRuleDict InitializeItemDisplays()
         {
             GameObject displayPrefab = AssetAsyncReferenceManager<GameObject>.LoadAsset(moonWheelDisplayModel).WaitForCompletion();
+            displayPrefab.AddComponent<MoonWheelDisplay>();
             displayPrefab.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = moonWheelMat;
             CreateItemDisplay(displayPrefab, CreateItemRendererInfo(displayPrefab, 0, Assets.visionMaterial), CreateItemRendererInfo(displayPrefab, 1, moonWheelMat));
             ItemDisplayRuleDict itemDisplays = new ItemDisplayRuleDict();
@@ -299,6 +303,33 @@ namespace ElementalReactionsMod.Items
                 localScale = new Vector3(1.2F, 1.2F, 1.2F)
             });
             return itemDisplays;
+        }
+
+        public class MoonWheelBehaviour : RerollableItem
+        {
+            [BaseItemBodyBehavior.ItemDefAssociationAttribute(useOnServer = true, useOnClient = true)]
+            private static ItemDef GetItemDef()
+            {
+                return moonWheel;
+            }
+            public GameObject moonWheelDisplay;
+            public override ItemDef item => moonWheel;
+            public override ReadOnlyList<PickupIndex> availableRerolls => Run.instance.availableTier3DropList;
+            public override ElementDef coreElement => DefaultElementDefs.hydroElement;
+            public override ElementDef[] reactingElements => [DefaultElementDefs.electroElement, DefaultElementDefs.geoElement, DefaultElementDefs.dendroElement];
+        }
+
+        public class MoonWheelDisplay : MonoBehaviour
+        {
+            public MoonWheelBehaviour moonWheel;
+            private void Start()
+            {
+                CharacterModel characterModel = base.GetComponentInParent<CharacterModel>();
+                if (characterModel && characterModel.body && characterModel.body.TryGetComponent<MoonWheelBehaviour>(out moonWheel))
+                {
+                    moonWheel.moonWheelDisplay = gameObject;
+                }
+            }
         }
     }
 }

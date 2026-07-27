@@ -1,4 +1,5 @@
 ﻿using ElementalReactionsMod.Elements;
+using ElementalReactionsMod.Orbs;
 using R2API;
 using RoR2;
 using RoR2.Projectile;
@@ -8,10 +9,9 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
+using static ElementalReactionsMod.ElementalReactionManager;
 using static ElementalReactionsMod.Elements.DefaultElementDefs;
 using static ElementalReactionsMod.StaticValues;
-using static ElementalReactionsMod.Reactions.ElementalReactionManager;
-using ElementalReactionsMod.Orbs;
 
 namespace ElementalReactionsMod.Reactions
 {
@@ -175,7 +175,7 @@ namespace ElementalReactionsMod.Reactions
             quicken = ElementalReactionDef.CreateElementalReactionDef("Quicken", $"{ElementalReactionsPlugin.PREFIX}REACTION_QUICKEN", dendroElement, electroElement);
             quicken.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
-                victim.AddTimedBuff(Buffs.quickenBuff, 5f);
+                victim.AddTimedBuff(Buffs.quickenBuff, quickenDuration);
             };
 
             bloom = ElementalReactionDef.CreateElementalReactionDef("Bloom", $"{ElementalReactionsPlugin.PREFIX}REACTION_BLOOM", dendroElement, hydroElement);
@@ -212,6 +212,10 @@ namespace ElementalReactionsMod.Reactions
             {
                 if (victim && victim.healthComponent && victim.healthComponent.alive)
                 {
+                    if (damage.attacker && !victim.healthComponent.body.HasBuff(Buffs.lunarChargeBuff))
+                    {
+                        GenericElementEffectComponent.SpawnActivatedEffect(damage.attacker.transform, ParentEffectToItemDisplay.ItemDisplayParent.MoonWheel, electroElement.index, 0.7f, true);
+                    }
                     DotController.InflictDot(victim.gameObject, damage.attacker, damage.inflictedHurtbox, ElectroChargedDot.lunarChargeDot, lunarChargeDotDuration);
                 }
             };
@@ -228,11 +232,19 @@ namespace ElementalReactionsMod.Reactions
                         if (attackerBody.GetBuffCount(Buffs.lunarBloomBuff) < lunarBloomVerdantDewCap && RoR2.Util.CheckRoll(attackerBody.inventory.GetMoonWheelQualityChance(), attackerBody.master))
                         {
                             attackerBody.AddBuff(Buffs.lunarBloomBuff);
+                            if (attackerBody.GetBuffCount(Buffs.lunarBloomBuff) >= lunarBloomVerdantDewCap)
+                            {
+                                GenericElementEffectComponent.SpawnActivatedEffect(attackerBody.transform, ParentEffectToItemDisplay.ItemDisplayParent.MoonWheel, dendroElement.index, 0.7f, true);
+                            }
                         }
                     }
                     if (attackerBody.GetBuffCount(Buffs.lunarBloomBuff) < lunarBloomVerdantDewCap)
                     {
                         attackerBody.AddBuff(Buffs.lunarBloomBuff);
+                        if (attackerBody.GetBuffCount(Buffs.lunarBloomBuff) >= lunarBloomVerdantDewCap)
+                        {
+                            GenericElementEffectComponent.SpawnActivatedEffect(attackerBody.transform, ParentEffectToItemDisplay.ItemDisplayParent.MoonWheel, dendroElement.index, 0.7f, true);
+                        }
                     }
                 }
             };

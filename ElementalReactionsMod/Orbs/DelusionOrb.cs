@@ -7,7 +7,6 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using ElementalReactionsMod.Elements;
 using R2API;
-using ElementalReactionsMod.Reactions;
 
 namespace ElementalReactionsMod.Orbs
 {

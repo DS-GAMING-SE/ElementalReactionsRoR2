@@ -40,15 +40,24 @@ namespace ElementalReactionsMod
 
         public static ConfigEntry<float> PlayerReactionResistance()
         {
-            return ElementalReactionsPlugin.instance.Config.Bind<float>("Reactions", "Player Reaction Resistance", 50f, "The percent of the normal elemental reaction damage that will be dealt when hitting players.\nHost's config takes priority.");
+            return ElementalReactionsPlugin.instance.Config.Bind<float>("Reactions", "Player Resist Mult", 25f, "The percent of the normal elemental reaction damage that will be dealt when hitting players.\nHost's config takes priority.");
         }
         public static ConfigEntry<float> PlayerBloomResistance()
         {
-            return ElementalReactionsPlugin.instance.Config.Bind<float>("Reactions", "Player Bloom Resistance", 50f, "The percent of the normal Bloom reaction damage that will be dealt when hitting players. This is applied on top of all other bloom/reaction resistance configs.\nHost's config takes priority.");
+            return ElementalReactionsPlugin.instance.Config.Bind<float>("Reactions", "Player Bloom Resist Mult", 100f, "The percent of the normal Bloom reaction damage that will be dealt when hitting players. This is applied on top of all other bloom/reaction resistance configs.\nHost's config takes priority.");
         }
         public static ConfigEntry<float> FriendlyFireBloomResistance()
         {
-            return ElementalReactionsPlugin.instance.Config.Bind<float>("Reactions", "Friendly Fire Bloom Resistance", 50f, "The percent of the normal Bloom reaction damage that will be dealt when hitting yourself or allies. This is applied on top of all other bloom/reaction resistance configs.\nHost's config takes priority.");
+            return ElementalReactionsPlugin.instance.Config.Bind<float>("Reactions", "Friendly Fire Bloom Resist Mult", 50f, "The percent of the normal Bloom reaction damage that will be dealt when hitting yourself or allies. This is applied on top of all other bloom/reaction resistance configs.\nHost's config takes priority.");
+        }
+
+        public static ConfigEntry<bool> AlwaysChooseDelusion()
+        {
+            return ElementalReactionsPlugin.instance.Config.Bind<bool>("Items", "Choose Delusion Elements", false, "Whether you will be able to choose the elements of Delusions.\nHost's config takes priority.");
+        }
+        public static ConfigEntry<bool> RerollUnusableItems()
+        {
+            return ElementalReactionsPlugin.instance.Config.Bind<bool>("Items", "Reroll Unusable Items", true, "Whether items from this mod will be rerolled if you don't have the elements required to use them.\nHost's config takes priority.");
         }
 
         public static ConfigEntry<bool> CanWeatherUseElements()
@@ -57,7 +66,7 @@ namespace ElementalReactionsMod
         }
         public static ConfigEntry<bool> CanSS2StormsUseElements()
         {
-            return ElementalReactionsPlugin.instance.Config.Bind<bool>("Environment", "Elemental SS2 Storms", true, "Whether storms from Starstorm2 will be able to apply elements.\nHost's config takes priority.");
+            return ElementalReactionsPlugin.instance.Config.Bind<bool>("Environment", "Elemental SS2 Storms", true, "Whether storms from Starstorm 2 will be able to apply elements.\nHost's config takes priority.");
         }
         #endregion
         #region Loadout
@@ -178,7 +187,8 @@ namespace ElementalReactionsMod
             ModSettingsManager.AddOption(new SliderOption(Config.PlayerReactionResistance(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));
             ModSettingsManager.AddOption(new SliderOption(Config.PlayerBloomResistance(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));
             ModSettingsManager.AddOption(new SliderOption(Config.FriendlyFireBloomResistance(), new RiskOfOptions.OptionConfigs.SliderConfig() { min = 0, max = 100 }));
-
+            ModSettingsManager.AddOption(new CheckBoxOption(Config.AlwaysChooseDelusion()));
+            ModSettingsManager.AddOption(new CheckBoxOption(Config.RerollUnusableItems()));
             ModSettingsManager.AddOption(new CheckBoxOption(Config.CanWeatherUseElements()));
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(SS2.SS2Main.GUID)) ModSettingsManager.AddOption(new CheckBoxOption(Config.CanSS2StormsUseElements()));
         }

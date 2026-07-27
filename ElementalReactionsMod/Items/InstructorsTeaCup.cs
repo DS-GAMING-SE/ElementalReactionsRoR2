@@ -301,9 +301,9 @@ namespace ElementalReactionsMod.Items
             ElementalReactionManager.onElementalReactionTriggered += OnElementalReaction;
         }
 
-        private void OnElementalReaction(ElementalReactionDef reaction, ElementDef element1, ElementDef element2, CharacterBody victim, GameObject attacker)
+        private void OnElementalReaction(ElementalReactionDef reaction, ElementDef element1, ElementDef element2, CharacterBody victim, DamageInfo damageInfo)
         {
-            if (attacker && attacker == gameObject && body)
+            if (damageInfo.attacker && damageInfo.attacker == gameObject && body)
             {
                 QualityTier highestQuality = QualityTier.None;
                 if (legendaryItemCount > 0) highestQuality = QualityTier.Legendary;

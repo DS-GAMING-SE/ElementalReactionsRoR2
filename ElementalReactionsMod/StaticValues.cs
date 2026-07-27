@@ -35,6 +35,7 @@ namespace ElementalReactionsMod
         public const float swirlDamageCoefficient = 1.5f;
 
         public const float quickenDamageAddCoefficient = 0.5f;
+        public const float quickenDuration = 5f;
 
         public const int crystallizeCap = 3;
         public const float crystallizeBarrierPercent = 0.1f;
@@ -61,9 +62,9 @@ namespace ElementalReactionsMod
         public const float delusionHealthPercentCost = 0.05f;
         public const float delusionHealingReceivedReduction = 0.2f;
 
-        public const float instructorsTeaCupDamageMultiplier = 0.2f;
+        public const float instructorsTeaCupDamageMultiplier = 0.3f;
 
-        public const float instructorsTeaCupQualityDamageIncrease = 0.025f;
+        public const float instructorsTeaCupQualityDamageIncrease = 0.05f;
         public const int instructorsTeaCupQualityMaxStacks = 10;
         public const int instructorsTeaCupQualityStacksPerQuality = 5;
         public const int instructorsTeaCupQualityDuration = 5;

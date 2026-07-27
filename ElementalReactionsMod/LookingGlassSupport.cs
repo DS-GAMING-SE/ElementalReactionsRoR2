@@ -1,9 +1,11 @@
-﻿using LookingGlass;
+﻿using ElementalReactionsMod.Items;
+using LookingGlass;
 using LookingGlass.ItemStatsNameSpace;
 using LookingGlass.LookingGlassLanguage;
 using RoR2;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
@@ -55,6 +57,35 @@ namespace ElementalReactionsMod
                 return values;
             };
             ItemDefinitions.RegisterItemStatsDef(moonWheelStatsDef, Items.Items.moonWheel.itemIndex);
+
+            ItemStatsDef delusionStatsDef = new ItemStatsDef();
+            delusionStatsDef.descriptions.Add("Damage: ");
+            delusionStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Damage);
+            delusionStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Percentage);
+            delusionStatsDef.descriptions.Add("Proc Coefficient: ");
+            delusionStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Damage);
+            delusionStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.ProcCoeff);
+            delusionStatsDef.descriptions.Add("Total Health Cost: ");
+            delusionStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Death);
+            delusionStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Percentage);
+            delusionStatsDef.descriptions.Add("Healing Reduction: ");
+            delusionStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Death);
+            delusionStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Percentage);
+            delusionStatsDef.calculateValues = (master, stackCount) =>
+            {
+                List<float> values = new();
+                int count = master.inventory.GetDelusionCount();
+                values.Add(delusionDamageCoefficient * stackCount);
+                values.Add(1f);
+                values.Add(delusionHealthPercentCost * count);
+                values.Add(delusionHealingReceivedReduction * count);
+                return values;
+            };
+            List<ItemDef> delusions = DelusionManager.delusionToElement.Keys.ToList();
+            foreach (var item in delusions)
+            {
+                ItemDefinitions.RegisterItemStatsDef(delusionStatsDef, item.itemIndex);
+            }
 
             if (ElementalReactionsPlugin.qualityModExists)
             {

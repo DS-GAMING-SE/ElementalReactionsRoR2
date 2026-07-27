@@ -1,5 +1,4 @@
 ﻿using ElementalReactionsMod.Elements;
-using ElementalReactionsMod.Reactions;
 using RoR2;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ namespace ElementalReactionsMod
     {
         public static void SpawnActivatedEffect(Vector3 position, Quaternion rotation, ElementIndex element, bool transmit)
         {
-            SpawnActivatedEffect(position, rotation, element, 0.6f, transmit);
+            SpawnActivatedEffect(position, rotation, element, 0.7f, transmit);
         }
         public static void SpawnActivatedEffect(Vector3 position, Quaternion rotation, ElementIndex element, float duration, bool transmit)
         {
@@ -30,7 +29,7 @@ namespace ElementalReactionsMod
         }
         public static void SpawnActivatedEffect(Transform parent, ParentEffectToItemDisplay.ItemDisplayParent itemDisplayParent, ElementIndex element, float duration, bool transmit)
         {
-            EffectManager.SpawnEffect(ElementalReactionManager.genericElementActivatedEffect.WaitForCompletion(), new EffectData { origin = parent.position, rootObject = parent.gameObject, genericUInt = (uint)element, genericFloat = duration, genericBool = true, modelChildIndex = (short)itemDisplayParent }, transmit);
+            EffectManager.SpawnEffect(ElementalReactionManager.genericElementActivatedEffect.WaitForCompletion(), new EffectData { origin = parent.position, rootObject = parent.gameObject, genericUInt = (uint)element, genericFloat = duration, genericBool = true, modelChildIndex = (byte)itemDisplayParent }, transmit); // why is modelChildIndex even a short to begin with if it gets cast to a byte on serialize?
         }
 
         private EffectManagerHelper efh;

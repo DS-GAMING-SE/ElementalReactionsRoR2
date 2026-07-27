@@ -1,7 +1,6 @@
 ﻿using ElementalReactionsMod.Elements;
 using ElementalReactionsMod.Items;
 using ElementalReactionsMod.Loadout;
-using ElementalReactionsMod.Reactions;
 using HarmonyLib;
 using HG;
 using Mono.Cecil.Cil;

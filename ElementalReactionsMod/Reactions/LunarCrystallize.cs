@@ -4,7 +4,6 @@ using System.Text;
 using UnityEngine;
 using RoR2;
 using ElementalReactionsMod.Elements;
-using ElementalReactionsMod.Reactions;
 using UnityEngine.Networking;
 using ElementalReactionsMod.Orbs;
 
@@ -30,6 +29,7 @@ namespace ElementalReactionsMod.Reactions
             Resize(characterBody.radius);
             UpdateMoondriftCount();
             transform.position = characterBody.corePosition;
+            GenericElementEffectComponent.SpawnActivatedEffect(characterBody.transform, ParentEffectToItemDisplay.ItemDisplayParent.MoonWheel, DefaultElementDefs.geoElement.index, 0.7f, false);
 
             initialized = true;
         }

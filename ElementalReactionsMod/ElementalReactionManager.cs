@@ -1,5 +1,6 @@
 ﻿using ElementalReactionsMod.Elements;
 using ElementalReactionsMod.Loadout;
+using ElementalReactionsMod.Reactions;
 using Grumpy;
 using R2API.Networking.Interfaces;
 using RoR2;
@@ -14,7 +15,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UIElements;
 using static UnityEngine.GridBrushBase;
 
-namespace ElementalReactionsMod.Reactions
+namespace ElementalReactionsMod
 {
     public class ElementalReactionManager : MonoBehaviour
     {
@@ -54,7 +55,7 @@ namespace ElementalReactionsMod.Reactions
         public delegate void PreElementalReactionDelegate(ref ElementalReactionDef reaction, ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo);
         public static event PreElementalReactionDelegate onPreElementalReactionTriggered;
 
-        public delegate void ElementalReactionDelegate(ElementalReactionDef reaction, ElementDef firstElement, ElementDef secondElement, CharacterBody victim, GameObject attacker);
+        public delegate void ElementalReactionDelegate(ElementalReactionDef reaction, ElementDef firstElement, ElementDef secondElement, CharacterBody victim, DamageInfo damageInfo);
         public static event ElementalReactionDelegate onElementalReactionTriggered;
         public void OnEnable()
         {
@@ -99,7 +100,7 @@ namespace ElementalReactionsMod.Reactions
                     {
                         target.AddTimedBuff(element.buff, StaticValues.elementAppliedDuration * damageInfo.procCoefficient * StaticValues.elementAppliedTaxMultiplier);
                     }
-                    target.AddTimedBuff(element.cooldownBuff, (overrideICD > 0 ? overrideICD : StaticValues.elementAppliedICD));
+                    target.AddTimedBuff(element.cooldownBuff, overrideICD > 0 ? overrideICD : StaticValues.elementAppliedICD);
                 }
             }
         }
@@ -136,7 +137,7 @@ namespace ElementalReactionsMod.Reactions
 
                     onPreElementalReactionTriggered?.Invoke(ref reaction, reacting, element, target, ref damageInfo);
                     reaction.TriggerReaction(reacting, element, target, ref damageInfo, ref addedDamage);
-                    onElementalReactionTriggered?.Invoke(reaction, reacting, element, target, damageInfo.attacker);
+                    onElementalReactionTriggered?.Invoke(reaction, reacting, element, target, damageInfo);
                     return true;
                 }
             }

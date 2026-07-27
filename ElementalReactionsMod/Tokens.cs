@@ -67,7 +67,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_BURNING_DESCRIPTION", $"{DendroText()} + {PyroText()}. {DamageText("Ignite")} the target.");
 
             LanguageAPI.Add($"{prefix}REACTION_QUICKEN_NAME", "Quicken");
-            LanguageAPI.Add($"{prefix}REACTION_QUICKEN_DESCRIPTION", $"{DendroText()} + {ElectroText()}. Increase damage dealt by all {DendroText()} or {ElectroText()} attacks by a flat {DamageText((quickenDamageAddCoefficient * 100f).ToString()+"% base damage")}.");
+            LanguageAPI.Add($"{prefix}REACTION_QUICKEN_DESCRIPTION", $"{DendroText()} + {ElectroText()}. Increase damage dealt by all {DendroText()} or {ElectroText()} attacks by a flat {DamageText((quickenDamageAddCoefficient * 100f).ToString()+"% base damage")} for {UtilityText($"{quickenDuration}s")}.");
 
             LanguageAPI.Add($"{prefix}REACTION_BLOOM_NAME", "Bloom");
             LanguageAPI.Add($"{prefix}REACTION_BLOOM_DESCRIPTION", $"{DendroText()} + {HydroText()}. Create a {DendroText("Dendro Core")} which explodes after {UtilityText(bloomDuration+"s")} dealing {DamageValueText(bloomDamageCoefficient)} to ALL characters.\n{ElectroText()} converts the core into a {DamageText("homing projectile")} dealing {DamageValueText(hyperBloomDamageCoefficient)}.\n{PyroText()} detonates the core in a {DamageText("larger radius")}, dealing {DamageValueText(burgeonDamageCoefficient)} to ALL characters.");
@@ -98,7 +98,7 @@ namespace ElementalReactionsMod
                 
                 You shackle them with your taboos. Your constructs of destruction close in after, fencing the mind into meek obedience, so no one would dare imagine breaking free.
 
-                Your suffocating grip on this world does not go without contempt. Perhaps you have fooled yourself into only seeing peace, but hidden beneath is hatred for the world you've made. Their hatred festers and their will to destroy grows. They are the kindling.
+                Your suffocating grip on that world does not go without contempt. Perhaps you have fooled yourself into only seeing peace, but hidden beneath is hatred for the world you've made. Their hatred festers and their will to destroy grows. They are the kindling.
                 
                 Despite all the force and oppression you use to hide me, they look to the sky. Their gaze pierces through the lies you've confined this world beneath. When their gaze meets mine, their grievances of your world manifest as an unshakable resolve.
 
@@ -148,13 +148,23 @@ namespace ElementalReactionsMod
                 moonWheelQualityChancePerQuality * 3,
                 moonWheelQualityChancePerQuality * 4);
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_LORE", """"""
-                ---
+                Once there was an age when the silver wheel that circled the heavens bathed the world in soothing light. At that time, two brothers stood together before their creation, looking up at the sea of stars.
 
-                The moon no longer belongs in the world our savior has created. All that was once connected to it has been left to fade with the erosion of time.
+                To touch the moon was to break from the shackles of the world and achieve true freedom. One brother dreamed of freedom and the universe while eagerly crossing the gate. The other dreamed only of his own world.
 
-                Though the world may forget the transgressions of the past...
+                The gate disconnected, severing its connection between world and moon - brother and brother. Dreams of freedom vanished as the moon itself became a new prison. 
 
-                ---something alluding to wanderer irminsul past not able to be undone, use the word 'scars'?---. The grudge born from that betrayal will remain - everlasting as the moon.
+                The moon did not belong in the new world that was being created.
+
+                The few who acknowledge the moon's prescence scorn and fear it as they have been taught to do. They know not why. 
+                
+                With the moon being rejected by the world and its inhabitants, the moon, along with its captive, were left to fade away.
+
+                Yet, the moon still circles the sky - Its baleful light shining upon the world. 
+                
+                The world may forget the past, but that does not absolve the world. The scars of betrayal run deep. He will not forget this pain, nor will he rest until it has been repaid tenfold.
+
+                His grudge will remain - everlasting as the moon.
                 """""");
             LanguageAPI.Add($"{prefix}REACTION_LUNAR_BLOOM_NAME", "Lunar-Bloom");
             LanguageAPI.Add($"{prefix}REACTION_LUNAR_CHARGE_NAME", "Lunar-Charge");

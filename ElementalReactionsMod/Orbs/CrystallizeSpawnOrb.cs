@@ -1,5 +1,4 @@
-﻿using ElementalReactionsMod.Reactions;
-using R2API.Networking.Interfaces;
+﻿using R2API.Networking.Interfaces;
 using RoR2;
 using RoR2.Orbs;
 using RoR2.Projectile;
@@ -8,7 +7,6 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using static RoR2.SolusWing.SolusWingPodAI.Simulation.SimulationState;
 
 namespace ElementalReactionsMod.Orbs
 {
