@@ -59,6 +59,9 @@ namespace ElementalReactionsMod
             ItemDefinitions.RegisterItemStatsDef(moonWheelStatsDef, Items.Items.moonWheel.itemIndex);
 
             ItemStatsDef delusionStatsDef = new ItemStatsDef();
+            delusionStatsDef.descriptions.Add("Healing Reduction: ");
+            delusionStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Death);
+            delusionStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Percentage);
             delusionStatsDef.descriptions.Add("Damage: ");
             delusionStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Damage);
             delusionStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Percentage);
@@ -68,17 +71,14 @@ namespace ElementalReactionsMod
             delusionStatsDef.descriptions.Add("Total Health Cost: ");
             delusionStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Death);
             delusionStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Percentage);
-            delusionStatsDef.descriptions.Add("Healing Reduction: ");
-            delusionStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Death);
-            delusionStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Percentage);
             delusionStatsDef.calculateValues = (master, stackCount) =>
             {
                 List<float> values = new();
                 int count = master.inventory.GetDelusionCount();
+                values.Add(delusionHealingReceivedReduction * count);
                 values.Add(delusionDamageCoefficient * stackCount);
                 values.Add(1f);
                 values.Add(delusionHealthPercentCost * count);
-                values.Add(delusionHealingReceivedReduction * count);
                 return values;
             };
             List<ItemDef> delusions = DelusionManager.delusionToElement.Keys.ToList();

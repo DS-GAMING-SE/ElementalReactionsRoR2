@@ -16,6 +16,7 @@ using UnityEngine.Networking;
 using UnityEngine.XR;
 using static ElementalReactionsMod.Assets.AssetReferences;
 using static ElementalReactionsMod.Materials;
+using static UnityEngine.Rendering.PostProcessing.SubpixelMorphologicalAntialiasing;
 
 namespace ElementalReactionsMod.Items
 {
@@ -167,8 +168,14 @@ namespace ElementalReactionsMod.Items
         }
         private void Reroll()
         {
-            // QUALITY COMPAT?
-            RerollItem(item.itemIndex, GetRerollItem());
+            if (ElementalReactionsPlugin.qualityModExists)
+            {
+                RerollQuality();
+            }
+            else
+            {
+                RerollItem(item.itemIndex, GetRerollItem());
+            }
         }
         private void RerollItem(ItemIndex original, ItemIndex rerolled)
         {
@@ -190,6 +197,53 @@ namespace ElementalReactionsMod.Items
                 item = availableRerolls[index + 1];
             }
             return PickupCatalog.GetPickupDef(item).itemIndex;
+        }
+        [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
+        private void RerollQuality() // godddd quality is so COMPLICATED
+        {
+            ItemQualities.ItemQualityGroupIndex groupIndex = ItemQualities.QualityCatalog.FindItemQualityGroupIndex(item.itemIndex);
+            if (groupIndex == ItemQualities.ItemQualityGroupIndex.Invalid) 
+            {
+                RerollItem(item.itemIndex, GetRerollItem());
+                return;
+            }
+            ItemQualities.ItemQualityGroup itemGroup = ItemQualities.QualityCatalog.GetItemQualityGroup(groupIndex);
+            ItemQualities.ItemQualityCounts itemCounts = ItemQualities.Utilities.Extensions.InventoryExtensions.GetItemCountsPermanent(body.inventory, itemGroup);
+            if (itemCounts.BaseItemCount > 0) RerollItem(item.itemIndex, GetRerollItem());
+            if (itemCounts.TotalQualityCount > 0)
+            {
+                ItemQualities.ItemQualityGroup rerollGroup;
+                if (TryFindRandomQualityItemIndex(groupIndex, out var rerollGroupIndex))
+                {
+                    rerollGroup = ItemQualities.QualityCatalog.GetItemQualityGroup(rerollGroupIndex);
+                }
+                else
+                {
+                    // scrap
+                    rerollGroup = ItemQualities.QualityCatalog.GetItemQualityGroup(ItemQualities.QualityCatalog.FindItemQualityGroupIndex(PickupCatalog.GetPickupDef(PickupCatalog.FindScrapIndexForItemTier(item.tier)).itemIndex));
+                }
+                if (itemCounts.UncommonCount > 0) RerollItem(itemGroup.UncommonItemIndex, rerollGroup.UncommonItemIndex);
+                if (itemCounts.RareCount > 0) RerollItem(itemGroup.RareItemIndex, rerollGroup.RareItemIndex);
+                if (itemCounts.EpicCount > 0) RerollItem(itemGroup.EpicItemIndex, rerollGroup.EpicItemIndex);
+                if (itemCounts.LegendaryCount > 0) RerollItem(itemGroup.LegendaryItemIndex, rerollGroup.LegendaryItemIndex);
+            }
+        }
+        [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
+        private bool TryFindRandomQualityItemIndex(ItemQualities.ItemQualityGroupIndex originalItemGroup, out ItemQualities.ItemQualityGroupIndex rerollGroup)
+        {
+            rerollGroup = ItemQualities.ItemQualityGroupIndex.Invalid;
+            Xoroshiro128Plus rng = new Xoroshiro128Plus(Run.instance.treasureRng.nextUlong);
+            int index = rng.RangeInt(0, availableRerolls.Count - 1);
+            for (int i = 0; i < availableRerolls.Count - 1; i++)
+            {
+                PickupIndex rerollItem = availableRerolls[(index + i) % availableRerolls.Count];
+                rerollGroup = ItemQualities.QualityCatalog.FindItemQualityGroupIndex(PickupCatalog.GetPickupDef(rerollItem).itemIndex);
+                if (rerollGroup != ItemQualities.ItemQualityGroupIndex.Invalid && rerollGroup != originalItemGroup)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         private void CheckElement(DamageSource damageSource, ref bool core, ref bool reactor)
         {

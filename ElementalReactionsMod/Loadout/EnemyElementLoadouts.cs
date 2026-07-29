@@ -20,6 +20,7 @@ namespace ElementalReactionsMod.Loadout
             uniqueEnemiesWithElement = new int[ElementCatalog.elementCatalog.Length];
             CreateLoadout("AcidLarvaBody", hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("VultureBody", anemoElement);
+            CreateLoadout("BeetleQueen2Body", hydroElement); // Why is it 2???
             CreateLoadout("BeetleGuardBody", geoElement, geoElement);
             CreateLoadout("BeetleGuardAllyBody", geoElement, geoElement);
             CreateLoadout("BisonBody", physicalElement, geoElement); // for EnemyAbilities
@@ -53,7 +54,7 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("RoboBallMiniBody", electroElement);
             CreateLoadout("RoboBallGreenBuddyBody", electroElement, electroElement, electroElement, electroElement); // ally
             CreateLoadout("RoboBallRedBuddyBody", electroElement, electroElement, electroElement, electroElement); // ally
-            CreateLoadout("TankerBody", pyroElement);
+            CreateLoadout("TankerBody", pyroElement, pyroElement);
             //AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Tanker.TankerAccelerantProjectile_prefab, pyroElement);
             CreateLoadout("IronHaulerBody", anemoElement, anemoElement, anemoElement, anemoElement);
             CreateLoadout("GolemBody", geoElement, electroElement);
@@ -131,9 +132,13 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("CopycatDroneBody", cryoElement, cryoElement, cryoElement, cryoElement); // Ally
             CreateLoadout("FlameDroneBody", pyroElement, pyroElement, pyroElement, pyroElement); // Ally
             CreateLoadout("BombardmentDroneBody", electroElement, electroElement, electroElement, electroElement); // Ally
-            CreateLoadout("CopycatDroneBodyRemoteOp", cryoElement, cryoElement, cryoElement, cryoElement);
-            CreateLoadout("FlameDroneBodyRemoteOp", pyroElement, pyroElement, pyroElement, pyroElement);
-            CreateLoadout("BombardmentDroneBodyRemoteOp", electroElement, electroElement, electroElement, electroElement);
+            //CreateLoadout("CopycatDroneBodyRemoteOp", cryoElement, cryoElement, cryoElement, cryoElement);
+            //CreateLoadout("FlameDroneBodyRemoteOp", pyroElement, pyroElement, pyroElement, pyroElement);
+            //CreateLoadout("BombardmentDroneBodyRemoteOp", electroElement, electroElement, electroElement, electroElement);
+
+            // random shit
+            CreateLoadout("ExplosivePotDestructibleBody", hydroElement, hydroElement, hydroElement, hydroElement, hydroElement);
+            CreateLoadout("FusionCellDestructibleBody", electroElement, electroElement, electroElement, electroElement, electroElement);
 
             // Enemies Returns
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Viliger.EnemiesReturns"))

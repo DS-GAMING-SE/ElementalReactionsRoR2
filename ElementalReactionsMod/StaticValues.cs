@@ -38,9 +38,9 @@ namespace ElementalReactionsMod
         public const float quickenDuration = 5f;
 
         public const int crystallizeCap = 3;
-        public const float crystallizeBarrierPercent = 0.1f;
-        public const float crystallizeBossBarrierPercent = 0.03f;
-        public const float crystallizeMaxBarrierPercent = 0.3f;
+        public const float crystallizeBarrierPercent = 0.12f;
+        public const float crystallizeBossBarrierPercent = 0.04f;
+        public const float crystallizeMaxBarrierPercent = 0.36f;
         public const float crystallizePlayerGravitateRange = 4f;
         public const float crystallizeEnemyGravitateRange = 7f;
 
@@ -56,11 +56,11 @@ namespace ElementalReactionsMod
 
         #region Items
         public const int delusionDuration = 10;
-        public const float delusionDamageCoefficient = 6f;
-        public const float delusionStackDamageCoefficient = 6f;
-        public const float delusionAttacksPerSecond = 0.5f;
+        public const float delusionDamageCoefficient = 3f;
+        public const float delusionStackDamageCoefficient = 3f;
+        public const float delusionAttacksPerSecond = 0.75f;
         public const float delusionHealthPercentCost = 0.05f;
-        public const float delusionHealingReceivedReduction = 0.2f;
+        public const float delusionHealingReceivedReduction = 0.25f;
 
         public const float instructorsTeaCupDamageMultiplier = 0.3f;
 

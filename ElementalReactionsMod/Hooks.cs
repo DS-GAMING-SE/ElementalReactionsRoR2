@@ -54,7 +54,9 @@ namespace ElementalReactionsMod
             On.EntityStates.ScavMonster.PrepEnergyCannon.OnEnter += ScavengerChargeAttackElement;
             On.RoR2.CameraRigController.LateUpdate += EnvironmentScreenEffect;
             IL.RoR2.CharacterBody.HandleConstructTurret += EngiTurretElements;
-            IL.EntityStates.Tanker.GreasePuddle.IgniteGrease.OnEnter += SolusScorcherPyro;
+            //IL.EntityStates.Tanker.GreasePuddle.IgniteGrease.OnEnter += SolusScorcherPyro;
+            IL.RoR2.CharacterModel.UpdateOverlays += OverlayHook;
+            IL.RoR2.CharacterModel.UpdateOverlayStates += OverlayHook;
         }
         // Right after IOnincomingDamageReceiver does its thing, since that's where many things (including bloom dendro cores) reject damage
         private static void TakeDamageIL(ILContext il)
@@ -539,6 +541,7 @@ namespace ElementalReactionsMod
                 Log.Error($"{il.Method.Name} IL FAILED");
             }
         }
+        // I don't know why this doesn't work. Adding pyro to these damn scorchers seems impossible
         private static void SolusScorcherPyro(ILContext il)
         {
             ILCursor c = new ILCursor(il);
@@ -554,6 +557,31 @@ namespace ElementalReactionsMod
                     }
                     return damageType;
                 });
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void OverlayHook(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            if (c.TryGotoNext(MoveType.After, x => x.MatchLdsfld(typeof(DLC2Content.Buffs), nameof(DLC2Content.Buffs.Frost)),
+                x => x.MatchCallOrCallvirt(typeof(CharacterBody), nameof(CharacterBody.HasBuff))))
+            {
+                // Turning HasBuff(Frost) into HasBuff(Frost) || HasBuff(superconductBuff)
+                Instruction end = c.Next;
+                c.Emit(OpCodes.Ldarg_0);
+                c.Emit<CharacterModel>(OpCodes.Ldfld, nameof(CharacterModel.body));
+                c.Emit(OpCodes.Ldsfld, typeof(Buffs).GetField("superconductBuff"));
+                // HasBuff defaults to buffIndex overload and I can't be bothered to pick the overload myself
+                c.Emit<BuffDef>(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(BuffDef), nameof(BuffDef.buffIndex)).Name);
+                c.Emit<CharacterBody>(OpCodes.Callvirt, nameof(CharacterBody.HasBuff));
+                c.Emit(OpCodes.Br, end);
+                c.Emit(OpCodes.Ldc_I4_1);
+                Instruction beforeEnd = c.Previous;
+                c.Index -= 7;
+                c.Emit(OpCodes.Brtrue, beforeEnd);
             }
             else
             {

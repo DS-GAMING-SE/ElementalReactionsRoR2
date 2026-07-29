@@ -14,11 +14,9 @@ namespace ElementalReactionsMod.Reactions
         public GameObject baseGameObject;
         public SphereCollider gravitateCollider;
         public ParticleSystem[] teamRecolorParticle;
-        private Deployable deployable;
         public void Awake()
         {
-            deployable = baseGameObject.GetComponent<Deployable>();
-            if (deployable)
+            if (NetworkServer.active && baseGameObject.TryGetComponent<Deployable>(out var deployable))
             {
                 deployable.onUndeploy.AddListener(LimitReached);
             }
@@ -64,14 +62,12 @@ namespace ElementalReactionsMod.Reactions
         }
         private void LimitReached()
         {
-            DestroyAfterTimer();
-        }
-        private IEnumerator DestroyAfterTimer()
-        {
-            yield return new WaitForSeconds(0.5f);
-            if (baseGameObject)
+            if (baseGameObject && baseGameObject.TryGetComponent<DestroyOnTimer>(out var destroy))
             {
-                GameObject.Destroy(baseGameObject);
+                if (destroy.duration - destroy.age >= 0.5f)
+                {
+                    destroy.age = destroy.duration - 0.5f;
+                }
             }
         }
     }

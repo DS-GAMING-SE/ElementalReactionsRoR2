@@ -2,6 +2,7 @@
 using ElementalReactionsMod.Loadout;
 using ElementalReactionsMod.Orbs;
 using HG;
+using Newtonsoft.Json.Utilities;
 using R2API;
 using RoR2;
 using RoR2.ContentManagement;
@@ -315,15 +316,9 @@ namespace ElementalReactionsMod.Items
         }
 
         private Run.FixedTimeStamp transformTimeStamp;
-        private ElementLoadoutComponent elementLoadout;
         private void OnEnable()
         {
             transformTimeStamp = Run.FixedTimeStamp.now + 1f;
-        }
-
-        private void Start()
-        {
-            elementLoadout = GetComponent<ElementLoadoutComponent>();
         }
 
         private void FixedUpdate()
@@ -399,13 +394,16 @@ namespace ElementalReactionsMod.Items
             Xoroshiro128Plus rng = new Xoroshiro128Plus(Run.instance.treasureRng.nextUlong);
             List<ItemDef> possibleDelusions = DelusionManager.delusionToElement.Keys.ToList();
             List<ItemDef> loadoutElements = new List<ItemDef>();
-            if (elementLoadout)
-            {
-                if (elementLoadout.primaryElement && elementLoadout.primaryElement.hasDelusion) loadoutElements.Add(elementLoadout.primaryElement.delusion);
-                if (elementLoadout.secondaryElement && elementLoadout.secondaryElement.hasDelusion) loadoutElements.Add(elementLoadout.secondaryElement.delusion);
-                if (elementLoadout.utilityElement && elementLoadout.utilityElement.hasDelusion) loadoutElements.Add(elementLoadout.utilityElement.delusion);
-                if (elementLoadout.specialElement && elementLoadout.specialElement.hasDelusion) loadoutElements.Add(elementLoadout.specialElement.delusion);
-            }
+
+            ElementDef element = ElementLoadoutComponent.GetElement(body, DamageSource.Primary);
+            if (element.hasDelusion) loadoutElements.AddDistinct(element.delusion);
+            element = ElementLoadoutComponent.GetElement(body, DamageSource.Secondary);
+            if (element.hasDelusion) loadoutElements.AddDistinct(element.delusion);
+            element = ElementLoadoutComponent.GetElement(body, DamageSource.Utility);
+            if (element.hasDelusion) loadoutElements.AddDistinct(element.delusion);
+            element = ElementLoadoutComponent.GetElement(body, DamageSource.Special);
+            if (element.hasDelusion) loadoutElements.AddDistinct(element.delusion);
+
             List<ItemDef> ownedDelusions = new List<ItemDef>();
             for (int i = 0; i < possibleDelusions.Count; i++)
             {
@@ -472,7 +470,7 @@ namespace ElementalReactionsMod.Items
                     {
                         attacker = null,
                         inflictor = null,
-                        damage = (StaticValues.delusionHealthPercentCost * body.inventory.GetItemCountEffective(element.delusion)) * body.healthComponent.fullHealth,
+                        damage = (StaticValues.delusionHealthPercentCost * body.inventory.GetItemCountEffective(element.delusion)) * body.healthComponent.combinedHealth,
                         damageType = DamageType.BypassArmor | DamageType.NonLethal,
                         position = body.corePosition,
                         crit = false,
