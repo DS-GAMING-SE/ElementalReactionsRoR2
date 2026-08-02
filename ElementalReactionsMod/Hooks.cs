@@ -62,9 +62,11 @@ namespace ElementalReactionsMod
         private static void TakeDamageIL(ILContext il)
         {
             ILCursor c = new ILCursor(il);
+            ILLabel damageNotRejected = null;
             if (c.TryGotoNext(x => x.MatchLdfld<HealthComponent>(nameof(HealthComponent.onIncomingDamageReceivers))) && 
-                c.TryGotoNext(MoveType.After, x => x.MatchBrfalse(out ILLabel falseBranch), x => x.MatchRet(), x => x.MatchLdloc(0)))
+                c.TryGotoNext(MoveType.After, x => x.MatchLdfld(typeof(DamageInfo), nameof(DamageInfo.rejected)), x => x.MatchBrfalse(out damageNotRejected)))
             {
+                c.Goto(damageNotRejected.Target, MoveType.After, true);
                 c.Emit(OpCodes.Ldarg_0); // healthcomponent
                 c.Emit(OpCodes.Ldarg_1); // damageInfo
                 c.EmitDelegate<Action<HealthComponent, DamageInfo>>((self, damage) =>
