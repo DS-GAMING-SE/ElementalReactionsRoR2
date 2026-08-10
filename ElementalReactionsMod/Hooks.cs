@@ -57,6 +57,11 @@ namespace ElementalReactionsMod
             //IL.EntityStates.Tanker.GreasePuddle.IgniteGrease.OnEnter += SolusScorcherPyro;
             IL.RoR2.CharacterModel.UpdateOverlays += OverlayHook;
             IL.RoR2.CharacterModel.UpdateOverlayStates += OverlayHook;
+            On.RoR2.CharacterBody.OnBuffFinalStackLost += RemoveReactionAuras;
+            IL.RoR2.DotController.UpdateDotVisuals += BurningVFX;
+            IL.RoR2.Stats.StatManager.OnCharacterDeath += DeathByBurningIsFieryDeath;
+            IL.RoR2.CharacterBody.RecalculateStats += BurningDisablesRegen;
+            IL.RoR2.Orbs.VineOrb.OnArrival += NoxiousThornAppliesElements;
         }
         // Right after IOnincomingDamageReceiver does its thing, since that's where many things (including bloom dendro cores) reject damage
         private static void TakeDamageIL(ILContext il)
@@ -588,6 +593,203 @@ namespace ElementalReactionsMod
             else
             {
                 Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+
+        private static void RemoveReactionAuras(On.RoR2.CharacterBody.orig_OnBuffFinalStackLost orig, CharacterBody self, BuffDef buff)
+        {
+            orig(self, buff);
+            if (NetworkServer.active && ReactionAuraBuffDef.elementToReactionAuras.TryGetValue(buff, out var reactionAuras))
+            {
+                foreach (BuffDef aura in reactionAuras)
+                {
+                    if (self.HasBuff(aura))
+                    {
+                        if (aura.isDOT)
+                        {
+                            Util.RemoveDot(DotController.FindDotController(self.gameObject), DotController.GetDotDefIndex(aura));
+                        }
+                        else
+                        {
+                            self.RemoveBuff(aura);
+                        }
+                    }
+                }
+            }
+        }
+        private static void BurningVFX(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            ILLabel burningFalse = null;
+            if (c.TryGotoNext(x => x.MatchLdarg(0),
+                x => x.MatchLdfld(typeof(DotController), nameof(DotController.burnEffectController))))
+            {
+                // Making it so the generic burn vfx plays if you have normal burn OR my burn
+                Instruction burnEffectSuccess = c.Next;
+                if (c.TryGotoPrev(x => x.MatchBrfalse(out burningFalse)))
+                {
+                    c.Emit(OpCodes.Brtrue, burnEffectSuccess);
+                    c.Emit(OpCodes.Ldarg_0);
+                    c.Emit(OpCodes.Ldsfld, typeof(Reactions.BurningDot).GetField("burningDot"));
+                    c.Emit<DotController>(OpCodes.Callvirt, nameof(DotController.HasDotActive));
+                }
+            }
+            else
+            {
+                Log.Error($"BurningVFX Burning IL FAILED");
+            }
+
+            if (c.TryGotoNext(x => x.MatchLdarg(0),
+                x => x.MatchLdfld(typeof(DotController), nameof(DotController.strongerBurnEffectController))))
+            {
+                // Making it so the generic burn vfx plays if you have normal burn OR my burn
+                Instruction burnEffectSuccess = c.Next;
+                if (c.TryGotoPrev(x => x.MatchBrfalse(out burningFalse)))
+                {
+                    c.Emit(OpCodes.Brtrue, burnEffectSuccess);
+                    c.Emit(OpCodes.Ldarg_0);
+                    c.Emit(OpCodes.Ldsfld, typeof(Reactions.BurningDot).GetField("strongBurningDot"));
+                    c.Emit<DotController>(OpCodes.Callvirt, nameof(DotController.HasDotActive));
+                }
+            }
+            else
+            {
+                Log.Error($"BurningVFX StrongBurning IL FAILED");
+            }
+        }
+        private static void DeathByBurningIsFieryDeath(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            int index = -1;
+            if (c.TryGotoNext(x => x.MatchCallOrCallvirt(typeof(DotController), nameof(DotController.FindDotController)), 
+                x => x.MatchStloc(out index)) &&
+                c.TryGotoNext(x => x.MatchLdcI4((int)DotController.DotIndex.Burn),
+                x => x.MatchCallOrCallvirt(typeof(DotController), nameof(DotController.HasDotActive))) &&
+                c.TryGotoNext(x => x.MatchStloc(out _)))
+            {
+                // For "number of deaths while burning" stat? I think Blast Shower's achievement cares? I dunno I just saw burn and joined in
+                c.Emit(OpCodes.Ldloc, index);
+                c.Emit(OpCodes.Ldsfld, typeof(Reactions.BurningDot).GetField("burningDot"));
+                c.Emit<DotController>(OpCodes.Callvirt, nameof(DotController.HasDotActive));
+                c.Emit(OpCodes.Or);
+                c.Emit(OpCodes.Ldloc, index);
+                c.Emit(OpCodes.Ldsfld, typeof(Reactions.BurningDot).GetField("strongBurningDot"));
+                c.Emit<DotController>(OpCodes.Callvirt, nameof(DotController.HasDotActive));
+                c.Emit(OpCodes.Or);
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void BurningDisablesRegen(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            ILLabel burningTrue = null;
+            if (c.TryGotoNext(x => x.MatchLdarg(0),
+                x => x.MatchLdsfld(typeof(RoR2Content.Buffs), nameof(RoR2Content.Buffs.OnFire)),
+                x => x.MatchCallOrCallvirt(typeof(CharacterBody), nameof(CharacterBody.HasBuff)),
+                x => x.MatchBrtrue(out burningTrue)) &&
+                c.TryGotoNext(x => x.MatchBrfalse(out _)))
+            {
+                // Making it so my burn also caps health regen at 0, like base game burn
+                c.Emit(OpCodes.Brtrue, burningTrue);
+                c.Emit(OpCodes.Ldarg_0);
+                c.Emit(OpCodes.Ldsfld, typeof(Buffs).GetField("burningBuff"));
+                // HasBuff defaults to buffIndex overload and I can't be bothered to pick the overload myself
+                c.Emit<BuffDef>(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(BuffDef), nameof(BuffDef.buffIndex)).Name);
+                c.Emit<CharacterBody>(OpCodes.Callvirt, nameof(CharacterBody.HasBuff));
+                c.Emit(OpCodes.Brtrue, burningTrue);
+                c.Emit(OpCodes.Ldarg_0);
+                c.Emit(OpCodes.Ldsfld, typeof(Buffs).GetField("strongBurningBuff"));
+                // HasBuff defaults to buffIndex overload and I can't be bothered to pick the overload myself
+                c.Emit<BuffDef>(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(BuffDef), nameof(BuffDef.buffIndex)).Name);
+                c.Emit<CharacterBody>(OpCodes.Callvirt, nameof(CharacterBody.HasBuff));
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        private static void NoxiousThornAppliesElements(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            int targetIndex = -1;
+            int buffDefIndex = -1;
+            if (c.TryGotoNext(x => x.MatchLdfld(typeof(HealthComponent), nameof(HealthComponent.body)),
+                x => x.MatchStloc(out targetIndex)) && // grabbing useful info
+                c.TryGotoNext(x => x.MatchCallOrCallvirt(typeof(BuffCatalog), nameof(BuffCatalog.GetBuffDef)),
+                x => x.MatchStloc(out buffDefIndex)) && // grabbing useful info
+                c.TryGotoNext(x => x.MatchCallOrCallvirt(typeof(CharacterBody), nameof(CharacterBody.AddTimedBuff))))
+            {
+                // Getting afterTimedBuffApplied so we can skip past adding the timed buff if the buff is an element
+                MatchForLoopEnd(ref c);
+
+                NoxiousThornApplyElementsAndSkipBuffs(ref c, targetIndex, buffDefIndex, 
+                    (target, buff, debuffInfo) =>
+                    {
+                        // If the buff is an element, use ApplyElement and skip the AddTimedBuff part
+                        int elementBuffIndex = Array.IndexOf(ElementCatalog.elementBuffs, buff);
+                        if (elementBuffIndex != -1)
+                        {
+                           ElementalReactionManager.ApplyElement(ElementCatalog.GetElementDef((ElementIndex)elementBuffIndex), target,
+                                debuffInfo.duration / (StaticValues.elementAppliedDuration * StaticValues.elementAppliedTaxMultiplier),
+                                debuffInfo.attacker);
+                           return true;
+                        }
+                        return false;
+                    });
+
+                if (c.TryGotoNext(x => x.MatchCallOrCallvirt(typeof(CharacterBody), nameof(CharacterBody.AddBuff))))
+                {
+                    MatchForLoopEnd(ref c);
+
+                    NoxiousThornApplyElementsAndSkipBuffs(ref c, targetIndex, buffDefIndex, 
+                        (target, buff, debuffInfo) =>
+                        {
+                            // If the buff is an element, use ApplyElement and skip the AddTimedBuff part
+                            int elementBuffIndex = Array.IndexOf(ElementCatalog.elementBuffs, buff);
+                            if (elementBuffIndex != -1)
+                            {
+                                ElementalReactionManager.ApplyElement(ElementCatalog.GetElementDef((ElementIndex)elementBuffIndex), target,
+                                    1f,
+                                    debuffInfo.attacker);
+                                return true;
+                            }
+                            return false;
+                        });
+                }
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
+            }
+        }
+        // This doesn't work, at least for permanent buffs. There can never be more than 1 element stack anyway, skip the for loop entirely?
+        private static void NoxiousThornApplyElementsAndSkipBuffs(ref ILCursor c, int targetIndex, int buffDefIndex, Func<CharacterBody, BuffDef, RoR2.Orbs.VineOrb.SplitDebuffInformation, bool> func)
+        {
+            ILLabel startOfSection = null;
+            Instruction forLoop = c.Next;
+            int debuffInfoIndex = -1;
+            if (c.TryGotoNext(x => x.MatchLdloc(out debuffInfoIndex),
+                x => x.MatchLdfld(typeof(RoR2.Orbs.VineOrb.SplitDebuffInformation), nameof(RoR2.Orbs.VineOrb.SplitDebuffInformation.count)),
+                x => x.MatchBlt(out startOfSection)))
+            {
+                
+                c.Goto(startOfSection.Target, MoveType.AfterLabel, true);
+
+                c.Emit(OpCodes.Ldloc, targetIndex);
+                c.Emit(OpCodes.Ldloc, buffDefIndex);
+                c.Emit(OpCodes.Ldloc, debuffInfoIndex);
+                c.EmitDelegate(func);
+                c.Emit(OpCodes.Brtrue, forLoop);
+            }
+        }
+        private static void MatchForLoopEnd(ref ILCursor c)
+        {
+            if (c.TryGotoNext(x => x.MatchLdloc(out _), x => x.MatchLdcI4(1), x => x.MatchAdd(), x => x.MatchStloc(out _), x => x.MatchLdloc(out _), x => x.MatchLdloc(out _), x => x.MatchLdfld(out _), x => x.MatchBlt(out _)))
+            {
+
             }
         }
     }

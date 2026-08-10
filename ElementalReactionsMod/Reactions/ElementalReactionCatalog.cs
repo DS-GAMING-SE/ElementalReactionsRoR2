@@ -10,6 +10,7 @@ using R2API;
 using HG;
 using ElementalReactionsMod.Elements;
 using Newtonsoft.Json.Utilities;
+using System.Runtime.CompilerServices;
 
 namespace ElementalReactionsMod.Reactions
 {
@@ -91,20 +92,27 @@ namespace ElementalReactionsMod.Reactions
                 stringBuilder = HG.StringBuilderPool.ReturnStringBuilder(stringBuilder);
             }
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ElementDef GetFirstReactableElement(ElementDef element, CharacterBody characterBody)
         {
+            return GetFirstReactableElement(element, characterBody, out _);
+        }
+        public static ElementDef GetFirstReactableElement(ElementDef element, CharacterBody characterBody, out int foundIndex, int startIndex = 0)
+        {
+            foundIndex = -1;
             if (characterBody)
             {
-                foreach (var item in ElementCatalog.elementCatalog)
+                for (foundIndex = startIndex; foundIndex < ElementCatalog.elementCatalog.Length; foundIndex++)
                 {
-                    if (characterBody.HasBuff(item.buff) && element.reactsWith[(int)item.index])
+                    if (characterBody.HasBuff(ElementCatalog.elementCatalog[foundIndex].buff) && element.reactsWith[foundIndex])
                     {
-                        return item;
+                        return ElementCatalog.elementCatalog[foundIndex];
                     }
                 }
             }
             return null;
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ElementIndex GetFirstReactableElement(ElementDef element, ElementIndex[] elements)
         {
             return elements.DefaultIfEmpty(ElementIndex.Physical).First(x => element.reactsWith[(int)x]);
@@ -118,7 +126,7 @@ namespace ElementalReactionsMod.Reactions
             }
             return null;
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ElementalReactionDef GetElementalReaction(ReactionIndex index)
         {
             return ArrayUtils.GetSafe(elementalReactionCatalog, (int)index);

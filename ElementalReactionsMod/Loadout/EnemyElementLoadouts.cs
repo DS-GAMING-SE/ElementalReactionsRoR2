@@ -173,6 +173,7 @@ namespace ElementalReactionsMod.Loadout
                 CreateLoadout("LampBody", pyroElement, pyroElement, pyroElement, pyroElement);
                 CreateLoadout("LampBossBody", pyroElement, pyroElement, pyroElement, pyroElement);
                 CreateLoadout("ClayMongerBody", hydroElement, hydroElement, hydroElement, hydroElement, hydroElement);
+                CreateLoadout("ShockDroneBody", electroElement, electroElement, electroElement, electroElement);
             }
             // Bootleg Bestiary
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("Skeletogne.BootlegBestiary"))
@@ -182,6 +183,8 @@ namespace ElementalReactionsMod.Loadout
             }
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(Sandswept.Main.ModGuid))
             {
+                CreateLoadout("InfernoDroneBody", pyroElement, pyroElement, pyroElement, pyroElement);
+                CreateLoadout("VoltaicDroneBody", electroElement, electroElement, electroElement, electroElement);
                 CreateLoadout("CannonJellyBody", physicalElement, physicalElement, physicalElement, physicalElement, pyroElement);
                 SandsweptSupport.AddElementToCannonballJellyfishDeath();
             }

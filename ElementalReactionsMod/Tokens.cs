@@ -49,7 +49,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_OVERLOAD_DESCRIPTION", $"{PyroText()} + {ElectroText()}. Create an explosion dealing {DamageValueText(overloadDamageCoefficient)}.");
 
             LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_NAME", "Electro-Charge");
-            LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_DESCRIPTION", $"{ElectroText()} + {HydroText()}. Create {DamageText("chain lightning")} that arcs between enemies affected by {HydroText()} for {DamageValueTextRepeat(electroChargeDamageCoefficient, Mathf.FloorToInt(electroChargeDuration))} over time.");
+            LanguageAPI.Add($"{prefix}REACTION_ELECTRO_CHARGE_DESCRIPTION", $"{ElectroText()} + {HydroText()}. While both elements persist, deal {DamageText($"{electroChargeDamageCoefficient * 100f}% damage per second")} and {DamageText("chain lightning")} between enemies affected by {HydroText()}.");
 
             LanguageAPI.Add($"{prefix}REACTION_FROZEN_NAME", "Frozen");
             LanguageAPI.Add($"{prefix}REACTION_FROZEN_DESCRIPTION", $"{CryoText()} + {HydroText()}. Briefly {UtilityText("freeze")} the target.");
@@ -64,7 +64,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_CRYSTALLIZE_DESCRIPTION", $"{GeoText()} + {PyroText()}/{HydroText()}/{ElectroText()}/{CryoText()}. Create a shard that grants you a {HealingText("temporary barrier")} for {HealingText(crystallizeBarrierPercent*100f+"%")} of your max health, up to {HealingText(crystallizeMaxBarrierPercent * 100f + "%")}.");
 
             LanguageAPI.Add($"{prefix}REACTION_BURNING_NAME", "Burning");
-            LanguageAPI.Add($"{prefix}REACTION_BURNING_DESCRIPTION", $"{DendroText()} + {PyroText()}. {DamageText("Ignite")} the target.");
+            LanguageAPI.Add($"{prefix}REACTION_BURNING_DESCRIPTION", $"{DendroText()} + {PyroText()}. While both elements persist, deal {DamageText($"{burningDamagePerSecond * 100f}% damage per second")}.");
 
             LanguageAPI.Add($"{prefix}REACTION_QUICKEN_NAME", "Quicken");
             LanguageAPI.Add($"{prefix}REACTION_QUICKEN_DESCRIPTION", $"{DendroText()} + {ElectroText()}. Increase damage dealt by all {DendroText()} or {ElectroText()} attacks by a flat {DamageText((quickenDamageAddCoefficient * 100f).ToString()+"% base damage")} for {UtilityText($"{quickenDuration}s")}.");
@@ -138,7 +138,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_PICKUP", "Upgrades the Hydro reactions between Electro, Dendro, and Geo into powerful Lunar Reactions.");
             QualitySupport.AddQualityLanguage($"MOON_WHEEL", true, $"Upgrades the Hydro reactions between Electro, Dendro, and Geo into powerful Lunar Reactions. {QualitySupport.qualityIcon} Lunar Reactions have a chance to double their effects.");
             string moonWheelDescIntro = $"Upgrades the {ElectroText("Electro-Charge")}, {DendroText("Bloom")}, and {GeoText("Hydro-Crystallize")} reactions into {DamageText("Lunar Reactions")} that can {DamageText("critically strike")}. Increases {DamageText("Lunar Reaction damage")} by {DamageText("0%")} {StackingText("(+" + moonWheelLunarDamagePerStack * 100f + "% per stack)")}.";
-            string moonWheelDescCharged = $"{ElectroText("Lunar-Charge")}: Continuously strike the target with lightning, dealing {DamageValueTextRepeat(lunarChargeDamageCoefficient, lunarChargeAttacksPerDot)}.";
+            string moonWheelDescCharged = $"{ElectroText("Lunar-Charge")}: While both elements persist, repeatedly strike the target with lightning for {DamageValueText(lunarChargeDamageCoefficient)}.";
             string moonWheelDescBloom = $"{DendroText("Lunar-Bloom")}: Create a {DendroText("Dendro Core")} and gain a {UtilityText("Verdant Dew")}, up to {UtilityText(lunarBloomVerdantDewCap.ToString())}. Dealing {DamageText("more than 400% damage")} while having {UtilityText(lunarBloomVerdantDewCap.ToString() + " Verdant Dews")} will consume them and increase the damage dealt by {DamageText((lunarBloomDamageMultiplier * 100) + "%")}.";
             string moonWheelDescCrystallize = $"{GeoText("Lunar-Crystallize")}: Create a Moondrift. Creating {UtilityText(lunarCrystallizeTriggersToAttack.ToString())} Moondrifts will fire them at nearby enemies, dealing {DamageValueTextRepeat(lunarCrystallizeDamageCoefficient, 3)}.";
             LanguageAPI.Add($"{prefix}ITEM_MOON_WHEEL_DESCRIPTION", $"{moonWheelDescIntro}\n\n{moonWheelDescCharged}\n{moonWheelDescBloom}\n{moonWheelDescCrystallize}");

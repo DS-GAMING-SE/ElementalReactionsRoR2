@@ -1,19 +1,21 @@
-﻿using RoR2;
+﻿using HG;
+using R2API;
+using RoR2;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using System.Linq;
-using R2API;
-using HG;
 
 namespace ElementalReactionsMod.Elements
 {
     public static class ElementCatalog
     {
         public static ElementDef[] elementCatalog = Array.Empty<ElementDef>();
+        public static BuffDef[] elementBuffs;
 
         public static ResourceAvailability availability = default(ResourceAvailability);
 
@@ -45,7 +47,7 @@ namespace ElementalReactionsMod.Elements
             string allElements = string.Concat(elementCatalog.Select(x => x.ToString() + "\n"));
             Log.Message("ElementDef(s) added to elementCatalog. elementCatalog now contains:\n" + allElements);
         }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ElementDef GetElementDef(ElementIndex index)
         {
             return ArrayUtils.GetSafe(elementCatalog, (int)index);
@@ -58,10 +60,11 @@ namespace ElementalReactionsMod.Elements
             {
                 elementIndexDamageTypeBits[i] = DamageAPI.ReserveDamageType();
             }
-
-            foreach (var element in elementCatalog)
+            elementBuffs = new BuffDef[elementCatalog.Length];
+            for (int i = 0; i < elementCatalog.Length; i++)
             {
-                element.reactsWith = new bool[elementCatalog.Length];
+                elementCatalog[i].reactsWith = new bool[elementCatalog.Length];
+                elementBuffs[i] = elementCatalog[i].buff;
             }
         }
     }

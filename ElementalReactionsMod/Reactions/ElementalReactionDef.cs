@@ -45,7 +45,7 @@ namespace ElementalReactionsMod.Reactions
         }
         public static ElementalReactionDef CreateElementalReactionDef(string internalName, string token, ElementDef baseElement, ElementDef reactingElement, bool showInLoadoutMenu = true)
         {
-            return CreateElementalReactionDef(internalName, token, baseElement, [reactingElement]);
+            return CreateElementalReactionDef(internalName, token, baseElement, [reactingElement], showInLoadoutMenu);
         }
 
         public static ElementalReactionDef CreateElementalReactionDef(string internalName, string token, ElementDef baseElement, ElementDef[] reactingElements, bool showInLoadoutMenu = true)
@@ -106,11 +106,15 @@ namespace ElementalReactionsMod.Reactions
             electroCharge = ElementalReactionDef.CreateElementalReactionDef("ElectroCharge", $"{ElementalReactionsPlugin.PREFIX}REACTION_ELECTRO_CHARGE", electroElement, hydroElement);
             electroCharge.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
-                if (victim && victim.healthComponent && victim.healthComponent.alive)
+                if (victim && victim.healthComponent && victim.healthComponent.alive && !victim.healthComponent.body.HasBuff(Buffs.electroChargeBuff))
                 {
-                    DotController.InflictDot(victim.gameObject, damage.attacker, damage.inflictedHurtbox, ElectroChargedDot.electroChargeDot, electroChargeDuration);
+                    DotController.InflictDot(victim.gameObject, damage.attacker, damage.inflictedHurtbox, ElectroChargedDot.electroChargeDot, float.MaxValue);
                 }
             };
+            electroCharge.baseFirstReactionCoefficient = 0f;
+            electroCharge.baseLastReactionCoefficient = 0f;
+            Buffs.electroChargeBuff.element1 = electroElement;
+            Buffs.electroChargeBuff.element2 = hydroElement;
 
             frozen = ElementalReactionDef.CreateElementalReactionDef("Frozen", $"{ElementalReactionsPlugin.PREFIX}REACTION_FROZEN", cryoElement, hydroElement);
             frozen.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
@@ -169,8 +173,28 @@ namespace ElementalReactionsMod.Reactions
             burning = ElementalReactionDef.CreateElementalReactionDef("Burning", $"{ElementalReactionsPlugin.PREFIX}REACTION_BURNING", dendroElement, pyroElement);
             burning.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
-                damage.damageType |= DamageType.IgniteOnHit;
+                if (victim && victim.healthComponent && !victim.healthComponent.body.HasBuff(Buffs.strongBurningBuff))
+                {
+                    int ignitionTank = 0;
+                    if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var characterBody)) ignitionTank = characterBody.inventory.GetItemCountEffective(DLC1Content.Items.StrengthenBurn);
+                    if ((victim.healthComponent.body.HasBuff(DLC2Content.Buffs.Oiled) || ignitionTank > 0))
+                    {
+                        Util.RemoveDot(DotController.FindDotController(victim.gameObject), BurningDot.burningDot);
+                        DotController.InflictDot(victim.gameObject, damage.attacker, damage.inflictedHurtbox, BurningDot.strongBurningDot, float.MaxValue,
+                            (1 + 3 * (victim.healthComponent.body.HasBuff(DLC2Content.Buffs.Oiled) ? 1 + ignitionTank : ignitionTank)));
+                    }
+                    else if (!victim.healthComponent.body.HasBuff(Buffs.burningBuff))
+                    {
+                        DotController.InflictDot(victim.gameObject, damage.attacker, damage.inflictedHurtbox, BurningDot.burningDot, float.MaxValue);
+                    }
+                }
             };
+            burning.baseFirstReactionCoefficient = 0f;
+            burning.baseLastReactionCoefficient = 0f;
+            Buffs.burningBuff.element1 = dendroElement;
+            Buffs.burningBuff.element2 = pyroElement;
+            Buffs.strongBurningBuff.element1 = dendroElement;
+            Buffs.strongBurningBuff.element2 = pyroElement;
 
             quicken = ElementalReactionDef.CreateElementalReactionDef("Quicken", $"{ElementalReactionsPlugin.PREFIX}REACTION_QUICKEN", dendroElement, electroElement);
             quicken.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
@@ -207,21 +231,24 @@ namespace ElementalReactionsMod.Reactions
             bloom.baseLastReactionCoefficient = 2f;
 
             #region Lunar Reactions
-            lunarCharge = ElementalReactionDef.CreateElementalReactionDef("LunarCharge", $"{ElementalReactionsPlugin.PREFIX}REACTION_LUNAR_CHARGE", electroElement, hydroElement);
+            lunarCharge = ElementalReactionDef.CreateElementalReactionDef("LunarCharge", $"{ElementalReactionsPlugin.PREFIX}REACTION_LUNAR_CHARGE", electroElement, hydroElement, false);
             lunarCharge.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
-                if (victim && victim.healthComponent && victim.healthComponent.alive)
+                if (victim && victim.healthComponent && victim.healthComponent.alive && !victim.healthComponent.body.HasBuff(Buffs.lunarChargeBuff))
                 {
-                    if (damage.attacker && !victim.healthComponent.body.HasBuff(Buffs.lunarChargeBuff))
+                    if (damage.attacker)
                     {
                         GenericElementEffectComponent.SpawnActivatedEffect(damage.attacker.transform, ParentEffectToItemDisplay.ItemDisplayParent.MoonWheel, electroElement.index, 0.7f, true);
                     }
-                    DotController.InflictDot(victim.gameObject, damage.attacker, damage.inflictedHurtbox, ElectroChargedDot.lunarChargeDot, lunarChargeDotDuration);
+                    DotController.InflictDot(victim.gameObject, damage.attacker, damage.inflictedHurtbox, ElectroChargedDot.lunarChargeDot, float.MaxValue);
                 }
             };
-            lunarCharge.showInLoadoutMenu = false;
+            lunarCharge.baseFirstReactionCoefficient = 0f;
+            lunarCharge.baseLastReactionCoefficient = 0f;
+            Buffs.lunarChargeBuff.element1 = electroElement;
+            Buffs.lunarChargeBuff.element2 = hydroElement;
 
-            lunarBloom = ElementalReactionDef.CreateElementalReactionDef("LunarBloom", $"{ElementalReactionsPlugin.PREFIX}REACTION_LUNAR_BLOOM", dendroElement, hydroElement);
+            lunarBloom = ElementalReactionDef.CreateElementalReactionDef("LunarBloom", $"{ElementalReactionsPlugin.PREFIX}REACTION_LUNAR_BLOOM", dendroElement, hydroElement, false);
             lunarBloom.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 bloom.TriggerReaction(element1, element2, victim, ref damage, ref addedDamage);
@@ -250,9 +277,8 @@ namespace ElementalReactionsMod.Reactions
             };
             lunarBloom.baseFirstReactionCoefficient = 0.5f;
             lunarBloom.baseLastReactionCoefficient = 2f;
-            lunarBloom.showInLoadoutMenu = false;
 
-            lunarCrystallize = ElementalReactionDef.CreateElementalReactionDef("LunarCrystallize", $"{ElementalReactionsPlugin.PREFIX}REACTION_LUNAR_CRYSTALLIZE", geoElement, hydroElement);
+            lunarCrystallize = ElementalReactionDef.CreateElementalReactionDef("LunarCrystallize", $"{ElementalReactionsPlugin.PREFIX}REACTION_LUNAR_CRYSTALLIZE", geoElement, hydroElement, false);
             lunarCrystallize.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
             {
                 if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var characterBody))
@@ -262,7 +288,6 @@ namespace ElementalReactionsMod.Reactions
             };
             lunarCrystallize.baseFirstReactionCoefficient = 0.5f;
             lunarCrystallize.baseLastReactionCoefficient = 0.5f;
-            lunarCrystallize.showInLoadoutMenu = false;
             #endregion
 
             ElementalReactionCatalog.AddElementalReactionDefs([vaporizeMelt, overload, electroCharge, frozen, superconduct, swirl, crystallize, burning, quicken, bloom, lunarCharge, lunarBloom, lunarCrystallize]);

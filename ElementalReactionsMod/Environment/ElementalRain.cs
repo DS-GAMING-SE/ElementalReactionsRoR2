@@ -194,7 +194,7 @@ namespace ElementalReactionsMod.Environment
             {
                 if (characterBodies[i] && (rainRaycastHitBuffer[i].colliderInstanceID == 0 || (colliderInstanceIDsToIgnore != null && colliderInstanceIDsToIgnore.Contains(rainRaycastHitBuffer[i].colliderInstanceID))))
                 {
-                    ElementalReactionManager.ApplyElement(element, characterBodies[i], 0.25f, null, false, 1f);
+                    ElementalReactionManager.ApplyElement(element, characterBodies[i], 0.33f, null, false, 0.9f);
                     characterBodies[i].AddTimedBuff(Buffs.elementalEnvironmentHiddenBuff.buffIndex, rainInterval * 1.5f);
                 }
             }

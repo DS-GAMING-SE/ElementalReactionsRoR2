@@ -234,14 +234,13 @@ namespace ElementalReactionsMod.Loadout
         {
             foreach (var survivor in SurvivorCatalog.allSurvivorDefs)
             {
-                string bodyName = BodyCatalog.GetBodyName(BodyCatalog.FindBodyIndex(survivor.bodyPrefab));
-                ElementDef[] config = Config.GetElementLoadoutFromConfig(bodyName, out var exists);
-                ElementLoadoutComponent loadout = survivor.bodyPrefab.EnsureComponent<ElementLoadoutComponent>();
-                if (exists)
+                //string bodyName = BodyCatalog.GetBodyName(BodyCatalog.FindBodyIndex(survivor.bodyPrefab));
+                survivor.bodyPrefab.EnsureComponent<ElementLoadoutComponent>();
+                /*if (exists)
                 {
                     loadout.ApplyElementLoadout(config);
-                }
-                if (bodyName == "EngiBody")
+                }*/
+                if (survivor.cachedName == "Engi")
                 {
                     survivor.bodyPrefab.AddComponent<EngineerTurretElements>();
                 }

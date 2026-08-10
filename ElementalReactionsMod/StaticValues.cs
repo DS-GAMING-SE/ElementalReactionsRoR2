@@ -25,7 +25,7 @@ namespace ElementalReactionsMod
         public const float overloadDamageCoefficient = 2.5f;
 
         public const float electroChargeDamageCoefficient = 1f;
-        public const float electroChargeDuration = 5f;
+        public const float electroChargeElementDurationReduction = 0.5f;
         public const float electroChargeRadius = 15f;
 
         public const float superconductDamageCoefficient = 1f;
@@ -36,6 +36,11 @@ namespace ElementalReactionsMod
 
         public const float quickenDamageAddCoefficient = 0.5f;
         public const float quickenDuration = 5f;
+
+        public const float burningDamagePerSecond = 1f;
+        public const float burningTimeBetweenAttacks = 0.2f;
+        public const float burningDamageCoefficient = burningDamagePerSecond * burningTimeBetweenAttacks;
+        public const float burningDendroDurationReduction = 0.2f;
 
         public const int crystallizeCap = 3;
         public const float crystallizeBarrierPercent = 0.12f;
@@ -77,8 +82,7 @@ namespace ElementalReactionsMod
 
         public const float lunarChargeDamageCoefficient = 6f;
         public const float lunarChargeTimeBetweenAttacks = 1.5f;
-        public const int lunarChargeAttacksPerDot = 4;
-        public const float lunarChargeDotDuration = lunarChargeTimeBetweenAttacks * lunarChargeAttacksPerDot;
+        public const float lunarChargeElementDurationReduction = 0.7f;
         public const float lunarChargeRadius = 6f;
         public const float lunarChargeEnemyDelay = 0.75f;
 

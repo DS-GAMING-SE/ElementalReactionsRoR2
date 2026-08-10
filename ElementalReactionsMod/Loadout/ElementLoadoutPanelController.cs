@@ -26,7 +26,6 @@ namespace ElementalReactionsMod.Loadout
 
         public BodyIndex bodyIndex;
         public string bodyName;
-        public ElementLoadoutComponent bodyElementLoadout;
 
         public UserProfile userProfile;
 
@@ -80,7 +79,6 @@ namespace ElementalReactionsMod.Loadout
             }
             this.bodyIndex = bodyIndex;
             this.bodyName = BodyCatalog.GetBodyName(bodyIndex);
-            this.bodyElementLoadout = BodyCatalog.GetBodyPrefab(bodyIndex).EnsureComponent<ElementLoadoutComponent>();
             this.Rebuild();
         }
 

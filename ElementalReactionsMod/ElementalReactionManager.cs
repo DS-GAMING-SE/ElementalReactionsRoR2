@@ -75,12 +75,13 @@ namespace ElementalReactionsMod
             UnloadAssets();
             SingletonHelper.Unassign(ref instance, this);
         }
-        public static void ApplyElement(ElementDef element, CharacterBody target, float procCoefficient = 1f, GameObject overrideAttacker = null, bool alwaysPersist = false, float overrideICD = -1)
+        public static void ApplyElement(ElementDef element, CharacterBody target, float elementGauge = 1f, GameObject overrideAttacker = null, bool alwaysPersist = false, float overrideICD = -1)
         {
             if (element && target)
             {
                 DamageInfo empty = new DamageInfo();
-                empty.procCoefficient = procCoefficient;
+                empty.procCoefficient = elementGauge;
+                empty.position = target.corePosition;
                 if (overrideAttacker) empty.attacker = overrideAttacker;
                 ApplyElement(element, target, ref empty, out _, alwaysPersist, overrideICD);
             }
@@ -88,33 +89,52 @@ namespace ElementalReactionsMod
         public static void ApplyElement(ElementDef element, CharacterBody target, ref DamageInfo damageInfo, out float addedDamage, bool alwaysPersist = false, float overrideICD = -1)
         {
             addedDamage = 0;
+            float appliedElementDuration = damageInfo.procCoefficient == float.MaxValue ? damageInfo.procCoefficient : StaticValues.elementAppliedDuration * damageInfo.procCoefficient;
             if (element && element != DefaultElementDefs.physicalElement && !target.HasBuff(element.cooldownBuff) && damageInfo.procCoefficient != 0)
             {
-                if (!TryTriggerReaction(element, target, ref damageInfo, ref addedDamage) && (element.canPersist || alwaysPersist))
+                TryTriggerReaction(element, target, ref appliedElementDuration, ref damageInfo, ref addedDamage, out bool applyElement);
+                if (applyElement && (element.canPersist || alwaysPersist))
                 {
-                    if (damageInfo.procCoefficient == float.MaxValue)
+                    if (appliedElementDuration == float.MaxValue)
                     {
                         target.AddBuff(element.buff);
                     }
                     else
                     {
-                        target.AddTimedBuff(element.buff, StaticValues.elementAppliedDuration * damageInfo.procCoefficient * StaticValues.elementAppliedTaxMultiplier);
+                        target.AddTimedBuff(element.buff, appliedElementDuration * StaticValues.elementAppliedTaxMultiplier);
                     }
                     target.AddTimedBuff(element.cooldownBuff, overrideICD > 0 ? overrideICD : StaticValues.elementAppliedICD);
                 }
             }
         }
-        private static bool TryTriggerReaction(ElementDef element, CharacterBody target, ref DamageInfo damageInfo, ref float addedDamage)
+        private static bool TryTriggerReaction(ElementDef element, CharacterBody target, ref float appliedElementDuration, ref DamageInfo damageInfo, ref float addedDamage, out bool applyTriggeringElement)
         {
-            ElementDef reacting = ElementalReactionCatalog.GetFirstReactableElement(element, target);
-            if (reacting)
+            applyTriggeringElement = true;
+            bool triggeredReaction = false;
+            int startIndex;
+            ElementDef reacting = ElementalReactionCatalog.GetFirstReactableElement(element, target, out startIndex);
+            while (reacting)
             {
                 ElementalReactionDef reaction = ElementalReactionCatalog.GetElementalReaction(element, reacting);
                 if (reaction)
                 {
-                    if (damageInfo.procCoefficient != float.MaxValue)
+                    onPreElementalReactionTriggered?.Invoke(ref reaction, reacting, element, target, ref damageInfo);
+                    float durationReduction = StaticValues.elementAppliedDuration * damageInfo.procCoefficient * (reacting == reaction.baseElement ? reaction.baseFirstReactionCoefficient : reaction.baseLastReactionCoefficient);
+                    if (appliedElementDuration != float.MaxValue)
                     {
-                        float remainingElementDuration = target.ReduceTimedBuffDuration(reacting.buff, StaticValues.elementAppliedDuration * damageInfo.procCoefficient * (reacting == reaction.baseElement ? reaction.baseFirstReactionCoefficient : reaction.baseLastReactionCoefficient));
+                        float remainingElementDuration = target.ReduceTimedBuffDuration(reacting.buff, durationReduction);
+                        if (durationReduction > 0)
+                        {
+                            applyTriggeringElement = false;
+                            if (remainingElementDuration == float.MaxValue)
+                            {
+                                appliedElementDuration = 0f;
+                            }
+                            else
+                            {
+                                appliedElementDuration -= durationReduction + remainingElementDuration;
+                            }
+                        }
                         if (remainingElementDuration == float.MaxValue)
                         {
                             target.RemoveBuff(reacting.buff);
@@ -125,7 +145,7 @@ namespace ElementalReactionsMod
                             target.AddTimedBuff(reacting.cooldownBuff, StaticValues.elementRemovedICD);
                         }
                     }
-                    else
+                    else if (durationReduction > 0)
                     {
                         target.ClearTimedBuffs(reacting.buff);
                         if (target.HasBuff(reacting.buff)) target.RemoveBuff(reacting.buff);
@@ -133,15 +153,16 @@ namespace ElementalReactionsMod
                     }
                     target.AddTimedBuff(element.cooldownBuff, StaticValues.elementAppliedICD);
 
+                    float proc = damageInfo.procCoefficient;
                     if (damageInfo.procCoefficient == float.MaxValue) damageInfo.procCoefficient = 1f;
-
-                    onPreElementalReactionTriggered?.Invoke(ref reaction, reacting, element, target, ref damageInfo);
                     reaction.TriggerReaction(reacting, element, target, ref damageInfo, ref addedDamage);
                     onElementalReactionTriggered?.Invoke(reaction, reacting, element, target, damageInfo);
-                    return true;
+                    damageInfo.procCoefficient = proc;
+                    triggeredReaction = true;
                 }
+                reacting = appliedElementDuration > Mathf.Epsilon ? ElementalReactionCatalog.GetFirstReactableElement(element, target, out startIndex, startIndex + 1) : null;
             }
-            return false;
+            return triggeredReaction;
         }
         // Lunar Wisp's secondary has damage falloff, so it doesn't always do enough damage to proc lunar bloom. Do something about this?
         private static void AddMoonWheelToLunarEnemies(SpawnCard.SpawnResult spawnResult)

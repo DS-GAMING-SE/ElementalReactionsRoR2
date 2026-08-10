@@ -39,7 +39,8 @@ namespace ElementalReactionsMod.Orbs
                 damageType = new DamageTypeCombo(),
                 procCoefficient = 0.5f,
                 teamIndex = attackerTeam,
-                speed = 90f
+                speed = 90f,
+                damageColorIndex = DamageColorIndex.Item
             };
             hyperbloomOrb.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
             OrbManager.instance.AddOrb(hyperbloomOrb);

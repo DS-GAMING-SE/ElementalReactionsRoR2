@@ -59,6 +59,7 @@ namespace ElementalReactionsMod.Orbs
                 isCrit = crit,
                 target = target,
                 damageType = new DamageTypeCombo(),
+                damageColorIndex = DamageColorIndex.Item,
                 procCoefficient = 1,
                 teamIndex = attacker.teamComponent.teamIndex,
                 speed = 100 + UnityEngine.Random.Range(0f, 10f)

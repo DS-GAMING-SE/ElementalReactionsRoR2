@@ -27,6 +27,7 @@ namespace ElementalReactionsMod.Orbs
                 isCrit = false,
                 damageValue = damage,
                 damageType = damageTypeCombo,
+                damageColorIndex = DamageColorIndex.Item,
                 canBounceOnSameTarget = false,
                 procCoefficient = 0,
                 bouncesRemaining = 0,

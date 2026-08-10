@@ -27,9 +27,20 @@ namespace ElementalReactionsMod
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
         public static void AddElementToCannonballJellyfishDeath()
         {
-            if (Sandswept.Enemies.CannonballJellyfish.CannonballJellyfish.JellyCoreProjectile.TryGetComponent<RoR2.Projectile.ProjectileDamage>(out var damage))
+            if (Sandswept.Enemies.CannonballJellyfish.CannonballJellyfish.JellyCoreProjectile && 
+                Sandswept.Enemies.CannonballJellyfish.CannonballJellyfish.JellyCoreProjectile.TryGetComponent<RoR2.Projectile.ProjectileDamage>(out var jellyDamage))
             {
-                damage.damageType.SetElement(DefaultElementDefs.pyroElement.index);
+                jellyDamage.damageType.SetElement(DefaultElementDefs.pyroElement.index);
+            }
+            if (Sandswept.Drones.Inferno.InfernoDrone.SigmaProjectile2 &&
+                Sandswept.Drones.Inferno.InfernoDrone.SigmaProjectile2.TryGetComponent<RoR2.Projectile.ProjectileDamage>(out var infernoDamage))
+            {
+                infernoDamage.damageType.SetElement(DefaultElementDefs.pyroElement.index);
+            }
+            if (Sandswept.Drones.Voltaic.VoltaicDrone.SpikeProjectile &&
+                Sandswept.Drones.Voltaic.VoltaicDrone.SpikeProjectile.TryGetComponent<RoR2.Projectile.ProjectileDamage>(out var voltaicDamage))
+            {
+                voltaicDamage.damageType.SetElement(DefaultElementDefs.electroElement.index);
             }
         }
     }

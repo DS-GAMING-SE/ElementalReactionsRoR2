@@ -28,7 +28,6 @@ namespace ElementalReactionsMod.Reactions
                 interval = 1f,
                 associatedBuff = Buffs.electroChargeBuff,
                 resetTimerOnAdd = false,
-                damageColorIndex = DamageColorIndex.Default
             }, null, null, ElectroChargedFireOrb);
             lunarChargeDot = DotAPI.RegisterDotDef(new DotController.DotDef
             {
@@ -36,7 +35,6 @@ namespace ElementalReactionsMod.Reactions
                 interval = StaticValues.lunarChargeTimeBetweenAttacks,
                 associatedBuff = Buffs.lunarChargeBuff,
                 resetTimerOnAdd = false,
-                damageColorIndex = DamageColorIndex.Default
             }, null, null, LunarChargedLightning);
         }
         public static void ElectroChargedFireOrb(DotController self, DotController.PendingDamage damage)
@@ -51,7 +49,7 @@ namespace ElementalReactionsMod.Reactions
                 damageInfo.inflictor = self.gameObject;
                 damageInfo.position = self.victimBody.corePosition;
                 damageInfo.procCoefficient = 0f;
-                damageInfo.damageColorIndex = DamageColorIndex.Default;
+                damageInfo.damageColorIndex = DamageColorIndex.Item;
                 damageInfo.damageType = new DamageTypeCombo(DamageType.DoT, DamageTypeExtended.Electrical, DamageSource.NoneSpecified);
                 damageInfo.damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
                 damageInfo.inflictedHurtbox = damage.hitHurtBox;
@@ -67,6 +65,9 @@ namespace ElementalReactionsMod.Reactions
                 HurtBox spreadTarget = search.GetHurtBoxes().FirstOrDefault(x => x.healthComponent && x.healthComponent != self.victimHealthComponent && x.healthComponent.alive &&
                     x.healthComponent.body.HasBuff(DefaultElementDefs.hydroElement.buff));
                 if (spreadTarget) ElectroChargedOrb.CreateOrb(search.origin, spreadTarget, damage.attackerObject, damage.totalDamage);
+
+                self.victimBody.ReduceTimedBuffDuration(DefaultElementDefs.hydroElement.buff, StaticValues.electroChargeElementDurationReduction);
+                self.victimBody.ReduceTimedBuffDuration(DefaultElementDefs.electroElement.buff, StaticValues.electroChargeElementDurationReduction);
             }
         }
         public static void LunarChargedLightning(DotController self, PendingDamage damage)
@@ -89,6 +90,9 @@ namespace ElementalReactionsMod.Reactions
                 {
                     ElementalReactionManager.CreateEnemyLunarChargeLightningStrike(damage.attackerObject, team, damage.totalDamage, attackerBody ? attackerBody.RollCrit() : false, damagePosition);
                 }
+
+                self.victimBody.ReduceTimedBuffDuration(DefaultElementDefs.hydroElement.buff, StaticValues.lunarChargeElementDurationReduction);
+                self.victimBody.ReduceTimedBuffDuration(DefaultElementDefs.electroElement.buff, StaticValues.lunarChargeElementDurationReduction);
             }
         }
         public static void CreateLunarChargedLightning(GameObject attacker, TeamIndex team, float damage, bool crit, Vector3 position)

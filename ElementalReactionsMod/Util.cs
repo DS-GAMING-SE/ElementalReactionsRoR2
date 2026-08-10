@@ -178,7 +178,7 @@ namespace ElementalReactionsMod
                     damageInfo.inflictor = attacker;
                     damageInfo.position = colliders[i].transform.position;
                     damageInfo.procCoefficient = StaticValues.genericReactionProcCoefficient;
-                    damageInfo.damageColorIndex = DamageColorIndex.Default;
+                    damageInfo.damageColorIndex = DamageColorIndex.Item;
                     damageInfo.damageType = damageType;
                     damageInfo.inflictedHurtbox = colliders[i].GetComponent<HurtBox>();
                     characterBody.healthComponent.TakeDamage(damageInfo);
@@ -278,6 +278,20 @@ namespace ElementalReactionsMod
             }
             if (item == Items.Items.moonWheel) count += inventory.GetItemCountEffective(Items.MoonWheel.hiddenMoonWheel);
             return count;
+        }
+
+        public static void RemoveDot(DotController dotController, DotController.DotIndex dot)
+        {
+            if (dotController && dot != DotController.DotIndex.None)
+            {
+                for (int i = 0; i < dotController.dotStackList.Count; i++)
+                {
+                    if (dotController.dotStackList[i].dotIndex == dot)
+                    {
+                        dotController.RemoveDotStackAtServer(i);
+                    }
+                }
+            }
         }
     }
 }

@@ -149,7 +149,7 @@ namespace ElementalReactionsMod
                 largeLines.SetTextureScale("_Cloud1Tex", new Vector2(2f, 4f));
                 largeLines.SetVector("_CutoffScroll", new Vector4(5f, 10f, -20f, 4f));
                 largeLines.SetInt("_ZTest", 0);
-                largeLines.SetFloat("_AlphaBoost", 0.09f);
+                largeLines.SetFloat("_AlphaBoost", 0.12f);
                 largeLines.DisableKeyword("DISABLEREMAP"); // THIS motherfucker breaks the fading away effect. TOOK ME LIKE A WEEK TO FIND THIS SHIT
 
                 var left = x.Result.transform.GetChild(0);
@@ -1162,6 +1162,8 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<Sprite> quickenBuffIcon = new AssetReferenceT<Sprite>("fd1a80b8adab48644bde7e4c5d73fd13");
             public static AssetReferenceT<Sprite> superconductBuffIcon = new AssetReferenceT<Sprite>("5fc2055e4d7c33348889a483e5a0df1b");
             public static AssetReferenceT<Sprite> electroChargeBuffIcon = new AssetReferenceT<Sprite>("151966ab1f5e45043ab88e997d14ae7d");
+            public static AssetReferenceT<Sprite> burningBuffIcon = new AssetReferenceT<Sprite>("07f9bcdadc51ff54a9482a26f941d757");
+            public static AssetReferenceT<Sprite> strongBurningBuffIcon = new AssetReferenceT<Sprite>("9593213da82837b4294c671776203bbf");
 
             public static AssetReferenceT<Texture> pyroIcon = new("13e481dbe51e4d640ad603f14cb6bfe9");
             public static AssetReferenceT<Texture> hydroIcon = new("3eb8865e5a13b7742b66a47fbdd2aee7");
