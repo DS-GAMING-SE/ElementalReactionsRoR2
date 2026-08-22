@@ -22,6 +22,9 @@ namespace ElementalReactionsMod
         public static BuffDefStockThresholdIcon lunarBloomBuff;
         public static BuffDef lunarCrystallizeBuff;
 
+        public static BuffDef stellarConductFieldBuff;
+        public static BuffDef stellarConductDebuff;
+
         public static BuffDef instructorsTeaCupQualityBase;
 
         public static BuffDef elementalEnvironmentHiddenBuff;
@@ -55,6 +58,10 @@ namespace ElementalReactionsMod
                 iconOverride = Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.lunarBloomBuffIcon).WaitForCompletion(), colorOverride = Color.white }];
 
             lunarCrystallizeBuff = Util.AddNewBuff("LunarCrystallizeMoondrift", null, Color.white, true, false, false, true);
+
+            stellarConductFieldBuff = Util.AddNewBuff("StellarConductField", null, Color.white, false, false, false, true);
+            stellarConductDebuff = Util.AddNewBuff("StellarConductReaction",
+                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.stellarConductBuffIcon).WaitForCompletion(), Color.white, true, true);
 
             elementalEnvironmentHiddenBuff = Util.AddNewBuff("HiddenElementalEnvironment", null, Color.white, false, false, false, true);
 

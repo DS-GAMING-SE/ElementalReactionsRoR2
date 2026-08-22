@@ -102,9 +102,16 @@ namespace ElementalReactionsMod
                             EffectManager.SimpleEffect(ElementalReactionManager.lunarBloomEffect.WaitForCompletion(), damage.inflictedHurtbox ? damage.inflictedHurtbox.transform.position : self.body.corePosition, Quaternion.identity, true);
                         }
 
-                        if (self.body.HasBuff(Buffs.superconductBuff) && element == DefaultElementDefs.physicalElement && !damage.damageType.HasModdedDamageType(DamageTypes.elementalReactionDamageType))
+                        if (element == DefaultElementDefs.physicalElement && !damage.damageType.HasModdedDamageType(DamageTypes.elementalReactionDamageType))
                         {
-                            damageIncreaseFromReactions += damage.damage * StaticValues.superconductDamageMultiplier;
+                            if (self.body.HasBuff(Buffs.superconductBuff))
+                            {
+                                damageIncreaseFromReactions += damage.damage * StaticValues.superconductDamageMultiplier;
+                            }
+                            if (self.body.HasBuff(Buffs.stellarConductDebuff))
+                            {
+                                damageIncreaseFromReactions += damage.damage * (StaticValues.stellarConductMinDamageMultiplier + (StaticValues.stellarConductDamageMultiplierPerStack * (self.body.GetBuffCount(Buffs.stellarConductDebuff) - 1)));
+                            }
                         }
                         else if (damage.damage > 0 && self.body.HasBuff(Buffs.quickenBuff) && attackerBody && (element == DefaultElementDefs.dendroElement || element == DefaultElementDefs.electroElement))
                         {
@@ -477,9 +484,16 @@ namespace ElementalReactionsMod
         private static void CreateLunarCrystallize(On.RoR2.CharacterBody.orig_OnBuffFirstStackGained orig, CharacterBody self, BuffDef buff)
         {
             orig(self, buff);
-            if (ElementalReactionManager.instance && buff == Buffs.lunarCrystallizeBuff)
+            if (ElementalReactionManager.instance)
             {
-                ElementalReactionManager.CreateLunarCrystallizeController(self);
+                if (buff == Buffs.lunarCrystallizeBuff)
+                {
+                    ElementalReactionManager.CreateLunarCrystallizeController(self);
+                }
+                if (buff == Buffs.stellarConductFieldBuff)
+                {
+                    ElementalReactionManager.CreateStellarConductField(self);
+                }
             }
         }
 

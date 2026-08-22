@@ -143,7 +143,7 @@ namespace ElementalReactionsMod
             };
             return blastAttack;
         }
-        public static void ManualBlastAttack(Vector3 origin, float radius, GameObject attacker, TeamIndex attackerTeam, float damage, bool crit, DamageTypeCombo damageType, bool friendlyFire, bool playerResist)
+        public static void ManualBlastAttack(Vector3 origin, float radius, GameObject attacker, TeamIndex attackerTeam, float damage, bool crit, DamageTypeCombo damageType, bool friendlyFire, bool playerResist, Action<CharacterBody> onHit = null)
         {
             Collider[] colliders;
             int overlapCount = HGPhysics.OverlapSphere(out colliders, origin, radius, LayerIndex.entityPrecise.mask, QueryTriggerInteraction.Collide);
@@ -184,6 +184,7 @@ namespace ElementalReactionsMod
                     characterBody.healthComponent.TakeDamage(damageInfo);
                     GlobalEventManager.instance.OnHitEnemy(damageInfo, characterBody.gameObject);
                     GlobalEventManager.instance.OnHitAll(damageInfo, characterBody.gameObject);
+                    onHit?.Invoke(characterBody);
                     hitHealthComponents[hitCount++] = characterBody.healthComponent;
                 }
             }
@@ -292,6 +293,10 @@ namespace ElementalReactionsMod
                     }
                 }
             }
+        }
+        public static Quaternion RandomForwardRotation()
+        {
+            return Quaternion.AngleAxis(UnityEngine.Random.Range(0, 360), Vector3.up);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TMPro;
 
 namespace ElementalReactionsMod
 {
@@ -93,6 +94,31 @@ namespace ElementalReactionsMod
         public const float lunarCrystallizeDamageCoefficient = 5f;
         public const float lunarCrystallizePlayerResistMultiplier = 0.25f;
         public const float lunarCrystallizeRadius = 50f;
+        #endregion
+
+        #region Stellar Linchpin / Stellar Reactions
+        public const float stellarLinchpinStellarDamagePerStack = 0.5f; // Maybe make charging faster if all stellar reactions involve charging?
+
+        public const float stellarConductDuration = 7f;
+        public const float stellarConductInterval = 4f;
+        public const float stellarConductMinDamage = 2f;
+        public const float stellarConductMinDamageMultiplier = superconductDamageMultiplier;
+        public const float stellarConductMaxDamage = 5f;
+        public const float stellarConductMaxDamageMultiplier = 2f;
+        public const float stellarConductFieldRadius = 40f;
+        public const float stellarConductFieldRadiusSqr = stellarConductFieldRadius * stellarConductFieldRadius;
+        public const int stellarConductMaxStacks = 10;
+        public const float stellarConductDamageMultiplierPerStack = (stellarConductMaxDamageMultiplier - stellarConductMinDamageMultiplier) / stellarConductMaxStacks;
+
+        public const float stellarSwirlMaxDuration = 3f;
+        public const float stellarSwirlChargeRadius = 40f;
+        public const float stellarSwirlChargeRadiusSqr = stellarSwirlChargeRadius * stellarSwirlChargeRadius;
+        public const int stellarSwirlUpgradeStacks = 3;
+        public const int stellarSwirlDetonateStacks = 6;
+        public const float stellarSwirlMinDamage = 5f;
+        public const float stellarSwirlMinRadius = 15f;
+        public const float stellarSwirlMaxDamage = 10f;
+        public const float stellarSwirlMaxRadius = 25f;
         #endregion
         #endregion
     }

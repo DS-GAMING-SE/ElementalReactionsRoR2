@@ -36,28 +36,6 @@ namespace ElementalReactionsMod.Items
             moonWheel.unlockableDef = Achievements.Unlockables.elementalMasteryUnlockableDef;
             hiddenMoonWheel = AddNewItem("HiddenMoonWheel", "MOON_WHEEL", false, null,
                 null, moonWheelPickupModel, null, ItemTag.CannotSteal, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.WorldUnique, ItemTag.IgnoreForDropList);
-
-            ElementalReactionManager.onPreElementalReactionTriggered += (ref reaction, element1, element2, victim, ref damage) =>
-            {
-                if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var attackerBody) && attackerBody.inventory && attackerBody.inventory.GetItemCountWithQuality(Items.moonWheel) > 0)
-                {
-                    if (reaction == DefaultElementalReactions.crystallize && (element1 == DefaultElementDefs.hydroElement || element2 == DefaultElementDefs.hydroElement))
-                    {
-                        reaction = DefaultElementalReactions.lunarCrystallize;
-                        return;
-                    }
-                    else if (reaction == DefaultElementalReactions.electroCharge)
-                    {
-                        reaction = DefaultElementalReactions.lunarCharge;
-                        return;
-                    }
-                    else if (reaction == DefaultElementalReactions.bloom)
-                    {
-                        reaction = DefaultElementalReactions.lunarBloom;
-                        return;
-                    }
-                }
-            };
         }
         public static ItemDisplayRuleDict InitializeItemDisplays()
         {

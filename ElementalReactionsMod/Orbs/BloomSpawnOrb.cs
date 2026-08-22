@@ -34,7 +34,7 @@ namespace ElementalReactionsMod.Orbs
                 damage = damage,
                 crit = false,
                 position = targetPosition,
-                rotation = Quaternion.identity,
+                rotation = Util.RandomForwardRotation(),
                 owner = owner
             });
         }

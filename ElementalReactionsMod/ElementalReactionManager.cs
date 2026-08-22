@@ -1,11 +1,15 @@
 ﻿using ElementalReactionsMod.Elements;
 using ElementalReactionsMod.Loadout;
 using ElementalReactionsMod.Reactions;
+using EntityStates.Ghoul;
 using Grumpy;
 using R2API.Networking.Interfaces;
 using RoR2;
 using RoR2.ContentManagement;
+using RoR2.Projectile;
+using Sandswept.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Unity.Jobs;
@@ -50,6 +54,11 @@ namespace ElementalReactionsMod
         public static AsyncOperationHandle<GameObject> lunarCrystallizeController;
         public static AsyncOperationHandle<GameObject> lunarCrystallizeActivatedEffect;
         public static ComponentPoolManager lunarCrystallizePool;
+        public static AsyncOperationHandle<GameObject> stellarConductField;
+        public static ComponentPoolManager stellarConductPool;
+        public static GameObject stellarSwirlProjectilePrefab;
+        public Stack<QueuedReactionInfo> queuedStellarSwirls = new Stack<QueuedReactionInfo>();
+        public Coroutine createStellarSwirl;
         #endregion
 
         public delegate void PreElementalReactionDelegate(ref ElementalReactionDef reaction, ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo);
@@ -61,7 +70,7 @@ namespace ElementalReactionsMod
         {
             SingletonHelper.Assign(ref instance, this);
             PreloadAssets();
-            SpawnCard.onSpawnedServerGlobal += AddMoonWheelToLunarEnemies;
+            SpawnCard.onSpawnedServerGlobal += AddReactionItemsToEnemies;
             //if (bloomPool == null) CreatePool(ref bloomPool, AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.bloomObject, AsyncReferenceHandleUnloadType.OnRunEnd).WaitForCompletion(), StaticValues.bloomCap);
             //if (crystallizePool == null) CreatePool(ref crystallizePool, AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.crystallizePickup, AsyncReferenceHandleUnloadType.OnRunEnd).WaitForCompletion(), StaticValues.crystallizeCap);
         }
@@ -71,7 +80,8 @@ namespace ElementalReactionsMod
             //crystallizePool.Kill();
             if (lunarChargeEnemyPool != null) lunarChargeEnemyPool.ResetPools();
             if (lunarCrystallizePool != null) lunarCrystallizePool.ResetPools();
-            SpawnCard.onSpawnedServerGlobal -= AddMoonWheelToLunarEnemies;
+            if (stellarConductPool != null) stellarConductPool.ResetPools();
+            SpawnCard.onSpawnedServerGlobal -= AddReactionItemsToEnemies;
             UnloadAssets();
             SingletonHelper.Unassign(ref instance, this);
         }
@@ -165,13 +175,16 @@ namespace ElementalReactionsMod
             return triggeredReaction;
         }
         // Lunar Wisp's secondary has damage falloff, so it doesn't always do enough damage to proc lunar bloom. Do something about this?
-        private static void AddMoonWheelToLunarEnemies(SpawnCard.SpawnResult spawnResult)
+        private static void AddReactionItemsToEnemies(SpawnCard.SpawnResult spawnResult)
         {
-            if (!Config.LunarEnemyLunarReactions().Value) return;
+            if (!Config.LunarEnemyLunarReactions().Value) return; // move this once stellar enemies are implemented
             CharacterMaster characterMaster = spawnResult.spawnedInstance ? spawnResult.spawnedInstance.GetComponent<CharacterMaster>() : null;
-            if (characterMaster && characterMaster.inventory && characterMaster.backupBodyIndex != BodyIndex.None && EnemyElementLoadouts.enemiesWithMoonWheel.Contains(characterMaster.backupBodyIndex) && characterMaster.inventory.GetItemCountPermanent(Items.MoonWheel.hiddenMoonWheel) == 0)
+            if (characterMaster && characterMaster.inventory && characterMaster.backupBodyIndex != BodyIndex.None)
             {
-                characterMaster.inventory.GiveItemPermanent(Items.MoonWheel.hiddenMoonWheel);
+                if (EnemyElementLoadouts.enemiesWithMoonWheel.Contains(characterMaster.backupBodyIndex) && characterMaster.inventory.GetItemCountPermanent(Items.MoonWheel.hiddenMoonWheel) == 0)
+                {
+                    characterMaster.inventory.GiveItemPermanent(Items.MoonWheel.hiddenMoonWheel);
+                }
             }
         }
 
@@ -193,6 +206,94 @@ namespace ElementalReactionsMod
             }
             LunarCrystallizeController lunarCrystallize = (LunarCrystallizeController)lunarCrystallizePool.GetPooledObject(lunarCrystallizeController.WaitForCompletion());
             lunarCrystallize.CreateLunarCrystallizeController(characterBody);
+        }
+
+        public static void CreateStellarConductField(CharacterBody characterBody)
+        {
+            if (stellarConductPool == null)
+            {
+                stellarConductPool = new ComponentPoolManager(1, 3, false, true);
+            }
+            StellarConduct stellarConduct = (StellarConduct)stellarConductPool.GetPooledObject(stellarConductField.WaitForCompletion());
+            stellarConduct.CreateStellarConductField(characterBody);
+        }
+
+        public static void QueueCreateStellarSwirl(CharacterBody attacker, Vector3 position, float proc)
+        {
+            if (!instance) return;
+
+            instance.queuedStellarSwirls.Push(new QueuedReactionInfo
+            {
+                attacker = attacker,
+                position = position,
+                team = attacker.teamComponent.teamIndex,
+                stacks = (byte)Mathf.CeilToInt(5 + (proc * 5f))
+            });
+            if (instance.createStellarSwirl == null) instance.createStellarSwirl = instance.StartCoroutine(instance.CreateStellarSwirl());
+        }
+        public IEnumerator CreateStellarSwirl()
+        {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+            List<QueuedReactionInfo> stellarSwirlInfo = MergeQueuedReactions(ref queuedStellarSwirls, StaticValues.stellarSwirlChargeRadiusSqr);
+            for (int i = 0; i < stellarSwirlInfo.Count; i++)
+            {
+                ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                {
+                    projectilePrefab = stellarSwirlProjectilePrefab,
+                    damage = stellarSwirlInfo[i].attacker.damage * StaticValues.stellarSwirlMinDamage,
+                    crit = stellarSwirlInfo[i].attacker.RollCrit(),
+                    position = stellarSwirlInfo[i].position,
+                    rotation = Util.RandomForwardRotation(),
+                    owner = stellarSwirlInfo[i].attacker.gameObject,
+                    comboNumber = stellarSwirlInfo[i].stacks
+                });
+            }
+            instance.createStellarSwirl = null;
+        }
+        public List<QueuedReactionInfo> MergeQueuedReactions(ref Stack<QueuedReactionInfo> queue, float mergeRadius)
+        {
+            List<QueuedReactionInfo> mergedReactions = new List<QueuedReactionInfo>();
+            bool merged = false;
+            for (int i = 0; i < queue.Count; i++)
+            {
+                QueuedReactionInfo reaction = queue.Pop();
+                merged = false;
+                for (int j = 0; j < mergedReactions.Count; j++)
+                {
+                    if (mergedReactions[j].team == reaction.team && (mergedReactions[j].position - reaction.position).sqrMagnitude <= mergeRadius)
+                    {
+                        mergedReactions[j] = new QueuedReactionInfo()
+                        {
+                            attacker = mergedReactions[j].attacker,
+                            position = mergedReactions[j].position,
+                            team = mergedReactions[j].team,
+                            stacks = (byte)(reaction.stacks + mergedReactions[j].stacks)
+                        };
+                        merged = true;
+                        break;
+                    }
+                }
+                if (!merged)
+                {
+                    mergedReactions.Add(new QueuedReactionInfo
+                    {
+                        attacker = reaction.attacker,
+                        position = reaction.position,
+                        team = reaction.team,
+                        stacks = reaction.stacks
+                    });
+                }
+            }
+            return mergedReactions;
+        }
+
+        public struct QueuedReactionInfo
+        {
+            public CharacterBody attacker;
+            public TeamIndex team;
+            public Vector3 position;
+            public byte stacks;
         }
 
         private static void PreloadAssets()
@@ -217,6 +318,7 @@ namespace ElementalReactionsMod
             lunarBloomEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarBloomEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             lunarCrystallizeController = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarCrystallizeController, AsyncReferenceHandleUnloadType.OnRunEnd);
             lunarCrystallizeActivatedEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarCrystallizeActivatedEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
+            stellarConductField = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.stellarConductFieldEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
         }
         private static void UnloadAssets()
         {
@@ -240,6 +342,7 @@ namespace ElementalReactionsMod
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarBloomEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarCrystallizeController);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarCrystallizeActivatedEffect);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.stellarConductFieldEffect);
         }
         #region Pooling Attempts
         public static void CreatePool(ref PrefabComponentPool<ElementalReactionPooledObject> pool, GameObject prefab, int baseCap)

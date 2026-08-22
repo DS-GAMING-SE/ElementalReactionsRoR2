@@ -169,6 +169,15 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_LUNAR_BLOOM_NAME", "Lunar-Bloom");
             LanguageAPI.Add($"{prefix}REACTION_LUNAR_CHARGE_NAME", "Lunar-Charge");
             LanguageAPI.Add($"{prefix}REACTION_LUNAR_CRYSTALLIZE_NAME", "Lunar-Crystallize");
+
+            LanguageAPI.Add($"{prefix}ITEM_STELLAR_LINCHPIN_NAME", "Stellar Linchpin");
+            LanguageAPI.Add($"{prefix}ITEM_STELLAR_LINCHPIN_PICKUP", "Upgrades the Cryo reactions between Electro and Anemo into powerful Stellar Reactions.");
+            string stellarLinchpinDescIntro = $"Upgrades the {ElectroText("Superconduct")} and {AnemoText("Cryo-Swirl")} reactions into {DamageText("Stellar Reactions")} that can {DamageText("critically strike")}. Increases {DamageText("Stellar Reaction damage")} by {DamageText("0%")} {StackingText("(+" + stellarLinchpinStellarDamagePerStack * 100f + "% per stack)")}.";
+            string stellarLinchpinDescConduct = $"{ElectroText("Stellar-Conduct")}: Convert the area around you into a Polestar Field. Dealing {ElectroText()} or {CryoText()} damage within the field stores the dissipated energy, which is then released every {UtilityText(stellarConductInterval + "s")} to deal {DamageValueText(stellarConductMinDamage, stellarConductMaxDamage)} and increase non-elemental damage by {DamageMultiplierText(stellarConductMinDamageMultiplier, stellarConductMaxDamageMultiplier)}.";
+            string stellarLinchpinDescSwirl = $"{AnemoText("Stellar Swirl")}: Create a Stellar Vortex which explodes after {UtilityText(stellarSwirlMaxDuration+"s")} dealing {DamageText($"{stellarSwirlMinDamage * 100f}%-{stellarSwirlMaxDamage * 100f}%")} {CryoText()} {DamageText("damage")} based on how many times {AnemoText("Stellar Swirl")} was triggered.";
+            LanguageAPI.Add($"{prefix}ITEM_STELLAR_LINCHPIN_DESCRIPTION", $"{stellarLinchpinDescIntro}\n\n{stellarLinchpinDescConduct}\n{stellarLinchpinDescSwirl}");
+            LanguageAPI.Add($"{prefix}REACTION_STELLAR_CONDUCT_NAME", "Stellar-Conduct");
+            LanguageAPI.Add($"{prefix}REACTION_STELLAR_SWIRL_NAME", "Stellar Swirl");
             #endregion
             #region Events
             LanguageAPI.Add($"{prefix}EVENT_ELEMENTAL_RAIN_HYDRO", "<style=cWorldEvent>The rain is rich with Hydro energy.</style>");
@@ -201,6 +210,10 @@ namespace ElementalReactionsMod
         public static string DamageMultiplierText(float value)
         {
             return $"<style=cIsDamage>{(value - 1) * 100}%</style>";
+        }
+        public static string DamageMultiplierText(float value, float value2)
+        {
+            return $"<style=cIsDamage>{(value - 1) * 100}%-{(value2 - 1) * 100}%</style>";
         }
         public static string DamageValueBaseText(float value)
         {

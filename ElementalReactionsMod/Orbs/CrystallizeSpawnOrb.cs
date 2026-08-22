@@ -29,7 +29,7 @@ namespace ElementalReactionsMod.Orbs
         public override void OnArrival()
         {
             base.OnArrival();
-            GameObject crystallize = GameObject.Instantiate(ElementalReactionManager.crystallizePickup.WaitForCompletion(), targetPosition, Quaternion.identity);
+            GameObject crystallize = GameObject.Instantiate(ElementalReactionManager.crystallizePickup.WaitForCompletion(), targetPosition, Util.RandomForwardRotation());
             if (owner) owner.AddDeployable(crystallize.GetComponent<Deployable>(), ElementalReactionManager.crystallizeDeployableSlot);
             if (crystallize) crystallize.GetComponent<TeamFilter>().teamIndex = team;
             NetworkServer.Spawn(crystallize);

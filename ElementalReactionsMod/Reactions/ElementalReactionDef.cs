@@ -6,12 +6,14 @@ using RoR2.Projectile;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 using static ElementalReactionsMod.ElementalReactionManager;
 using static ElementalReactionsMod.Elements.DefaultElementDefs;
 using static ElementalReactionsMod.StaticValues;
+using static UnityEngine.UI.GridLayoutGroup;
 
 namespace ElementalReactionsMod.Reactions
 {
@@ -82,6 +84,8 @@ namespace ElementalReactionsMod.Reactions
         public static ElementalReactionDef lunarCharge;
         public static ElementalReactionDef lunarBloom;
         public static ElementalReactionDef lunarCrystallize;
+        public static ElementalReactionDef stellarConduct;
+        public static ElementalReactionDef stellarSwirl;
 
         public static void Initialize()
         {
@@ -288,9 +292,39 @@ namespace ElementalReactionsMod.Reactions
             };
             lunarCrystallize.baseFirstReactionCoefficient = 0.5f;
             lunarCrystallize.baseLastReactionCoefficient = 0.5f;
+
+            stellarConduct = ElementalReactionDef.CreateElementalReactionDef("StellarConduct", $"{ElementalReactionsPlugin.PREFIX}REACTION_STELLAR_CONDUCT", cryoElement, electroElement, false);
+            stellarConduct.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
+            {
+                if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var characterBody))
+                {
+                    characterBody.AddTimedBuff(Buffs.stellarConductFieldBuff, stellarConductDuration, 1);
+                }
+            };
+
+
+            stellarSwirl = ElementalReactionDef.CreateElementalReactionDef("StellarSwirl", $"{ElementalReactionsPlugin.PREFIX}REACTION_STELLAR_SWIRL", anemoElement, cryoElement, false);
+            stellarSwirl.onElementalReactionTriggered += (element1, element2, victim, ref damage, ref addedDamage) =>
+            {
+                if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var attackerBody))
+                {
+                    List<StellarSwirlProjectile> projectiles = InstanceTracker.GetInstancesList<StellarSwirlProjectile>();
+                    for (int i = 0; i < projectiles.Count; i++)
+                    {
+                        if (projectiles[i].projectileController.teamFilter.teamIndex == attackerBody.teamComponent.teamIndex && (projectiles[i].transform.position - damage.position).sqrMagnitude <= stellarSwirlChargeRadiusSqr)
+                        {
+                            projectiles[i].AddStack(damage.procCoefficient, attackerBody.damage);
+                            return;
+                        }
+                    }
+                    QueueCreateStellarSwirl(attackerBody, damage.position + Vector3.up, damage.procCoefficient);
+                }
+            };
+            stellarSwirl.baseFirstReactionCoefficient = 0.5f;
+            stellarSwirl.baseLastReactionCoefficient = 0.5f;
             #endregion
 
-            ElementalReactionCatalog.AddElementalReactionDefs([vaporizeMelt, overload, electroCharge, frozen, superconduct, swirl, crystallize, burning, quicken, bloom, lunarCharge, lunarBloom, lunarCrystallize]);
+            ElementalReactionCatalog.AddElementalReactionDefs([vaporizeMelt, overload, electroCharge, frozen, superconduct, swirl, crystallize, burning, quicken, bloom, lunarCharge, lunarBloom, lunarCrystallize, stellarConduct, stellarSwirl]);
         }
     }
 }

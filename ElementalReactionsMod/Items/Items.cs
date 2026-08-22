@@ -26,15 +26,57 @@ namespace ElementalReactionsMod.Items
         public static ItemDef instructorsTeaCup => InstructorsTeaCup.instructorsTeaCup;
         public static ItemDef moonWheel => MoonWheel.moonWheel;
 
+        public static ItemDef stellarLinchpin => StellarLinchpin.stellarLinchpin;
+
         public static void Initialize()
         {
             InstructorsTeaCup.Initialize();
 
             MoonWheel.Initialize();
 
+            StellarLinchpin.Initialize();
+
             CharacterBody.onBodyInventoryChangedGlobal += AddItemBehaviours;
 
             ElementLoadoutComponent.Initialize();
+
+            ElementalReactionManager.onPreElementalReactionTriggered += (ref reaction, element1, element2, victim, ref damage) =>
+            {
+                if (damage.attacker && damage.attacker.TryGetComponent<CharacterBody>(out var attackerBody) && attackerBody.inventory)
+                {
+                    if (attackerBody.inventory.GetItemCountWithQuality(moonWheel) > 0)
+                    {
+                        if (reaction == DefaultElementalReactions.crystallize && (element1 == DefaultElementDefs.hydroElement || element2 == DefaultElementDefs.hydroElement))
+                        {
+                            reaction = DefaultElementalReactions.lunarCrystallize;
+                            return;
+                        }
+                        else if (reaction == DefaultElementalReactions.electroCharge)
+                        {
+                            reaction = DefaultElementalReactions.lunarCharge;
+                            return;
+                        }
+                        else if (reaction == DefaultElementalReactions.bloom)
+                        {
+                            reaction = DefaultElementalReactions.lunarBloom;
+                            return;
+                        }
+                    }
+                    if (attackerBody.inventory.GetItemCountEffective(stellarLinchpin) > 0)
+                    {
+                        if (reaction == DefaultElementalReactions.superconduct)
+                        {
+                            reaction = DefaultElementalReactions.stellarConduct;
+                            return;
+                        }
+                        if (reaction == DefaultElementalReactions.swirl && (element1 == DefaultElementDefs.cryoElement || element2 == DefaultElementDefs.cryoElement))
+                        {
+                            reaction = DefaultElementalReactions.stellarSwirl;
+                            return;
+                        }
+                    }
+                }
+            };
         }
         public static void AddItemBehaviours(CharacterBody characterBody)
         {

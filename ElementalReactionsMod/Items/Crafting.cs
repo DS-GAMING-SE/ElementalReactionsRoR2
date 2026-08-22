@@ -67,6 +67,23 @@ namespace ElementalReactionsMod.Items
                             type = IngredientTypeIndex.AssetReference
                         }
                     ]
+                },
+                new()
+                {
+                    amountToDrop = 4,
+                    ingredients =
+                    [
+                        new RecipeIngredient()
+                        {
+                            pickup = Items.stellarLinchpin,
+                            type = IngredientTypeIndex.AssetReference
+                        },
+                        new RecipeIngredient()
+                        {
+                            pickup = Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Scrap.ScrapWhite_asset).WaitForCompletion(),
+                            type = IngredientTypeIndex.AssetReference
+                        }
+                    ]
                 }
             ];
             Content.AddCraftableDef(instructorsTeaCup);

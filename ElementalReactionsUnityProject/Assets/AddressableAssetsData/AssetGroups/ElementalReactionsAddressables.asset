@@ -349,6 +349,22 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Common/Buff Icons/texBurningBuffIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 3a98b587b40795d4288d2cceaa468cb0
+    m_Address: Assets/ElementalReactionsAssets/Items/StellarLinchpin/StellarReactions/StellarConduct/texStellarconductBuffIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a664cb2ff07a9af48835473d1e36bf67
+    m_Address: Assets/ElementalReactionsAssets/Items/Common/Textures/texGlass.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 3582f5cfec013a54e8a0deef73c6ee3f
+    m_Address: Assets/ElementalReactionsAssets/Items/StellarLinchpin/StellarReactions/StellarSwirl/StellarSwirlVortex1.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: ca56d03c9feb98145b5d521a67107a3b
+    m_Address: Assets/ElementalReactionsAssets/Items/StellarLinchpin/StellarReactions/StellarConduct/StellarConductField.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:
