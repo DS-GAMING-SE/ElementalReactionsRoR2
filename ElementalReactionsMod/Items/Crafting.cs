@@ -67,7 +67,9 @@ namespace ElementalReactionsMod.Items
                             type = IngredientTypeIndex.AssetReference
                         }
                     ]
-                },
+                }
+#if DEBUG
+                ,
                 new()
                 {
                     amountToDrop = 4,
@@ -85,6 +87,7 @@ namespace ElementalReactionsMod.Items
                         }
                     ]
                 }
+#endif
             ];
             Content.AddCraftableDef(instructorsTeaCup);
             #region Delusion Conversion

@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.1.1
+- (Bug Fix) Fixed Superconduct increasing damage by 130% instead of 30%. Oops
+
 ## v1.1.0
 - (Rework) Reworked a few elemental reactions to function closer to how they do in the original game *and to enable triggering reactions more often*
 	- These reworks involve allowing multiple elements to persist on a target at once. You can now trigger multiple reactions at once when attacking a target with multiple elements on them

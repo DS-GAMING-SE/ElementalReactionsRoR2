@@ -1,9 +1,11 @@
-﻿using System;
+﻿using RoR2;
+using RoR2.Projectile;
+using Sandswept.Utils;
+using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using UnityEngine;
-using RoR2;
-using RoR2.Projectile;
 using UnityEngine.Networking;
 
 namespace ElementalReactionsMod.Reactions
@@ -11,13 +13,14 @@ namespace ElementalReactionsMod.Reactions
     [RequireComponent(typeof(ProjectileController))]
     [RequireComponent(typeof(ProjectileDamage))]
     [RequireComponent(typeof(ProjectileExplosion))]
-    public class StellarSwirlProjectile : MonoBehaviour
+    public class StellarSwirlProjectile : NetworkBehaviour
     {
         public ProjectileController projectileController;
         public ProjectileDamage projectileDamage;
         public ProjectileExplosion projectileExplosion;
         public float stacks;
         public bool upgraded;
+        private bool upgradedDirty;
         public float timer;
 
         public void Awake()
@@ -53,7 +56,6 @@ namespace ElementalReactionsMod.Reactions
             stacks += 0.5f + (proc * 0.5f);
             if (stacks >= StaticValues.stellarSwirlUpgradeStacks && !upgraded)
             {
-                upgraded = true;
                 Upgrade();
             }
             float damage = damageStat * (upgraded ? StaticValues.stellarSwirlMaxDamage : StaticValues.stellarSwirlMinDamage);
@@ -72,12 +74,32 @@ namespace ElementalReactionsMod.Reactions
         }
         public void Upgrade()
         {
+            upgraded = true;
+            upgradedDirty = true;
             projectileExplosion.SetExplosionRadius(StaticValues.stellarSwirlMaxRadius);
             if (projectileController.ghost)
             {
                 projectileController.ghost.emh.ReturnToPool();
             }
             // projectileController.ghost = upgraded projectile
+        }
+        public override bool OnSerialize(NetworkWriter writer, bool initialState)
+        {
+            if (upgradedDirty)
+            {
+                writer.Write(upgraded);
+                upgradedDirty = false;
+                return true;
+            }
+            return false;
+        }
+        public override void OnDeserialize(NetworkReader reader, bool initialState)
+        {
+            upgraded = reader.ReadBoolean();
+            if (upgraded)
+            {
+                Upgrade();
+            }
         }
     }
 }

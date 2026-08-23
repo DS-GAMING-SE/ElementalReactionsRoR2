@@ -48,6 +48,14 @@ namespace ElementalReactionsMod
                         return;
                     }
                 }
+                else if (effectComponent.effectData.modelChildIndex - 256 == (short)ItemDisplayParent.StellarLinchpin)
+                {
+                    if (effectComponent.effectData.rootObject && effectComponent.effectData.rootObject.TryGetComponent<StellarLinchpin.StellarLinchpinBehaviour>(out var stellarLinchpin) && stellarLinchpin.stellarLinchpinDisplay)
+                    {
+                        parentTransform = stellarLinchpin.stellarLinchpinDisplay.transform;
+                        return;
+                    }
+                }
             }
             parentTransform = null;
         }
@@ -62,7 +70,8 @@ namespace ElementalReactionsMod
         public enum ItemDisplayParent : short
         {
             Delusion = -2,
-            MoonWheel = -3
+            MoonWheel = -3,
+            StellarLinchpin = -4
         }
     }
 }

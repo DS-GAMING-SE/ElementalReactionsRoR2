@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TMPro;
-
-namespace ElementalReactionsMod
+﻿namespace ElementalReactionsMod
 {
     public static class StaticValues
     {
@@ -30,7 +25,7 @@ namespace ElementalReactionsMod
         public const float electroChargeRadius = 15f;
 
         public const float superconductDamageCoefficient = 1f;
-        public const float superconductDamageMultiplier = 1.3f;
+        public const float superconductDamageMultiplier = 0.3f;
         public const float superconductDuration = 5f;
 
         public const float swirlDamageCoefficient = 1.5f;
@@ -104,7 +99,7 @@ namespace ElementalReactionsMod
         public const float stellarConductMinDamage = 2f;
         public const float stellarConductMinDamageMultiplier = superconductDamageMultiplier;
         public const float stellarConductMaxDamage = 5f;
-        public const float stellarConductMaxDamageMultiplier = 2f;
+        public const float stellarConductMaxDamageMultiplier = 1f;
         public const float stellarConductFieldRadius = 40f;
         public const float stellarConductFieldRadiusSqr = stellarConductFieldRadius * stellarConductFieldRadius;
         public const int stellarConductMaxStacks = 10;

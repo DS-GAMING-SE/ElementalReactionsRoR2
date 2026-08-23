@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Editor\GetGUIDMenu.cs" />
+    <Compile Include="Assets\Editor\RemapTexCreator.cs" />
     <Compile Include="Assets\Editor\MeshThing.cs" />
   </ItemGroup>
   <ItemGroup>

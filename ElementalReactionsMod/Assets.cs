@@ -1020,9 +1020,41 @@ namespace ElementalReactionsMod
 
                 stellarConductController.starTransform = x.Result.transform.GetChild(0);
                 stellarConductController.starTransform.GetComponent<MeshRenderer>().sharedMaterials = [stellarStarInteriorMat, stellarStarExteriorMat];
+                var stellarConductLight = stellarConductController.starTransform.GetChild(1).gameObject.AddComponent<LightIntensityCurve>();
+                stellarConductLight.timeMax = 1f;
+                stellarConductLight.curve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
                 stellarConductController.radiusTransform = x.Result.transform.GetChild(1);
-                stellarConductController.radiusTransform.GetComponent<MeshRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Icicle.matIceAuraSphere_mat)).WaitForCompletion();
+                Material radiusAurora = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_ironalluvium2.matIA2Aurora_mat)).WaitForCompletion());
+                radiusAurora.SetTexture("_MainTex", AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX_ParticleMasks.texAlphaGradient2Mask_png)).WaitForCompletion());
+                radiusAurora.SetTextureScale("_MainTex", new Vector2(1f, 2f));
+                radiusAurora.SetTextureOffset("_MainTex", new Vector2(0f, 0.5f));
+                radiusAurora.SetTextureScale("_Cloud2Tex", new Vector2(2f, -1f));
+                radiusAurora.SetTextureOffset("_Cloud2Tex", new Vector2(0f, 0.2f));
+                radiusAurora.SetFloat("_Boost", 1f);
+                radiusAurora.SetColor("_TintColor", new Color(0.17f, 0.24f, 1f));
+                radiusAurora.EnableKeyword("FRESNEL");
+                radiusAurora.SetFloat("_FresnelPower", 0.3f);
+                stellarConductController.radiusTransform.GetComponent<MeshRenderer>().sharedMaterials = [AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BurnNearby.matHelfireRangeIndicator_mat)).WaitForCompletion(), radiusAurora];
                 stellarConductController.starTransform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Golem.matShockwave1_mat)).WaitForCompletion();
+                stellarConductController.radiusTransform.GetChild(0).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBrightTransparent_mat)).WaitForCompletion();
+            };
+
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.stellarConductDespawnEffect).Completed += x =>
+            {
+                EffectComponent effect = x.Result.AddComponent<EffectComponent>();
+                effect.positionAtReferencedTransform = true;
+                effect.parentToReferencedTransform = false;
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Medium;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+                vfx.DoNotPool = false;
+
+                x.Result.transform.GetChild(0).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser1_mat)).WaitForCompletion();
+                x.Result.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matDistortionFaded_mat)).WaitForCompletion();
+                x.Result.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = glassVFXMat;
+                x.Result.AddComponent<DestroyOnTimer>().duration = 1f;
+
+                AddNewEffectDef(x.Result);
             };
 
             ElementalReactionManager.stellarSwirlProjectilePrefab = PrefabAPI.CreateEmptyPrefab("StellarSwirlProjectile");
@@ -1063,6 +1095,10 @@ namespace ElementalReactionsMod
                 x.Result.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Mage.matMageIce_mat)).WaitForCompletion();
                 x.Result.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = glassVFXMat;
                 x.Result.transform.GetChild(5).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Golem.matShockwave1_mat)).WaitForCompletion();
+                var stellarSwirlRing = x.Result.transform.GetChild(6).GetComponent<ParticleSystemRenderer>();
+                stellarSwirlRing.sharedMaterial = new Material(genericRingMat);
+                stellarSwirlRing.sharedMaterial.SetColor("_TintColor", new Color(0.06f, 0.06f, 0.2f));
+                stellarSwirlRing.mesh = ringMesh;
             };
             #endregion
             #endregion
@@ -1350,6 +1386,7 @@ namespace ElementalReactionsMod
             #endregion
             #region Stellar Linchpin
             public static AssetReferenceT<GameObject> stellarConductFieldEffect = new("ca56d03c9feb98145b5d521a67107a3b");
+            public static AssetReferenceT<GameObject> stellarConductDespawnEffect = new("0b3f9079335809c4eaebdd3bf373333b");
             public static AssetReferenceT<Sprite> stellarConductBuffIcon = new("3a98b587b40795d4288d2cceaa468cb0");
 
             public static AssetReferenceT<GameObject> stellarSwirlVortex1Effect = new("3582f5cfec013a54e8a0deef73c6ee3f");

@@ -33,9 +33,9 @@ namespace ElementalReactionsMod.Items
             InstructorsTeaCup.Initialize();
 
             MoonWheel.Initialize();
-
+#if DEBUG
             StellarLinchpin.Initialize();
-
+#endif
             CharacterBody.onBodyInventoryChangedGlobal += AddItemBehaviours;
 
             ElementLoadoutComponent.Initialize();
@@ -62,6 +62,7 @@ namespace ElementalReactionsMod.Items
                             return;
                         }
                     }
+#if DEBUG
                     if (attackerBody.inventory.GetItemCountEffective(stellarLinchpin) > 0)
                     {
                         if (reaction == DefaultElementalReactions.superconduct)
@@ -75,6 +76,7 @@ namespace ElementalReactionsMod.Items
                             return;
                         }
                     }
+#endif
                 }
             };
         }

@@ -110,7 +110,7 @@ namespace ElementalReactionsMod.Reactions
         {
             if (initialized)
             {
-                Vector3 forward = camera.transform.forward;
+                Vector3 forward = (characterBody.corePosition - camera.transform.position).normalized;
                 forward.y = 0;
                 transform.SetPositionAndRotation(characterBody ? characterBody.corePosition : transform.position, Quaternion.LookRotation(forward));
             }

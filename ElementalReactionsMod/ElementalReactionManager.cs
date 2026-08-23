@@ -55,11 +55,14 @@ namespace ElementalReactionsMod
         public static AsyncOperationHandle<GameObject> lunarCrystallizeActivatedEffect;
         public static ComponentPoolManager lunarCrystallizePool;
         public static AsyncOperationHandle<GameObject> stellarConductField;
+        public static AsyncOperationHandle<GameObject> stellarConductDespawnEffect;
         public static ComponentPoolManager stellarConductPool;
         public static GameObject stellarSwirlProjectilePrefab;
         public Stack<QueuedReactionInfo> queuedStellarSwirls = new Stack<QueuedReactionInfo>();
         public Coroutine createStellarSwirl;
         #endregion
+
+        public static Action<ElementDef, CharacterBody, DamageInfo> onElementApplied;
 
         public delegate void PreElementalReactionDelegate(ref ElementalReactionDef reaction, ElementDef firstElement, ElementDef secondElement, CharacterBody victim, ref DamageInfo damageInfo);
         public static event PreElementalReactionDelegate onPreElementalReactionTriggered;
@@ -102,6 +105,7 @@ namespace ElementalReactionsMod
             float appliedElementDuration = damageInfo.procCoefficient == float.MaxValue ? damageInfo.procCoefficient : StaticValues.elementAppliedDuration * damageInfo.procCoefficient;
             if (element && element != DefaultElementDefs.physicalElement && !target.HasBuff(element.cooldownBuff) && damageInfo.procCoefficient != 0)
             {
+                onElementApplied?.Invoke(element, target, damageInfo);
                 TryTriggerReaction(element, target, ref appliedElementDuration, ref damageInfo, ref addedDamage, out bool applyElement);
                 if (applyElement && (element.canPersist || alwaysPersist))
                 {
@@ -248,6 +252,7 @@ namespace ElementalReactionsMod
                     owner = stellarSwirlInfo[i].attacker.gameObject,
                     comboNumber = stellarSwirlInfo[i].stacks
                 });
+                GenericElementEffectComponent.SpawnActivatedEffect(stellarSwirlInfo[i].attacker.transform, ParentEffectToItemDisplay.ItemDisplayParent.StellarLinchpin, DefaultElementDefs.anemoElement.index, 0.7f, true);
             }
             instance.createStellarSwirl = null;
         }
@@ -319,6 +324,7 @@ namespace ElementalReactionsMod
             lunarCrystallizeController = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarCrystallizeController, AsyncReferenceHandleUnloadType.OnRunEnd);
             lunarCrystallizeActivatedEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarCrystallizeActivatedEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             stellarConductField = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.stellarConductFieldEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
+            stellarConductDespawnEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.stellarConductDespawnEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
         }
         private static void UnloadAssets()
         {
@@ -343,6 +349,7 @@ namespace ElementalReactionsMod
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarCrystallizeController);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarCrystallizeActivatedEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.stellarConductFieldEffect);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.stellarConductDespawnEffect);
         }
         #region Pooling Attempts
         public static void CreatePool(ref PrefabComponentPool<ElementalReactionPooledObject> pool, GameObject prefab, int baseCap)

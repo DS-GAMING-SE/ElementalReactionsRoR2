@@ -55,7 +55,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}REACTION_FROZEN_DESCRIPTION", $"{CryoText()} + {HydroText()}. Briefly {UtilityText("freeze")} the target.");
 
             LanguageAPI.Add($"{prefix}REACTION_SUPERCONDUCT_NAME", "Superconduct");
-            LanguageAPI.Add($"{prefix}REACTION_SUPERCONDUCT_DESCRIPTION", $"{CryoText()} + {ElectroText()}. Create a blast of ice dealing {DamageValueText(superconductDamageCoefficient)} and increasing all non-elemental damage dealt by {DamageMultiplierText(superconductDamageMultiplier)} for {UtilityText($"{superconductDuration}s")}.");
+            LanguageAPI.Add($"{prefix}REACTION_SUPERCONDUCT_DESCRIPTION", $"{CryoText()} + {ElectroText()}. Create a blast of ice dealing {DamageValueText(superconductDamageCoefficient)} and increasing all non-elemental damage dealt by {DamageMultiplierText(superconductDamageMultiplier + 1f)} for {UtilityText($"{superconductDuration}s")}.");
 
             LanguageAPI.Add($"{prefix}REACTION_SWIRL_NAME", "Swirl");
             LanguageAPI.Add($"{prefix}REACTION_SWIRL_DESCRIPTION", $"{AnemoText()} + {PyroText()}/{HydroText()}/{ElectroText()}/{CryoText()}. Create a burst of wind, spreading the non-{AnemoText()} element for {DamageValueText(swirlDamageCoefficient)}.");
@@ -174,7 +174,7 @@ namespace ElementalReactionsMod
             LanguageAPI.Add($"{prefix}ITEM_STELLAR_LINCHPIN_PICKUP", "Upgrades the Cryo reactions between Electro and Anemo into powerful Stellar Reactions.");
             string stellarLinchpinDescIntro = $"Upgrades the {ElectroText("Superconduct")} and {AnemoText("Cryo-Swirl")} reactions into {DamageText("Stellar Reactions")} that can {DamageText("critically strike")}. Increases {DamageText("Stellar Reaction damage")} by {DamageText("0%")} {StackingText("(+" + stellarLinchpinStellarDamagePerStack * 100f + "% per stack)")}.";
             string stellarLinchpinDescConduct = $"{ElectroText("Stellar-Conduct")}: Convert the area around you into a Polestar Field. Dealing {ElectroText()} or {CryoText()} damage within the field stores the dissipated energy, which is then released every {UtilityText(stellarConductInterval + "s")} to deal {DamageValueText(stellarConductMinDamage, stellarConductMaxDamage)} and increase non-elemental damage by {DamageMultiplierText(stellarConductMinDamageMultiplier, stellarConductMaxDamageMultiplier)}.";
-            string stellarLinchpinDescSwirl = $"{AnemoText("Stellar Swirl")}: Create a Stellar Vortex which explodes after {UtilityText(stellarSwirlMaxDuration+"s")} dealing {DamageText($"{stellarSwirlMinDamage * 100f}%-{stellarSwirlMaxDamage * 100f}%")} {CryoText()} {DamageText("damage")} based on how many times {AnemoText("Stellar Swirl")} was triggered.";
+            string stellarLinchpinDescSwirl = $"{AnemoText("Stellar Swirl")}: Create a Stellar Vortex which explodes after {UtilityText(stellarSwirlMaxDuration+"s")} for {DamageText($"{stellarSwirlMinDamage * 100f}%")} {CryoText()} {DamageText("damage")}. Continuously triggering {AnemoText("Stellar Swirl")} will upgrade the vortex, dealing {DamageText((stellarSwirlMaxDamage * 100f)+"%")} in a larger radius.";
             LanguageAPI.Add($"{prefix}ITEM_STELLAR_LINCHPIN_DESCRIPTION", $"{stellarLinchpinDescIntro}\n\n{stellarLinchpinDescConduct}\n{stellarLinchpinDescSwirl}");
             LanguageAPI.Add($"{prefix}REACTION_STELLAR_CONDUCT_NAME", "Stellar-Conduct");
             LanguageAPI.Add($"{prefix}REACTION_STELLAR_SWIRL_NAME", "Stellar Swirl");
@@ -213,7 +213,7 @@ namespace ElementalReactionsMod
         }
         public static string DamageMultiplierText(float value, float value2)
         {
-            return $"<style=cIsDamage>{(value - 1) * 100}%-{(value2 - 1) * 100}%</style>";
+            return $"<style=cIsDamage>{(value) * 100}%-{(value2) * 100}%</style>";
         }
         public static string DamageValueBaseText(float value)
         {
