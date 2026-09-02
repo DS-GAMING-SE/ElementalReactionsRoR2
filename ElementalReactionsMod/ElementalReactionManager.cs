@@ -60,6 +60,7 @@ namespace ElementalReactionsMod
         public static GameObject stellarSwirlProjectilePrefab;
         public Stack<QueuedReactionInfo> queuedStellarSwirls = new Stack<QueuedReactionInfo>();
         public Coroutine createStellarSwirl;
+        public static AsyncOperationHandle<GameObject> stellarSwirlExplosion2Effect;
         #endregion
 
         public static Action<ElementDef, CharacterBody, DamageInfo> onElementApplied;
@@ -235,7 +236,7 @@ namespace ElementalReactionsMod
             });
             if (instance.createStellarSwirl == null) instance.createStellarSwirl = instance.StartCoroutine(instance.CreateStellarSwirl());
         }
-        public IEnumerator CreateStellarSwirl()
+        private IEnumerator CreateStellarSwirl()
         {
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
@@ -254,9 +255,10 @@ namespace ElementalReactionsMod
                 });
                 GenericElementEffectComponent.SpawnActivatedEffect(stellarSwirlInfo[i].attacker.transform, ParentEffectToItemDisplay.ItemDisplayParent.StellarLinchpin, DefaultElementDefs.anemoElement.index, 0.7f, true);
             }
+            instance.queuedStellarSwirls.Clear();
             instance.createStellarSwirl = null;
         }
-        public List<QueuedReactionInfo> MergeQueuedReactions(ref Stack<QueuedReactionInfo> queue, float mergeRadius)
+        private List<QueuedReactionInfo> MergeQueuedReactions(ref Stack<QueuedReactionInfo> queue, float mergeRadius)
         {
             List<QueuedReactionInfo> mergedReactions = new List<QueuedReactionInfo>();
             bool merged = false;
@@ -325,6 +327,7 @@ namespace ElementalReactionsMod
             lunarCrystallizeActivatedEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.lunarCrystallizeActivatedEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             stellarConductField = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.stellarConductFieldEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             stellarConductDespawnEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.stellarConductDespawnEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
+            stellarSwirlExplosion2Effect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.stellarSwirlExplosion2, AsyncReferenceHandleUnloadType.OnRunEnd);
         }
         private static void UnloadAssets()
         {
@@ -350,6 +353,7 @@ namespace ElementalReactionsMod
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.lunarCrystallizeActivatedEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.stellarConductFieldEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.stellarConductDespawnEffect);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.stellarSwirlExplosion2);
         }
         #region Pooling Attempts
         public static void CreatePool(ref PrefabComponentPool<ElementalReactionPooledObject> pool, GameObject prefab, int baseCap)

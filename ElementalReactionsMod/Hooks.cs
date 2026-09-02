@@ -104,14 +104,16 @@ namespace ElementalReactionsMod
 
                         if (element == DefaultElementDefs.physicalElement && !damage.damageType.HasModdedDamageType(DamageTypes.elementalReactionDamageType))
                         {
+                            float nonElementalDamageMult = 0f;
                             if (self.body.HasBuff(Buffs.superconductBuff))
                             {
-                                damageIncreaseFromReactions += damage.damage * StaticValues.superconductDamageMultiplier;
+                                nonElementalDamageMult += StaticValues.superconductDamageMultiplier;
                             }
                             if (self.body.HasBuff(Buffs.stellarConductDebuff))
                             {
-                                damageIncreaseFromReactions += damage.damage * (StaticValues.stellarConductMinDamageMultiplier + (StaticValues.stellarConductDamageMultiplierPerStack * (self.body.GetBuffCount(Buffs.stellarConductDebuff) - 1)));
+                                nonElementalDamageMult += StaticValues.stellarConductMinDamageMultiplier + (StaticValues.stellarConductDamageMultiplierPerStack * (self.body.GetBuffCount(Buffs.stellarConductDebuff) - 1));
                             }
+                            damageIncreaseFromReactions += damage.damage * nonElementalDamageMult;
                         }
                         else if (damage.damage > 0 && self.body.HasBuff(Buffs.quickenBuff) && attackerBody && (element == DefaultElementDefs.dendroElement || element == DefaultElementDefs.electroElement))
                         {

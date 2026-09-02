@@ -369,6 +369,34 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Items/StellarLinchpin/StellarReactions/StellarConduct/StellarConductDespawnEffect.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 03cb993ea9c2ea44aa2f3d18e0fcf2ff
+    m_Address: Assets/ElementalReactionsAssets/Items/StellarLinchpin/texRampCryoVision.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 498518fa76b7073429a95fa6f0a90359
+    m_Address: Assets/ElementalReactionsAssets/Items/StellarLinchpin/texStellarLinchpinItemIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 5807aa0e95fb5764ead5d7b371eff270
+    m_Address: Assets/ElementalReactionsAssets/Items/StellarLinchpin/PickupStellarLinchpin.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 6ae8c402fc850084fb4f208fe973f108
+    m_Address: Assets/ElementalReactionsAssets/Items/StellarLinchpin/DisplayStellarLinchpin.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a223aeabe95f088448b3a063bd071c08
+    m_Address: Assets/ElementalReactionsAssets/Items/StellarLinchpin/StellarReactions/StellarSwirl/StellarSwirlExplode1Effect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 475207226315fa240a4ff386cb91a008
+    m_Address: Assets/ElementalReactionsAssets/Items/StellarLinchpin/StellarReactions/StellarSwirl/StellarSwirlExplode2Effect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: ec70215390887e14d9ae4f05b50bb1c4
+    m_Address: Assets/ElementalReactionsAssets/Items/StellarLinchpin/texRampGlass.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

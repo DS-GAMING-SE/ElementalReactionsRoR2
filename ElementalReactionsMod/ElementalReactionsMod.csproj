@@ -13,6 +13,8 @@
 		</PackageReference>
 		
 		<PackageReference Include="BepInEx.Core" Version="5.4.21" />
+		
+		<PackageReference Include="R2API.Buffs" Version="1.0.0" />
 
 		<PackageReference Include="R2API.DamageType" Version="1.1.7" />
 

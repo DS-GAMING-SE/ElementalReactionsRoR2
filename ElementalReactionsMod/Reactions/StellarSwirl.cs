@@ -81,7 +81,8 @@ namespace ElementalReactionsMod.Reactions
             {
                 projectileController.ghost.emh.ReturnToPool();
             }
-            // projectileController.ghost = upgraded projectile
+            projectileExplosion.explosionEffect = ElementalReactionManager.stellarSwirlExplosion2Effect.WaitForCompletion();
+            // projectileController.ghost = EffectManager.GetAndActivatePooledEffect(ElementalReactionManager.stellarSwirlVortex2Effect, transform.position, transform.rotation);
         }
         public override bool OnSerialize(NetworkWriter writer, bool initialState)
         {

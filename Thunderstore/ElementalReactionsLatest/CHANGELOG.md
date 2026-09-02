@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.0.0
+- (New Item) Added the new Legendary item: **Stellar Linchpin**. This item upgrades the Cryo-Electro Superconduct reaction and the Cryo-Anemo Swirl reaction into powerful Stellar reactions
+
 ## v1.1.1
 - (Bug Fix) Fixed Superconduct increasing damage by 130% instead of 30%. Oops
 

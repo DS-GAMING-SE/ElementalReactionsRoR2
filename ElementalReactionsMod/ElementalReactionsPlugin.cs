@@ -18,6 +18,7 @@ using UnityEngine.AddressableAssets;
 [assembly: HG.Reflection.SearchableAttribute.OptIn]
 namespace ElementalReactionsMod
 {
+    [BepInDependency(BuffsAPI.PluginGUID)]
     [BepInDependency(ItemAPI.PluginGUID)]
     [BepInDependency(LanguageAPI.PluginGUID)]
     [BepInDependency(PrefabAPI.PluginGUID)]
@@ -38,7 +39,7 @@ namespace ElementalReactionsMod
         public const string PluginGUID = "com." + PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "ds_gaming";
         public const string PluginName = "ElementalReactions";
-        public const string PluginVersion = "1.1.1";
+        public const string PluginVersion = "2.0.0";
         public const string PREFIX = "DS_GAMING_ELEMENTAL_REACTIONS_";
 
         public static ElementalReactionsPlugin instance;

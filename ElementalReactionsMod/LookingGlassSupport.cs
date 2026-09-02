@@ -27,13 +27,14 @@ namespace ElementalReactionsMod
             if (Language.languagesByName.TryGetValue("en", out Language en))
             {
                 RegisterLookingGlassBuff(en, Buffs.quickenBuff, "Quicken", $"Increases {ElectroText()} and {DendroText()} base damage by {quickenDamageAddCoefficient * 100f}%.");
-                RegisterLookingGlassBuff(en, Buffs.superconductBuff, "Superconduct", $"Increases non-elemental damage by {(superconductDamageMultiplier - 1f) * 100f}%.");
+                RegisterLookingGlassBuff(en, Buffs.superconductBuff, "Superconduct", $"Increases non-elemental damage taken by {superconductDamageMultiplier * 100f}%.");
                 RegisterLookingGlassBuff(en, Buffs.electroChargeBuff, "Electro-Charged", $"Requires {ElectroText()} and {HydroText()}. Deals {DamageValueBaseText(electroChargeDamageCoefficient*100f)} per tick.");
                 RegisterLookingGlassBuff(en, Buffs.burningBuff, "Burning", $"Requires {DendroText()} and {PyroText()}. Deals {DamageValueBaseText(burningDamagePerSecond * 100f)} over time, and {HealthText("disables health regeneration")}."); // These are worded so differently. I'm just copying the normal burn descriptions
                 RegisterLookingGlassBuff(en, Buffs.strongBurningBuff, "Wild Burning", $"Requires {DendroText()} and {PyroText()}. A deadly burn with at least 4x effectiveness of the regular Burning reaction. Health regeneration is disabled.");
                 RegisterLookingGlassBuff(en, Buffs.delusionActiveBuff, "Delusion Activated", $"Decreases healing received by {HealthText(delusionHealingReceivedReduction * 100f + "%")}.");
                 RegisterLookingGlassBuff(en, Buffs.lunarChargeBuff, "Lunar-Charged", $"Requires {ElectroText()} and {HydroText()}. Deals {DamageValueBaseText(lunarChargeDamageCoefficient * 100f)} per tick.");
                 RegisterLookingGlassBuff(en, Buffs.lunarBloomBuff, "Verdant Dew", $"Consume three of this buff to increase your next hit of {DamageText("over 400% damage")} by {DamageText(lunarBloomDamageMultiplier * 100f + "%")}.");
+                RegisterLookingGlassBuff(en, Buffs.stellarConductDebuff, "Stellar-Conduct", $"Increases non-elemental damage taken by {stellarConductMinDamageMultiplier * 100f}%-{stellarConductMaxDamageMultiplier * 100f}%.");
             }
 
             ItemStatsDef teaCupStatsDef = new ItemStatsDef();

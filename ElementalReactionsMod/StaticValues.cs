@@ -102,14 +102,14 @@
         public const float stellarConductMaxDamageMultiplier = 1f;
         public const float stellarConductFieldRadius = 40f;
         public const float stellarConductFieldRadiusSqr = stellarConductFieldRadius * stellarConductFieldRadius;
-        public const int stellarConductMaxStacks = 10;
+        public const int stellarConductMaxStacks = 8;
         public const float stellarConductDamageMultiplierPerStack = (stellarConductMaxDamageMultiplier - stellarConductMinDamageMultiplier) / stellarConductMaxStacks;
 
         public const float stellarSwirlMaxDuration = 3f;
-        public const float stellarSwirlChargeRadius = 40f;
+        public const float stellarSwirlChargeRadius = stellarSwirlMinRadius;
         public const float stellarSwirlChargeRadiusSqr = stellarSwirlChargeRadius * stellarSwirlChargeRadius;
-        public const int stellarSwirlUpgradeStacks = 3;
-        public const int stellarSwirlDetonateStacks = 6;
+        public const int stellarSwirlUpgradeStacks = 2;
+        public const int stellarSwirlDetonateStacks = 4;
         public const float stellarSwirlMinDamage = 5f;
         public const float stellarSwirlMinRadius = 15f;
         public const float stellarSwirlMaxDamage = 10f;

@@ -19,6 +19,7 @@ namespace ElementalReactionsMod.Reactions
 
         public Transform starTransform;
         public Transform radiusTransform;
+        public ParticleSystem releaseParticle;
         private float radiusScaleVelocity;
         private Vector3 position;
         private Run.FixedTimeStamp nextReleaseTime;
@@ -42,7 +43,7 @@ namespace ElementalReactionsMod.Reactions
         {
             if (initialized)
             {
-                if (!characterBody || characterBody.GetBuffCount(Buffs.stellarConductFieldBuff) == 0)
+                if (!characterBody || !characterBody.HasBuff(Buffs.stellarConductFieldBuff))
                 {
                     PreReturnToPool();
                     ReturnToPool();
@@ -58,8 +59,11 @@ namespace ElementalReactionsMod.Reactions
 
         public void ReleaseEnergy()
         {
-            if (!NetworkServer.active) return;
             nextReleaseTime = Run.FixedTimeStamp.now + StaticValues.stellarConductInterval;
+            releaseParticle.Play();
+
+            if (!NetworkServer.active) return;
+
             DamageTypeCombo damageType = DamageType.AOE;
             damageType.AddModdedDamageType(DamageTypes.elementalReactionDamageType);
             damageType.AddModdedDamageType(DamageTypes.stellarDamageType);
@@ -87,8 +91,7 @@ namespace ElementalReactionsMod.Reactions
         {
             if (initialized)
             {
-                Vector3 forward = (characterBody.corePosition - camera.transform.position).normalized;
-                forward = Vector3.Cross(forward, Vector3.up);
+                Vector3 forward = camera.transform.right;
                 forward.y = 0;
                 starTransform.rotation = Quaternion.LookRotation(forward);
             }
@@ -102,7 +105,7 @@ namespace ElementalReactionsMod.Reactions
                     position = characterBody.corePosition + (Vector3.up * (characterBody.radius + 2f));
                     transform.position = position;
                 }
-                float num = Mathf.SmoothDamp(radiusTransform.localScale.x, 2f * StaticValues.stellarConductFieldRadius, ref radiusScaleVelocity, 0.5f);
+                float num = Mathf.SmoothDamp(radiusTransform.localScale.x, 2f * StaticValues.stellarConductFieldRadius, ref radiusScaleVelocity, 0.3f);
                 radiusTransform.localScale = new Vector3(num, num, num);
             }
         }

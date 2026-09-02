@@ -62,6 +62,11 @@ namespace ElementalReactionsMod
             stellarConductFieldBuff = Util.AddNewBuff("StellarConductField", null, Color.white, false, false, false, true);
             stellarConductDebuff = Util.AddNewBuff("StellarConductReaction",
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.stellarConductBuffIcon).WaitForCompletion(), Color.white, true, true);
+            stellarConductDebuff.stackingDisplayMethod = R2API.BuffsAPI.RegisterStackingDisplayMethod((buff) => 
+            {
+                RoR2.UI.BuffIcon.sharedStringBuilder.AppendInt(Mathf.RoundToInt((StaticValues.stellarConductMinDamageMultiplier + (StaticValues.stellarConductDamageMultiplierPerStack * (buff.buffCount - 1))) * 100f));
+                RoR2.UI.BuffIcon.sharedStringBuilder.Append("%"); 
+            });
 
             elementalEnvironmentHiddenBuff = Util.AddNewBuff("HiddenElementalEnvironment", null, Color.white, false, false, false, true);
 

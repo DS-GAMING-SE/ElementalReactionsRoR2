@@ -53,6 +53,7 @@ public class RemapTexCreator : EditorWindow
             TextureImporterPlatformSettings platformSettings = importer.GetDefaultPlatformTextureSettings();
             platformSettings.textureCompression = TextureImporterCompression.CompressedHQ;
             importer.SetPlatformTextureSettings(platformSettings);
+            importer.SaveAndReimport();
 
             Close();
         }

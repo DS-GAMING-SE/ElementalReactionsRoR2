@@ -24,29 +24,29 @@ namespace ElementalReactionsMod.Items
 
         public static void Initialize()
         {
-            stellarLinchpinMat = Assets.CreateVisionMaterial(cryoIcon, new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampWispSoul_png), 1.5f);
-            /*AssetAsyncReferenceManager<GameObject>.LoadAsset(moonWheelPickupModel).Completed += x =>
+            stellarLinchpinMat = Assets.CreateVisionMaterial(cryoIcon, stellarLinchpinVisionRamp, 2f);
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(stellarLinchpinPickupModel).Completed += x =>
             {
                 x.Result.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = stellarLinchpinMat;
                 AddModelPanelParameters(x.Result);
-            };*/
+            };
             stellarLinchpin = AddNewItem("StellarLinchpin", "STELLAR_LINCHPIN", true,
                 Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.Tier3Def_asset).WaitForCompletion(),
-                moonWheelItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), moonWheelPickupModel, InitializeItemDisplays(), ItemTag.Damage, ItemTag.CanBeTemporary, ItemTag.AllowedForUseAsCraftingIngredient, ItemTag.DevotionBlacklist);
+                stellarLinchpinItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), stellarLinchpinPickupModel, InitializeItemDisplays(), ItemTag.Damage, ItemTag.CanBeTemporary, ItemTag.AllowedForUseAsCraftingIngredient, ItemTag.DevotionBlacklist);
             hiddenStellarLinchpin = AddNewItem("HiddenStellarLinchpin", "STELLAR_LINCHPIN", false, null,
-                null, moonWheelPickupModel, null, ItemTag.CannotSteal, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.WorldUnique, ItemTag.IgnoreForDropList);
+                null, stellarLinchpinPickupModel, null, ItemTag.CannotSteal, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.WorldUnique, ItemTag.IgnoreForDropList);
         }
         public static ItemDisplayRuleDict InitializeItemDisplays()
         {
-            /*GameObject displayPrefab = AssetAsyncReferenceManager<GameObject>.LoadAsset(moonWheelDisplayModel).WaitForCompletion();
+            GameObject displayPrefab = AssetAsyncReferenceManager<GameObject>.LoadAsset(stellarLinchpinDisplayModel).WaitForCompletion();
             displayPrefab.AddComponent<StellarLinchpinDisplay>();
             displayPrefab.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = stellarLinchpinMat;
             CreateItemDisplay(displayPrefab, CreateItemRendererInfo(displayPrefab, 0, Assets.visionMaterial), CreateItemRendererInfo(displayPrefab, 1, stellarLinchpinMat));
-            */ItemDisplayRuleDict itemDisplays = new ItemDisplayRuleDict();
+            ItemDisplayRuleDict itemDisplays = new ItemDisplayRuleDict();
             /*itemDisplays.Add("CommandoBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "LowerArmL",
                 localPos = new Vector3(0.03206F, 0.23382F, -0.05406F),
                 localAngles = new Vector3(5.56553F, 0.75563F, 0.95463F),
@@ -55,7 +55,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("HuntressBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Chest",
                 localPos = new Vector3(-0.00073F, 0.20592F, 0.162F),
                 localAngles = new Vector3(331.3469F, 1.57845F, 1.41202F),
@@ -64,7 +64,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("Bandit2Body", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Hat",
                 localPos = new Vector3(-0.00262F, 0.11559F, 0.08425F),
                 localAngles = new Vector3(317.5828F, 353.8432F, 5.02905F),
@@ -73,7 +73,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("ToolbotBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Chest",
                 localPos = new Vector3(1.92758F, 1.8005F, 3.28254F),
                 localAngles = new Vector3(0F, 0F, 0F),
@@ -82,7 +82,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("EngiBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Chest",
                 localPos = new Vector3(0.45F, 0.48687F, -0.3F),
                 localAngles = new Vector3(0F, 87F, 0F),
@@ -91,7 +91,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("EngiTurretBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Head",
                 localPos = new Vector3(-0.61612F, 0.59652F, -1.31641F),
                 localAngles = new Vector3(0F, 39.04362F, 0F),
@@ -100,7 +100,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("EngiWalkerTurretBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Neck",
                 localPos = new Vector3(-0.7483F, 0.65663F, 0F),
                 localAngles = new Vector3(0F, 90F, 0F),
@@ -109,7 +109,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("MageBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Chest",
                 localPos = new Vector3(0.21887F, 0.2151F, -0.1934F),
                 localAngles = new Vector3(355F, 90F, 9F),
@@ -118,7 +118,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("MercBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "LowerArmR",
                 localPos = new Vector3(0.00603F, 0.16364F, -0.10984F),
                 localAngles = new Vector3(4.82814F, 0.91842F, 173.788F),
@@ -127,7 +127,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("TreebotBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "HeadBase",
                 localPos = new Vector3(-0.19751F, -0.42146F, 0.72772F),
                 localAngles = new Vector3(39.14164F, 349.3906F, 172.4279F),
@@ -136,7 +136,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("LoaderBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Chest",
                 localPos = new Vector3(-0.2F, 0.28F, 0.28F),
                 localAngles = new Vector3(0F, 0F, 0F),
@@ -145,7 +145,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("CrocoBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "SpineStomach1",
                 localPos = new Vector3(1.14943F, 0.2214F, 1.60011F),
                 localAngles = new Vector3(313.6886F, 121.8416F, 262.7798F),
@@ -155,7 +155,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("CaptainBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Head",
                 localPos = new Vector3(0.00498F, 0.27717F, 0.14714F),
                 localAngles = new Vector3(357.0426F, 359.8333F, 359.709F),
@@ -164,7 +164,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("RailgunnerBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Backpack",
                 localPos = new Vector3(-0.24508F, 0.12649F, -0.08851F),
                 localAngles = new Vector3(0F, 88F, 0F),
@@ -173,7 +173,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("VoidSurvivorBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "CannonEnd",
                 localPos = new Vector3(0.31781F, -0.10994F, 0.09012F),
                 localAngles = new Vector3(347.5417F, 246.9279F, 174.3385F),
@@ -182,7 +182,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("SeekerBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Pack",
                 localPos = new Vector3(-0.17127F, -0.10742F, -0.35991F),
                 localAngles = new Vector3(332.9016F, 29.06501F, 28.89558F),
@@ -192,7 +192,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("FalseSonBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Chest",
                 localPos = new Vector3(0.26695F, 0.18735F, 0.28028F),
                 localAngles = new Vector3(333.2034F, 20.23438F, 335.0917F),
@@ -201,7 +201,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("ChefBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Chest",
                 localPos = new Vector3(-0.0173F, -0.48905F, 0.33534F),
                 localAngles = new Vector3(58.64297F, 2.619F, 83.89237F),
@@ -210,7 +210,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("DroneTechBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Backpack",
                 localPos = new Vector3(-0.23746F, 0.30876F, -0.22503F),
                 localAngles = new Vector3(1.73688F, 8.40125F, 356.0705F),
@@ -219,7 +219,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("DrifterBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "BagBulgeRight",
                 localPos = new Vector3(0.02959F, -0.19342F, 0.30996F),
                 localAngles = new Vector3(331.3999F, 108.6055F, 68.72771F),
@@ -237,7 +237,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("ScavBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Backpack",
                 localPos = new Vector3(-8.30025F, 4.75887F, -0.11149F),
                 localAngles = new Vector3(21.86793F, 78.82794F, 354.8484F),
@@ -246,7 +246,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("NemCommandoBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Chest",
                 localPos = new Vector3(0.71209F, 0.88104F, -1.73658F),
                 localAngles = new Vector3(358.8832F, 353.9355F, 0.15805F),
@@ -255,7 +255,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("NemMercBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Chest",
                 localPos = new Vector3(0.15075F, 0.08836F, 0.13905F),
                 localAngles = new Vector3(1.75716F, 34.06154F, 1.90495F),
@@ -264,7 +264,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("Executioner2Body", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Chest",
                 localPos = new Vector3(-0.13895F, 0.1785F, 0.158F),
                 localAngles = new Vector3(351.9363F, 342.002F, 349.7007F),
@@ -273,7 +273,7 @@ namespace ElementalReactionsMod.Items
             itemDisplays.Add("ChirrBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
-                followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
+                followerPrefabAddress = new AssetReferenceGameObject(stellarLinchpinDisplayModel.AssetGUID),
                 childName = "Chest",
                 localPos = new Vector3(0.49649F, 0.61212F, 0.24153F),
                 localAngles = new Vector3(16.17279F, 282.3415F, 358.2969F),

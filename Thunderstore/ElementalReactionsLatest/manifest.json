@@ -1,6 +1,6 @@
 ﻿{
 	"name": "ElementalReactions",
-	"version_number": "1.1.1",
+	"version_number": "2.0.0",
 	"website_url": "https://github.com/DS-GAMING-SE/ElementalReactionsRoR2",
 	"description": "Adds Genshin Impact's Elemental Reaction system to RoR2",
 	"dependencies": [
@@ -14,6 +14,7 @@
 		"RiskofThunder-R2API_Deployable-1.0.1",
 		"RiskofThunder-R2API_Dot-1.1.2",
 		"RiskofThunder-R2API_TempVisualEffect-1.0.3",
-		"LordVGames-DamageSourceForEnemies-2.0.2"
+		"LordVGames-DamageSourceForEnemies-2.0.2",
+		"RiskofThunder-R2API_Buffs-1.0.0"
 	]
 }
