@@ -77,12 +77,11 @@ namespace ElementalReactionsMod.Reactions
             upgraded = true;
             upgradedDirty = true;
             projectileExplosion.SetExplosionRadius(StaticValues.stellarSwirlMaxRadius);
-            if (projectileController.ghost)
+            if (projectileController.ghost && projectileController.ghost.TryGetComponent<StellarSwirlProjectileGhost>(out var ghost))
             {
-                projectileController.ghost.emh.ReturnToPool();
+                ghost.Upgrade();
             }
             projectileExplosion.explosionEffect = ElementalReactionManager.stellarSwirlExplosion2Effect.WaitForCompletion();
-            // projectileController.ghost = EffectManager.GetAndActivatePooledEffect(ElementalReactionManager.stellarSwirlVortex2Effect, transform.position, transform.rotation);
         }
         public override bool OnSerialize(NetworkWriter writer, bool initialState)
         {
@@ -101,6 +100,32 @@ namespace ElementalReactionsMod.Reactions
             {
                 Upgrade();
             }
+        }
+    }
+    [RequireComponent(typeof(EffectManagerHelper))]
+    public class StellarSwirlProjectileGhost : MonoBehaviour
+    {
+        public ObjectScaleCurve starScaleCurve;
+        public ObjectScaleCurve orbScaleCurve;
+        public Renderer orbRenderer;
+        public static Material orbMaterial;
+        public static Material upgradedOrbMaterial;
+
+        private void Awake()
+        {
+            GetComponent<EffectManagerHelper>().OnEffectActivated += Reset;
+        }
+        private void Reset()
+        {
+            orbRenderer.material = orbMaterial;
+            orbScaleCurve.enabled = false;
+            starScaleCurve.enabled = false;
+        }
+        public void Upgrade()
+        {
+            orbRenderer.material = upgradedOrbMaterial;
+            starScaleCurve.enabled = true;
+            orbScaleCurve.enabled = true;
         }
     }
 }

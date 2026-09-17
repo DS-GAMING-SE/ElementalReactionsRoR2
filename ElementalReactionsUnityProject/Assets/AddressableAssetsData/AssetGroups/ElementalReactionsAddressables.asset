@@ -397,6 +397,10 @@ MonoBehaviour:
     m_Address: Assets/ElementalReactionsAssets/Items/StellarLinchpin/texRampGlass.png
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 7939116954ccdf140bf5f8da0ee87301
+    m_Address: Assets/ElementalReactionsAssets/Items/StellarLinchpin/texCryoVisionIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 333f03338c64a9f4e95953f046ca0319, type: 2}
   m_SchemaSet:

@@ -108,7 +108,7 @@ namespace ElementalReactionsMod.Reactions
 
         private void AdjustMoondriftsToPOV(SceneCamera camera)
         {
-            if (initialized)
+            if (initialized && characterBody)
             {
                 Vector3 forward = (characterBody.corePosition - camera.transform.position).normalized;
                 forward.y = 0;

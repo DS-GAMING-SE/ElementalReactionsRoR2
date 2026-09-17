@@ -31,7 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2599400325344831023}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!198 &8504400616707307671
 ParticleSystem:
@@ -4892,6 +4892,14 @@ PrefabInstance:
     - target: {fileID: 1002597567223901430, guid: a223aeabe95f088448b3a063bd071c08, type: 3}
       propertyPath: ColorModule.gradient.maxGradient.key3.a
       value: 0.54901963
+      objectReference: {fileID: 0}
+    - target: {fileID: 3736018398804749312, guid: a223aeabe95f088448b3a063bd071c08, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4488674139507800880, guid: a223aeabe95f088448b3a063bd071c08, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6097378507856350341, guid: a223aeabe95f088448b3a063bd071c08, type: 3}
       propertyPath: ShapeModule.radius.value

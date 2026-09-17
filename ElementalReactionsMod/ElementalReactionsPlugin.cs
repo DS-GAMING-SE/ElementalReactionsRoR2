@@ -14,6 +14,7 @@ using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using System.Diagnostics;
 
 [assembly: HG.Reflection.SearchableAttribute.OptIn]
 namespace ElementalReactionsMod
@@ -58,6 +59,7 @@ namespace ElementalReactionsMod
             ElementalReactionManager.bloomDeployableSlot = DeployableAPI.RegisterDeployableSlot((self, deployableCountMultiplier) => { return StaticValues.bloomCap; });
             ElementalReactionManager.crystallizeDeployableSlot = DeployableAPI.RegisterDeployableSlot((self, deployableCountMultiplier) => { return StaticValues.crystallizeCap; });
 
+            ShaderPropertyKeys.Initialize();
             Assets.Initialize();
 
             Buffs.Initialize();

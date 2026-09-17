@@ -91,7 +91,7 @@ namespace ElementalReactionsMod.Reactions
         {
             if (initialized)
             {
-                Vector3 forward = camera.transform.right;
+                Vector3 forward = camera.transform.forward;
                 forward.y = 0;
                 starTransform.rotation = Quaternion.LookRotation(forward);
             }
@@ -124,7 +124,7 @@ namespace ElementalReactionsMod.Reactions
         {
             base.PreReturnToPool();
             RoR2.Util.PlaySound("Stop_seeker_skill3_loop", gameObject);
-            EffectManager.SimpleEffect(ElementalReactionManager.stellarConductDespawnEffect.WaitForCompletion(), position, Quaternion.identity, false);
+            EffectManager.SimpleEffect(ElementalReactionManager.stellarConductDespawnEffect.WaitForCompletion(), position, starTransform.rotation, false);
             nextReleaseTime = Run.FixedTimeStamp.positiveInfinity;
             aimRequest?.Dispose();
             initialized = false;

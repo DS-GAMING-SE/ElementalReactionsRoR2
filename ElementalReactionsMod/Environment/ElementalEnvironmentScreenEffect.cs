@@ -18,9 +18,6 @@ namespace ElementalReactionsMod.Environment
 
         private bool dirty = true;
 
-        private static int tintColorKey = -1;
-        private static int alphaKey = -1;
-
         private const float alphaSpeed = 2.5f;
 
         private ElementIndex element;
@@ -28,8 +25,6 @@ namespace ElementalReactionsMod.Environment
 
         private void Start()
         {
-            if (tintColorKey == -1) { tintColorKey = Shader.PropertyToID("_TintColor"); }
-            if (alphaKey == -1) { alphaKey = Shader.PropertyToID("_ExternalAlpha"); }
             propertyBlock = new MaterialPropertyBlock();
         }
         public void SetElement(ElementDef element)
@@ -61,8 +56,8 @@ namespace ElementalReactionsMod.Environment
         private void SetProperty(ref MeshRenderer renderer)
         {
             propertyBlock.Clear();
-            propertyBlock.SetFloat(alphaKey, alpha);
-            propertyBlock.SetColor(tintColorKey, color);
+            propertyBlock.SetFloat(ShaderPropertyKeys.externalAlphaKey, alpha);
+            propertyBlock.SetColor(ShaderPropertyKeys.tintColorKey, color);
             renderer.SetPropertyBlock(propertyBlock);
         }
 
