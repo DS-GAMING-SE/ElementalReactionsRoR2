@@ -1142,6 +1142,25 @@ namespace ElementalReactionsMod
                 stellarSwirlRing.mesh = ringMesh;
             };
 
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.stellarSwirlSpawnEffect).Completed += x =>
+            {
+                EffectComponent effect = x.Result.AddComponent<EffectComponent>();
+                effect.positionAtReferencedTransform = true;
+                effect.parentToReferencedTransform = false;
+                VFXAttributes vfx = x.Result.AddComponent<VFXAttributes>();
+                vfx.vfxPriority = VFXAttributes.VFXPriority.Always;
+                vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
+                vfx.DoNotPool = false;
+                x.Result.AddComponent<DestroyOnTimer>().duration = 0.55f;
+
+                var stellarSwirlExplode1Ring = x.Result.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
+                stellarSwirlExplode1Ring.sharedMaterial = genericRingMat;
+                stellarSwirlExplode1Ring.mesh = ringMesh;
+                x.Result.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Items_ShockDamageAura.matDroneShockDamageGlowBurst_mat)).WaitForCompletion();
+
+                AddNewEffectDef(x.Result);
+            };
+
             EffectComponent effect = stellarSwirlExplosion.explosionEffect.AddComponent<EffectComponent>();
             effect.positionAtReferencedTransform = true;
             effect.parentToReferencedTransform = false;
@@ -1482,6 +1501,7 @@ namespace ElementalReactionsMod
             public static AssetReferenceT<Sprite> stellarConductBuffIcon = new("3a98b587b40795d4288d2cceaa468cb0");
 
             public static AssetReferenceT<GameObject> stellarSwirlVortex1Effect = new("3582f5cfec013a54e8a0deef73c6ee3f");
+            public static AssetReferenceT<GameObject> stellarSwirlSpawnEffect = new AssetReferenceT<GameObject>("d8505c0ae546c77469f3c07aaff270fb");
             public static AssetReferenceT<GameObject> stellarSwirlExplosion1 = new AssetReferenceT<GameObject>("a223aeabe95f088448b3a063bd071c08");
             public static AssetReferenceT<GameObject> stellarSwirlExplosion2 = new AssetReferenceT<GameObject>("475207226315fa240a4ff386cb91a008");
             #endregion

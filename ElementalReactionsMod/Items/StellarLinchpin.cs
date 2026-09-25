@@ -24,7 +24,7 @@ namespace ElementalReactionsMod.Items
 
         public static void Initialize()
         {
-            stellarLinchpinMat = Assets.CreateVisionMaterial(cryoIcon, stellarLinchpinVisionRamp, 2f, false);
+            stellarLinchpinMat = Assets.CreateVisionMaterial(stellarLinchpinVisionIcon, stellarLinchpinVisionRamp, 1.7f, false);
             AssetAsyncReferenceManager<GameObject>.LoadAsset(stellarLinchpinPickupModel).Completed += x =>
             {
                 x.Result.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = stellarLinchpinMat;

@@ -120,12 +120,14 @@ namespace ElementalReactionsMod.Reactions
             orbRenderer.material = orbMaterial;
             orbScaleCurve.enabled = false;
             starScaleCurve.enabled = false;
+            EffectManager.SimpleEffect(ElementalReactionManager.stellarSwirlSpawnEffect.WaitForCompletion(), transform.position, Quaternion.identity, false);
         }
         public void Upgrade()
         {
             orbRenderer.material = upgradedOrbMaterial;
             starScaleCurve.enabled = true;
             orbScaleCurve.enabled = true;
+            EffectManager.SpawnEffect(ElementalReactionManager.stellarSwirlSpawnEffect.WaitForCompletion(), new EffectData { origin = transform.position, scale = 1.2f }, false);
         }
     }
 }

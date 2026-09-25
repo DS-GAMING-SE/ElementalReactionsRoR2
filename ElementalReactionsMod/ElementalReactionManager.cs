@@ -61,6 +61,7 @@ namespace ElementalReactionsMod
         public Stack<QueuedReactionInfo> queuedStellarSwirls = new Stack<QueuedReactionInfo>();
         public Coroutine createStellarSwirl;
         public static AsyncOperationHandle<GameObject> stellarSwirlExplosion2Effect;
+        public static AsyncOperationHandle<GameObject> stellarSwirlSpawnEffect;
         #endregion
 
         public static Action<ElementDef, CharacterBody, DamageInfo> onElementApplied;
@@ -328,6 +329,7 @@ namespace ElementalReactionsMod
             stellarConductField = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.stellarConductFieldEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             stellarConductDespawnEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.stellarConductDespawnEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
             stellarSwirlExplosion2Effect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.stellarSwirlExplosion2, AsyncReferenceHandleUnloadType.OnRunEnd);
+            stellarSwirlSpawnEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(Assets.AssetReferences.stellarSwirlSpawnEffect, AsyncReferenceHandleUnloadType.OnRunEnd);
         }
         private static void UnloadAssets()
         {
@@ -354,6 +356,7 @@ namespace ElementalReactionsMod
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.stellarConductFieldEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.stellarConductDespawnEffect);
             AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.stellarSwirlExplosion2);
+            AssetAsyncReferenceManager<GameObject>.UnloadAsset(Assets.AssetReferences.stellarSwirlSpawnEffect);
         }
         #region Pooling Attempts
         public static void CreatePool(ref PrefabComponentPool<ElementalReactionPooledObject> pool, GameObject prefab, int baseCap)

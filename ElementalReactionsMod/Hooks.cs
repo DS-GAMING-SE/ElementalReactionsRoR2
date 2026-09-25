@@ -140,6 +140,10 @@ namespace ElementalReactionsMod
                         {
                             damage.damage *= 1 + (Math.Max(attackerBody.inventory.GetItemCountWithQuality(Items.Items.moonWheel) - 1, 0) * StaticValues.moonWheelLunarDamagePerStack);
                         }
+                        if (attackerBody && attackerBody.inventory && damage.damageType.HasModdedDamageType(DamageTypes.stellarDamageType))
+                        {
+                            damage.damage *= 1 + (Math.Max(attackerBody.inventory.GetItemCountWithQuality(Items.Items.stellarLinchpin) - 1, 0) * StaticValues.stellarLinchpinStellarDamagePerStack);
+                        }
                     }
                 });
             }

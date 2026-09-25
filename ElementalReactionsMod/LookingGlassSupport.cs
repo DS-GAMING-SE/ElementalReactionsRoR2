@@ -61,6 +61,18 @@ namespace ElementalReactionsMod
             };
             ItemDefinitions.RegisterItemStatsDef(moonWheelStatsDef, Items.Items.moonWheel.itemIndex);
 
+            ItemStatsDef stellarLinchpinStatsDef = new ItemStatsDef();
+            stellarLinchpinStatsDef.descriptions.Add("Bonus Damage: ");
+            stellarLinchpinStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Damage);
+            stellarLinchpinStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Percentage);
+            stellarLinchpinStatsDef.calculateValues = (master, stackCount) =>
+            {
+                List<float> values = new();
+                values.Add(stellarLinchpinStellarDamagePerStack * Mathf.Max(master.inventory.GetItemCountWithQuality(Items.Items.stellarLinchpin) - 1, 0));
+                return values;
+            };
+            ItemDefinitions.RegisterItemStatsDef(stellarLinchpinStatsDef, Items.Items.stellarLinchpin.itemIndex);
+
             ItemStatsDef delusionStatsDef = new ItemStatsDef();
             delusionStatsDef.descriptions.Add("Healing Reduction: ");
             delusionStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Death);
