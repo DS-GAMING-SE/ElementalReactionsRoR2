@@ -37,14 +37,14 @@ namespace ElementalReactionsMod.Items
             {
                 instructorsTeaCupMat.SetTexture("_FresnelMask", y.Result);
             };
-            AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampDroneFire_png)).Completed += y =>
+            AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_ColorRamps.texRampDroneFire_png)).Completed += y =>
             {
                 instructorsTeaCupMat.SetTexture("_FresnelRamp", y.Result);
             };
 
             instructorsTeaCup = AddNewItem("InstructorsTeaCup", "INSTRUCTORS_TEA_CUP", true,
-                Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.Tier1Def_asset).WaitForCompletion(),
-                instructorsTeaCupItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), instructorsTeaCupPickupModel, InitializeItemDisplays(instructorsTeaCupMat), ItemTag.Damage, ItemTag.CanBeTemporary);
+                Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common.Tier1Def_asset).WaitForCompletion(),
+                instructorsTeaCupItemIcon, instructorsTeaCupPickupModel, InitializeItemDisplays(instructorsTeaCupMat), ItemTag.Damage, ItemTag.CanBeTemporary, ItemTag.CanBeRental);
         }
         public static ItemDisplayRuleDict InitializeItemDisplays(Material mat)
         {

@@ -124,6 +124,7 @@ namespace ElementalReactionsMod.Reactions
         {
             base.PreReturnToPool();
             RoR2.Util.PlaySound("Stop_seeker_skill3_loop", gameObject);
+            RoR2.Util.PlaySound("Play_char_glass_death", gameObject);
             EffectManager.SimpleEffect(ElementalReactionManager.stellarConductDespawnEffect.WaitForCompletion(), position, starTransform.rotation, false);
             nextReleaseTime = Run.FixedTimeStamp.positiveInfinity;
             aimRequest?.Dispose();

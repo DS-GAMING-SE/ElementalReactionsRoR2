@@ -18,7 +18,7 @@ namespace ElementalReactionsMod.Loadout
         private bool loadoutSet;
         public static void Initialize()
         {
-            Addressables.LoadAssetAsync<GameObject>(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Core.PlayerMaster_prefab)).WaitForCompletion().AddComponent<MasterElementLoadout>();
+            Addressables.LoadAssetAsync<GameObject>(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Core.PlayerMaster_prefab)).WaitForCompletion().AddComponent<MasterElementLoadout>();
         }
 
         public void Awake()

@@ -31,8 +31,8 @@ namespace ElementalReactionsMod.Items
                 AddModelPanelParameters(x.Result);
             };
             moonWheel = AddNewItem("MoonWheel", "MOON_WHEEL", true,
-                Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.Tier3Def_asset).WaitForCompletion(),
-                moonWheelItemIcon.LoadAssetAsync<Sprite>().WaitForCompletion(), moonWheelPickupModel, InitializeItemDisplays(), ItemTag.Damage, ItemTag.CanBeTemporary, ItemTag.AllowedForUseAsCraftingIngredient, ItemTag.DevotionBlacklist);
+                Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common.Tier3Def_asset).WaitForCompletion(),
+                moonWheelItemIcon, moonWheelPickupModel, InitializeItemDisplays(), ItemTag.Damage, ItemTag.CanBeTemporary, ItemTag.AllowedForUseAsCraftingIngredient, ItemTag.DevotionBlacklist, ItemTag.CanBeRental);
             moonWheel.unlockableDef = Achievements.Unlockables.elementalMasteryUnlockableDef;
             hiddenMoonWheel = AddNewItem("HiddenMoonWheel", "MOON_WHEEL", false, null,
                 null, moonWheelPickupModel, null, ItemTag.CannotSteal, ItemTag.CannotCopy, ItemTag.CannotDuplicate, ItemTag.WorldUnique, ItemTag.IgnoreForDropList);
@@ -94,8 +94,8 @@ namespace ElementalReactionsMod.Items
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
                 childName = "Head",
-                localPos = new Vector3(-0.61612F, 0.59652F, -1.31641F),
-                localAngles = new Vector3(0F, 39.04362F, 0F),
+                localPos = new Vector3(0F, 0.5361F, -1.52871F),
+                localAngles = new Vector3(0F, 0F, 0F),
                 localScale = new Vector3(2.5F, 2.5F, 2.5F)
             });
             itemDisplays.Add("EngiWalkerTurretBody", new ItemDisplayRule
@@ -111,19 +111,19 @@ namespace ElementalReactionsMod.Items
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
-                childName = "Chest",
-                localPos = new Vector3(0.21887F, 0.2151F, -0.1934F),
-                localAngles = new Vector3(355F, 90F, 9F),
+                childName = "Pelvis",
+                localPos = new Vector3(0F, -0.04212F, -0.16345F),
+                localAngles = new Vector3(0F, 180F, 180F),
                 localScale = new Vector3(1F, 1F, 1F)
             });
             itemDisplays.Add("MercBody", new ItemDisplayRule
             {
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
-                childName = "LowerArmR",
-                localPos = new Vector3(0.00603F, 0.16364F, -0.10984F),
-                localAngles = new Vector3(4.82814F, 0.91842F, 173.788F),
-                localScale = new Vector3(0.7F, 0.7F, 0.7F)
+                childName = "Chest",
+                localPos = new Vector3(0.09213F, 0.22357F, 0.16165F),
+                localAngles = new Vector3(340.2771F, 10.52864F, 356.7992F),
+                localScale = new Vector3(0.85F, 0.85F, 0.85F)
             });
             itemDisplays.Add("TreebotBody", new ItemDisplayRule
             {
@@ -139,8 +139,8 @@ namespace ElementalReactionsMod.Items
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(moonWheelDisplayModel.AssetGUID),
                 childName = "Chest",
-                localPos = new Vector3(-0.2F, 0.28F, 0.28F),
-                localAngles = new Vector3(0F, 0F, 0F),
+                localPos = new Vector3(-0.00146F, -0.07926F, -0.38095F),
+                localAngles = new Vector3(355F, 180F, 0F),
                 localScale = new Vector3(0.9F, 0.9F, 0.9F)
             });
             itemDisplays.Add("CrocoBody", new ItemDisplayRule

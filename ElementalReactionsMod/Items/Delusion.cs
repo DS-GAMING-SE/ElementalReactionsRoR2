@@ -31,20 +31,20 @@ namespace ElementalReactionsMod.Items
         public static void Initialize()
         {
             delusionItemTag = ItemAPI.AddItemTag("ElementalReactionsDelusion");
-            delusionMat = Assets.CreateVisionMaterial(delusionLogo, new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampDefault_png), 0.75f);
+            delusionMat = Assets.CreateVisionMaterial(delusionLogo, new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_ColorRamps.texRampDefault_png), 0.75f);
             AssetAsyncReferenceManager<GameObject>.LoadAsset(delusionPickupModel).Completed += x =>
             {
                 x.Result.transform.GetChild(1).GetComponent<MeshRenderer>().sharedMaterial = delusionMat;
                 AddModelPanelParameters(x.Result);
             };
-            delusion = AddNewItem("Delusion", "DELUSION", true, Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.LunarTierDef_asset).WaitForCompletion(),
-                Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, InitializeItemDisplays(), ItemTag.Damage, ItemTag.AllowedForUseAsCraftingIngredient);
+            delusion = AddNewItem("Delusion", "DELUSION", true, Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common.LunarTierDef_asset).WaitForCompletion(),
+                delusionItemIcon, delusionPickupModel, InitializeItemDisplays(), ItemTag.Damage, ItemTag.AllowedForUseAsCraftingIngredient);
             ItemAPI.ApplyTagToItem(delusionItemTag, delusion);
         }
-        public static ItemDef CreateNewDelusion(ElementDef element, Sprite itemIcon)
+        public static ItemDef CreateNewDelusion(ElementDef element, AssetReferenceT<Sprite> itemIcon)
         {
-            ItemDef delusion = AddNewItem($"Delusion{element.cachedName}", $"DELUSION_{element.cachedName.ToUpper()}", true, Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.LunarTierDef_asset).WaitForCompletion(),
-                itemIcon ? itemIcon : Addressables.LoadAssetAsync<Sprite>(delusionItemIcon).WaitForCompletion(), delusionPickupModel, null, ItemTag.Damage, ItemTag.WorldUnique, ItemTag.AllowedForUseAsCraftingIngredient);
+            ItemDef delusion = AddNewItem($"Delusion{element.cachedName}", $"DELUSION_{element.cachedName.ToUpper()}", true, Addressables.LoadAssetAsync<ItemTierDef>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common.LunarTierDef_asset).WaitForCompletion(),
+                itemIcon != null && itemIcon.RuntimeKeyIsValid() ? itemIcon : delusionItemIcon, delusionPickupModel, null, ItemTag.Damage, ItemTag.WorldUnique, ItemTag.AllowedForUseAsCraftingIngredient);
             ItemAPI.ApplyTagToItem(delusionItemTag, delusion);
             delusionToElement.Add(delusion, element);
             return delusion;
@@ -93,8 +93,8 @@ namespace ElementalReactionsMod.Items
                 ruleType = ItemDisplayRuleType.ParentedPrefab,
                 followerPrefabAddress = new AssetReferenceGameObject(delusionDisplayModel.AssetGUID),
                 childName = "Pelvis",
-                localPos = new Vector3(-0.16971F, 0.01192F, -0.08042F),
-                localAngles = new Vector3(332.1566F, 50.95617F, 189.2482F),
+                localPos = new Vector3(-0.18085F, 0.01479F, -0.0178F),
+                localAngles = new Vector3(331.5402F, 80.12759F, 189.272F),
                 localScale = new Vector3(1F, 1F, 1F)
             });
             itemDisplays.Add("Bandit2Body", new ItemDisplayRule
@@ -346,7 +346,7 @@ namespace ElementalReactionsMod.Items
                     {
                         pickerOptions = delusionOptions,
                         // Trying to use the command cube prefab breaks the whole thing??
-                        prefabOverride = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_OptionPickup.OptionPickup_prefab)).WaitForCompletion(),
+                        prefabOverride = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_OptionPickup.OptionPickup_prefab)).WaitForCompletion(),
                         position = transform.position + Vector3.up * 1f,
                         pickup = new UniquePickup
                         {

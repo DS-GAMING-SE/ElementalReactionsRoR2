@@ -13,7 +13,7 @@ namespace ElementalReactionsMod.Achievements
         public static void Initialize()
         {
             elementalMasteryUnlockableDef = ScriptableObject.CreateInstance<UnlockableDef>();
-            elementalMasteryUnlockableDef.achievementIcon = Assets.AssetReferences.elementalMasteryAchievementIcon.LoadAssetAsync<Sprite>().WaitForCompletion();
+            elementalMasteryUnlockableDef.achievementIconRef = Assets.AssetReferences.elementalMasteryAchievementIcon;
             elementalMasteryUnlockableDef.cachedName = ElementalMasteryAchievement.unlockableIdentifier;
             elementalMasteryUnlockableDef.nameToken = Tokens.GetAchievementNameToken(ElementalMasteryAchievement.identifier);
             Content.AddUnlockableDef(elementalMasteryUnlockableDef);

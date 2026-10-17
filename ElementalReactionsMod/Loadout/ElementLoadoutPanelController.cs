@@ -207,7 +207,7 @@ namespace ElementalReactionsMod.Loadout
             private HGButton AddButton(ElementLoadoutPanelController owner, ElementDef element)
             {
                 HGButton component = GameObject.Instantiate(AssetAsyncReferenceManager<GameObject>.LoadAsset(new UnityEngine.AddressableAssets.AssetReferenceT<GameObject>
-                    (RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_UI.LoadoutButton_prefab)).WaitForCompletion(), this.buttonContainerTransform).GetComponent<HGButton>();
+                    (RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_UI.LoadoutButton_prefab)).WaitForCompletion(), this.buttonContainerTransform).GetComponent<HGButton>();
                 component.updateTextOnHover = true;
                 component.hoverLanguageTextMeshController = owner.hoverTextDescription;
                 component.hoverToken = element.keywordToken;

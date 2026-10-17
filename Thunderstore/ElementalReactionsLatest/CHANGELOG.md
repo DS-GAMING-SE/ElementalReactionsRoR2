@@ -1,7 +1,11 @@
 # Changelog
 
 ## v2.0.0
+Fixed for Hallowed Concepts
+
 - (New Item) Added the new Legendary item: **Stellar Linchpin**. This item upgrades the Cryo-Electro Superconduct reaction and the Cryo-Anemo Swirl reaction into powerful Stellar reactions
+
+*Due to Hallowed Concepts abrupt release, I haven't been able to test these reactions in multiplayer. Some minor things such as item displays, a logbook entry, and compatibility with the Quality mod are not yet present for this new item.*
 
 ## v1.1.1
 - (Bug Fix) Fixed Superconduct increasing damage by 130% instead of 30%. Oops

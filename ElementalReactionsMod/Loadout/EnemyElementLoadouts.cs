@@ -15,6 +15,7 @@ namespace ElementalReactionsMod.Loadout
     {
         public static int[] uniqueEnemiesWithElement;
         public static List<BodyIndex> enemiesWithMoonWheel = new List<BodyIndex>();
+        public static List<BodyIndex> enemiesWithStellarLinchpin = new List<BodyIndex>();
         public static void Initialize()
         {
             uniqueEnemiesWithElement = new int[ElementCatalog.elementCatalog.Length];
@@ -45,7 +46,7 @@ namespace ElementalReactionsMod.Loadout
             AddMoonWheel(CreateLoadout("LunarWispBody", dendroElement, dendroElement, dendroElement, dendroElement, pyroElement));
             AddMoonWheel(CreateLoadout("LunarGolemBody", geoElement, geoElement, geoElement, geoElement));
             AddMoonWheel(CreateLoadout("LunarExploderBody", electroElement, electroElement, electroElement, electroElement));
-            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_LunarExploder.LunarExploderProjectileDotZone_prefab, electroElement);
+            AddElementToProjectile(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_LunarExploder.LunarExploderProjectileDotZone_prefab, electroElement);
             CreateLoadout("MiniMushroomBody", dendroElement, dendroElement, dendroElement, dendroElement);
             CreateLoadout("ScorchlingBody", physicalElement, pyroElement, pyroElement, pyroElement, pyroElement);
             CreateLoadout("ScorchlingBombProjectile", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
@@ -55,7 +56,7 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("RoboBallGreenBuddyBody", electroElement, electroElement, electroElement, electroElement); // ally
             CreateLoadout("RoboBallRedBuddyBody", electroElement, electroElement, electroElement, electroElement); // ally
             CreateLoadout("TankerBody", pyroElement, pyroElement);
-            //AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Tanker.TankerAccelerantProjectile_prefab, pyroElement);
+            //AddElementToProjectile(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC3_Tanker.TankerAccelerantProjectile_prefab, pyroElement);
             CreateLoadout("IronHaulerBody", anemoElement, anemoElement, anemoElement, anemoElement);
             CreateLoadout("GolemBody", geoElement, electroElement);
             CreateLoadout("VoidBarnacleBody", hydroElement);
@@ -83,12 +84,12 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("VultureHunterBody", anemoElement, pyroElement, anemoElement, anemoElement);
             //CreateLoadout("ArifactShellBody", electroElement);
             AddMoonWheel(CreateLoadout("FalseSonBossBody", geoElement, electroElement, electroElement, geoElement));
-            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.FalseSonFissurePillar_prefab, pyroElement);
+            AddElementToProjectile(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_FalseSonBoss.FalseSonFissurePillar_prefab, pyroElement);
             // false son statue
             AddMoonWheel(CreateLoadout("FalseSonBossBodyLunarShard", geoElement, electroElement, electroElement, geoElement));
             AddMoonWheel(CreateLoadout("FalseSonBossBodyBrokenLunarShard", geoElement, electroElement, electroElement, electroElement));
-            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.PrimeDevastatorProjectile_prefab, electroElement);
-            RoR2.ContentManagement.AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_meridian_DisableSkillsLightning.LightningStrikeInstance_prefab)).Completed += x =>
+            AddElementToProjectile(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_FalseSonBoss.PrimeDevastatorProjectile_prefab, electroElement);
+            RoR2.ContentManagement.AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_meridian_DisableSkillsLightning.LightningStrikeInstance_prefab)).Completed += x =>
             {
                 if (x.Result.TryGetComponent<LightningStrikeInstance>(out var lightning))
                 {
@@ -97,16 +98,16 @@ namespace ElementalReactionsMod.Loadout
             };
             AddMoonWheel(CreateLoadout("BrotherBody", physicalElement, cryoElement, physicalElement, physicalElement));
             AddMoonWheel(CreateLoadout("BrotherHurtBody", physicalElement, pyroElement));
-            //AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherUltLineProjectileRotateLeft_prefab, pyroElement);
-            //AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherUltLineProjectileRotateRight_prefab, pyroElement);
-            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Brother.BrotherFirePillar_prefab, pyroElement);
+            //AddElementToProjectile(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Brother.BrotherUltLineProjectileRotateLeft_prefab, pyroElement);
+            //AddElementToProjectile(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Brother.BrotherUltLineProjectileRotateRight_prefab, pyroElement);
+            AddElementToProjectile(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Brother.BrotherFirePillar_prefab, pyroElement);
             CreateLoadout("SolusHeartBody", electroElement, electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("TeleportComboLaserProjectile", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
-            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusHeart.TeleportComboLaserProjectile_prefab, pyroElement);
+            AddElementToProjectile(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC3_SolusHeart.TeleportComboLaserProjectile_prefab, pyroElement);
             CreateLoadout("UnderclockSpawnerProjectile", cryoElement, cryoElement, cryoElement, cryoElement, cryoElement);
-            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusHeart.UnderclockSpawnerProjectile_prefab, cryoElement);
+            AddElementToProjectile(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC3_SolusHeart.UnderclockSpawnerProjectile_prefab, cryoElement);
             CreateLoadout("SolusHeart_DDOSProjectile", hydroElement, hydroElement, hydroElement, hydroElement, hydroElement);
-            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusHeart.SolusHeart_DDOSProjectile_prefab, hydroElement);
+            AddElementToProjectile(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC3_SolusHeart.SolusHeart_DDOSProjectile_prefab, hydroElement);
             CreateLoadout("SolusWingBody", electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("SolusWing_LaserBurstBlastProjectile", electroElement, electroElement, electroElement, electroElement, electroElement);
             CreateLoadout("MiniVoidCrabBodyPhase1", hydroElement, hydroElement, hydroElement, hydroElement);
@@ -125,7 +126,7 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("SolusVendorBody", electroElement, electroElement, electroElement, electroElement, electroElement);
             
             // malachite urchin? figure out elites
-            AddElementToProjectile(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Collective.CollectiveDeathProjectile_prefab, electroElement);
+            AddElementToProjectile(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC3_Collective.CollectiveDeathProjectile_prefab, electroElement);
             CreateLoadout("AffixEarthHealerBody", dendroElement, dendroElement, dendroElement, dendroElement, dendroElement);
 
             CreateLoadout("SquidTurretBody", hydroElement, hydroElement, hydroElement, hydroElement); // Ally
@@ -140,31 +141,41 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("ExplosivePotDestructibleBody", hydroElement, hydroElement, hydroElement, hydroElement, hydroElement);
             CreateLoadout("FusionCellDestructibleBody", electroElement, electroElement, electroElement, electroElement, electroElement);
 
+            // Hallowed Concepts
+            CreateLoadout("MiniLynxBody", dendroElement);
+            CreateLoadout("LynxArcherBody", dendroElement);
+            CreateLoadout("Lynx2Body", physicalElement, dendroElement);
+            CreateLoadout("LynxAmbusherBody", dendroElement);
+            // needs big mush and lynx totem and whatever the shadow lynx are
+            // Add linchpin to anima harvester and prov? stellar swirl?
+
             // Enemies Returns
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Viliger.EnemiesReturns"))
             {
                 //CreateLoadout("MechanicalSpiderBody", electroElement);
                 //CreateLoadout("MechanicalSpiderDroneBody", electroElement); // Ally
                 //CreateLoadout("MechanicalSpiderTurretBody", electroElement); // Ally
-                CreateLoadout("SwiftBody", geoElement);
-                CreateLoadout("LynxScoutBody", dendroElement);
-                CreateLoadout("LynxScoutAllyBody", dendroElement); // Ally
-                CreateLoadout("LynxArcherBody", dendroElement);
-                CreateLoadout("LynxArcherAllyBody", dendroElement); // Ally
-                CreateLoadout("LynxHunterBody", dendroElement);
-                CreateLoadout("LynxHunterAllyBody", dendroElement); // Ally
-                CreateLoadout("LynxShamanBody", dendroElement, dendroElement, dendroElement, dendroElement);
-                CreateLoadout("LynxShamanAllyBody", dendroElement, dendroElement, dendroElement, dendroElement); // Ally
-                CreateLoadout("SandCrabBody", physicalElement, hydroElement);
-                CreateLoadout("SandCrabBubbleProjectile", hydroElement, hydroElement, hydroElement, hydroElement, hydroElement);
-                CreateLoadout("ColossusBody", geoElement, geoElement, electroElement, electroElement);
-                CreateLoadout("IfritBody", physicalElement, pyroElement, pyroElement, pyroElement, pyroElement);
-                CreateLoadout("IfritPylonEnemyBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
-                CreateLoadout("IfritPylonPlayerBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement); // Ally
+                CreateLoadout("ER_SwiftBody", geoElement);
+                CreateLoadout("ER_LynxScoutBody", dendroElement);
+                CreateLoadout("ER_LynxScoutAllyBody", dendroElement); // Ally
+                CreateLoadout("ER_LynxArcherBody", dendroElement);
+                CreateLoadout("ER_LynxArcherAllyBody", dendroElement); // Ally
+                CreateLoadout("ER_LynxHunterBody", dendroElement);
+                CreateLoadout("ER_LynxHunterAllyBody", dendroElement); // Ally
+                CreateLoadout("ER_LynxShamanBody", dendroElement, dendroElement, dendroElement, dendroElement);
+                CreateLoadout("ER_LynxShamanAllyBody", dendroElement, dendroElement, dendroElement, dendroElement); // Ally
+                CreateLoadout("ER_SandCrabBody", physicalElement, hydroElement);
+                CreateLoadout("ER_SandCrabBubbleProjectile", hydroElement, hydroElement, hydroElement, hydroElement, hydroElement);
+                CreateLoadout("ER_ColossusBody", geoElement, geoElement, electroElement, electroElement);
+                CreateLoadout("ER_IfritBody", physicalElement, pyroElement, pyroElement, pyroElement, pyroElement);
+                CreateLoadout("ER_IfritPylonEnemyBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
+                CreateLoadout("ER_IfritPylonPlayerBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement); // Ally
                                                                                                                         // lynx totem tornado anemo?
-                CreateLoadout("ArraignHauntBody", electroElement, electroElement, electroElement, electroElement);
-                CreateLoadout("ArraignP1Body", physicalElement, physicalElement, physicalElement, electroElement);
-                CreateLoadout("ArraignP2Body", physicalElement, physicalElement, electroElement, electroElement);
+
+                // ADD CRYO HERE SOMEWHERE
+                AddStellarLinchpin(CreateLoadout("ER_ArraignHauntBody", electroElement, electroElement, electroElement, electroElement));
+                AddStellarLinchpin(CreateLoadout("ER_ArraignP1Body", physicalElement, physicalElement, physicalElement, electroElement));
+                AddStellarLinchpin(CreateLoadout("ER_ArraignP2Body", physicalElement, physicalElement, electroElement, electroElement));
             }
             // Star Storm 2
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(SS2.SS2Main.GUID))
@@ -229,6 +240,11 @@ namespace ElementalReactionsMod.Loadout
         {
             if (!body) return;
             enemiesWithMoonWheel.Add(BodyCatalog.FindBodyIndex(body));
+        }
+        public static void AddStellarLinchpin(GameObject body)
+        {
+            if (!body) return;
+            enemiesWithStellarLinchpin.Add(BodyCatalog.FindBodyIndex(body));
         }
         internal static void LogEnemyElementStats()
         {

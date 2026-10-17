@@ -58,7 +58,7 @@ namespace ElementalReactionsMod.Elements
             elementDef.hasDelusion = false;
             return elementDef;
         }
-        public static ElementDef CreateElementDef(string internalName, string token, Color color, Sprite icon, Texture vfxIcon, Sprite skillIcon, bool canPersist, bool hasDelusion, Sprite delusionItemIcon)
+        public static ElementDef CreateElementDef(string internalName, string token, Color color, Sprite icon, Texture vfxIcon, Sprite skillIcon, bool canPersist, bool hasDelusion, AssetReferenceT<Sprite> delusionItemIcon)
         {
             ElementDef elementDef = ScriptableObject.CreateInstance<ElementDef>();
             elementDef.cachedName = internalName;
@@ -101,43 +101,43 @@ namespace ElementalReactionsMod.Elements
                 Addressables.LoadAssetAsync<Texture>(Assets.AssetReferences.pyroIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.pyroSkillIcon).WaitForCompletion(), 
                 true, true,
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionPyroItemIcon).WaitForCompletion());
+                Assets.AssetReferences.delusionPyroItemIcon);
             hydroElement = ElementDef.CreateElementDef("Hydro", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_HYDRO", ColorCatalog.GetColor(ColorCatalog.ColorIndex.LunarItem),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.hydroBuffIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Texture>(Assets.AssetReferences.hydroIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.hydroSkillIcon).WaitForCompletion(),
                 true, true,
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionHydroItemIcon).WaitForCompletion());
+                Assets.AssetReferences.delusionHydroItemIcon);
             electroElement = ElementDef.CreateElementDef("Electro", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ELECTRO", ColorCatalog.GetColor(ColorCatalog.ColorIndex.Utility),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.electroBuffIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Texture>(Assets.AssetReferences.electroIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.electroSkillIcon).WaitForCompletion(),
                 true, true,
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionElectroItemIcon).WaitForCompletion());
+                Assets.AssetReferences.delusionElectroItemIcon);
             cryoElement = ElementDef.CreateElementDef("Cryo", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_CRYO", new Color(0.584f, 0.8f, 0.9f),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.cryoBuffIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Texture>(Assets.AssetReferences.cryoIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.cryoSkillIcon).WaitForCompletion(),
                 true, true,
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionCryoItemIcon).WaitForCompletion());
+                Assets.AssetReferences.delusionCryoItemIcon);
             anemoElement = ElementDef.CreateElementDef("Anemo", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_ANEMO", new Color(0.5f, 0.9f, 0.8f),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.anemoBuffIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Texture>(Assets.AssetReferences.anemoIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.anemoSkillIcon).WaitForCompletion(),
                 false, true,
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionAnemoItemIcon).WaitForCompletion());
+                Assets.AssetReferences.delusionAnemoItemIcon);
             geoElement = ElementDef.CreateElementDef("Geo", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_GEO", new Color(0.9f, 0.788f, 0.384f),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.geoBuffIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Texture>(Assets.AssetReferences.geoIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.geoSkillIcon).WaitForCompletion(),
                 false, true,
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionGeoItemIcon).WaitForCompletion());
+                Assets.AssetReferences.delusionGeoItemIcon);
             dendroElement = ElementDef.CreateElementDef("Dendro", $"{ElementalReactionsPlugin.PREFIX}ELEMENT_DENDRO", new Color(0.612f, 0.9f, 0.384f),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.dendroBuffIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Texture>(Assets.AssetReferences.dendroIcon).WaitForCompletion(),
                 Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.dendroSkillIcon).WaitForCompletion(),
                 true, true,
-                Addressables.LoadAssetAsync<Sprite>(Assets.AssetReferences.delusionDendroItemIcon).WaitForCompletion());
+                Assets.AssetReferences.delusionDendroItemIcon);
 
             ElementCatalog.AddElementDefs([physicalElement, pyroElement, hydroElement, electroElement, cryoElement, anemoElement, geoElement, dendroElement]);
         }

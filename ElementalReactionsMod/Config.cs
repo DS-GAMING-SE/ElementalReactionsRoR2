@@ -59,6 +59,14 @@ namespace ElementalReactionsMod
         {
             return ElementalReactionsPlugin.instance.Config.Bind<bool>("Items", "Reroll Unusable Items", true, "Whether items from this mod will be rerolled if you don't have the elements required to use them.\nHost's config takes priority.");
         }
+        // If I make config for item rarities, remember to update
+        // - Item stats
+        // - Reroll droptable
+        // - Item icons
+        // - Achievement icons
+        // - Mithrix item displays
+        // - Crafting
+        // - Readme/Changelog
 
         public static ConfigEntry<bool> CanWeatherUseElements()
         {

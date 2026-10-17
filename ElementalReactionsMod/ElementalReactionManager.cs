@@ -191,6 +191,10 @@ namespace ElementalReactionsMod
                 {
                     characterMaster.inventory.GiveItemPermanent(Items.MoonWheel.hiddenMoonWheel);
                 }
+                if (EnemyElementLoadouts.enemiesWithStellarLinchpin.Contains(characterMaster.backupBodyIndex) && characterMaster.inventory.GetItemCountPermanent(Items.StellarLinchpin.hiddenStellarLinchpin) == 0)
+                {
+                    characterMaster.inventory.GiveItemPermanent(Items.StellarLinchpin.hiddenStellarLinchpin);
+                }
             }
         }
 

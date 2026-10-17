@@ -53,16 +53,16 @@ namespace ElementalReactionsMod
 
             elementalReactionManagerPrefab = PrefabAPI.CreateEmptyPrefab("ElementalReactionManager");
             elementalReactionManagerPrefab.AddComponent<ElementalReactionManager>();
-            AddAkBank(elementalReactionManagerPrefab, RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSon.FalseSonBody_prefab);
-            AddAkBank(elementalReactionManagerPrefab, RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Bandit2.Bandit2Body_prefab);
-            AddAkBank(elementalReactionManagerPrefab, RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Seeker.SeekerBody_prefab);
+            AddAkBank(elementalReactionManagerPrefab, RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_FalseSon.FalseSonBody_prefab);
+            AddAkBank(elementalReactionManagerPrefab, RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Bandit2.Bandit2Body_prefab);
+            AddAkBank(elementalReactionManagerPrefab, RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Seeker.SeekerBody_prefab);
 
             elementalReactionExpansionDef = ScriptableObject.CreateInstance<ExpansionDef>();
             elementalReactionExpansionDef.name = "ElementalReactionExpansionDef";
             elementalReactionExpansionDef.nameToken = $"{ElementalReactionsPlugin.PREFIX}EXPANSION_NAME";
             elementalReactionExpansionDef.descriptionToken = $"{ElementalReactionsPlugin.PREFIX}EXPANSION_DESCRIPTION";
-            elementalReactionExpansionDef.iconSprite = Addressables.LoadAssetAsync<Sprite>(AssetReferences.expansionIcon).WaitForCompletion();
-            elementalReactionExpansionDef.disabledIconSprite = Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_MiscIcons.texUnlockIcon_png).WaitForCompletion();
+            elementalReactionExpansionDef.iconSpriteReference = AssetReferences.expansionIcon;
+            elementalReactionExpansionDef.disabledIconSpriteReference = new AssetReferenceT<Sprite>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_MiscIcons.texUnlockIcon_png);
             elementalReactionExpansionDef.runBehaviorPrefab = elementalReactionManagerPrefab;
             elementalReactionExpansionDef.requiredEntitlement = null;
 
@@ -94,7 +94,7 @@ namespace ElementalReactionsMod
                 scale.initialDuration = 0.7f;
                 scale.particleSystems = [iconParticle, rayParticle, glowParticle];
                 component.particleDuration = scale;
-                x.Result.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser3_mat)).WaitForCompletion();
+                x.Result.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser3_mat)).WaitForCompletion();
                 x.Result.AddComponent<ParentEffectToItemDisplay>();
 
                 AddNewEffectDef(x.Result);
@@ -114,11 +114,11 @@ namespace ElementalReactionsMod
                 orb.startVelocity1 = new Vector3(-30, -7f, -30f);
                 orb.startVelocity2 = new Vector3(30, 7f, 30f);
                 orb.movementCurve = AnimationCurve.Linear(0, 0, 1, 1);
-                orb.endEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Treebot.OmniImpactVFXSlashSyringe_prefab)).WaitForCompletion();
+                orb.endEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Treebot.OmniImpactVFXSlashSyringe_prefab)).WaitForCompletion();
 
                 x.Result.AddComponent<NetworkIdentity>();
                 var wideGlow = x.Result.transform.GetChild(0).GetComponent<ParticleSystem>();
-                wideGlow.GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matWideGlow_mat)).WaitForCompletion();
+                wideGlow.GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matWideGlow_mat)).WaitForCompletion();
                 GenericElementEffectComponent component = x.Result.AddComponent<GenericElementEffectComponent>();
                 component.trailsToRecolor = [x.Result.transform.GetChild(1).GetComponent<TrailRenderer>()];
                 component.particlesToRecolor = [wideGlow, x.Result.transform.GetChild(2).GetComponent<ParticleSystem>()];
@@ -128,24 +128,24 @@ namespace ElementalReactionsMod
 
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.elementEnvironmentScreenEffect).Completed += x =>
             {
-                Mesh donut = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.mdlVFXDonut1_fbx_donut1Mesh_)).WaitForCompletion();
-                Material stars = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_Common_VFX.matOmniHitspark1GenericAdditive_mat)).WaitForCompletion());
-                Texture mask = AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX_ParticleMasks.texGlowPaintMask_png)).WaitForCompletion();
+                Mesh donut = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.mdlVFXDonut1_fbx_donut1Mesh_)).WaitForCompletion();
+                Material stars = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Common_VFX.matOmniHitspark1GenericAdditive_mat)).WaitForCompletion());
+                Texture mask = AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX_ParticleMasks.texGlowPaintMask_png)).WaitForCompletion();
                 stars.SetTexture(mainTexKey, mask);
                 stars.SetTextureOffset(mainTexKey, new Vector2(0.1f, 0.1f));
                 stars.SetColor(tintColorKey, Color.white);
-                stars.SetTexture(cloud1TexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Nullifier.texNullifierSkySparse_png)).WaitForCompletion());
+                stars.SetTexture(cloud1TexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Nullifier.texNullifierSkySparse_png)).WaitForCompletion());
                 stars.SetTextureScale(cloud1TexKey, new Vector2(6f, 0.7f));
                 stars.SetVector("_CutoffScroll", new Vector4(0, 2f, 0, 0f));
                 stars.SetInt("_ZTest", 0);
                 stars.EnableKeyword("USE_CLOUDS");
                 stars.SetFloat(boostKey, 2f);
-                Material largeLines = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Items_SpeedBoostPickup.matSpeedBoostPickupTraill_mat)).WaitForCompletion());
+                Material largeLines = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Items_SpeedBoostPickup.matSpeedBoostPickupTraill_mat)).WaitForCompletion());
                 largeLines.SetTexture(mainTexKey, mask);
                 largeLines.SetTextureScale(mainTexKey, new Vector2(1f, 1f));
                 largeLines.SetTextureOffset(mainTexKey, new Vector2(0.25f, 0f));
                 largeLines.SetColor(tintColorKey, Color.white);
-                largeLines.SetTexture(cloud1TexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Items_SpeedBoostPickup.texNegateAttackTrail_png)).WaitForCompletion());
+                largeLines.SetTexture(cloud1TexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Items_SpeedBoostPickup.texNegateAttackTrail_png)).WaitForCompletion());
                 largeLines.SetTextureScale(cloud1TexKey, new Vector2(2f, 4f));
                 largeLines.SetVector("_CutoffScroll", new Vector4(5f, 10f, -20f, 4f));
                 largeLines.SetInt("_ZTest", 0);
@@ -167,24 +167,28 @@ namespace ElementalReactionsMod
             };
 
             #region Reactions
-            Mesh ringMesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.mdlVFXDonut2_fbx_donut2Mesh_)).WaitForCompletion();
-            electroTrailMaterial = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matPrimeDevastatorChargeVFX2_mat)).WaitForCompletion());
-            electroTrailMaterial.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTeslaCoil_png)).WaitForCompletion());
+            Texture electroRamp = AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_ColorRamps.texRampTeslaCoil_png)).WaitForCompletion();
+
+            Mesh ringMesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.mdlVFXDonut2_fbx_donut2Mesh_)).WaitForCompletion();
+            electroTrailMaterial = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_FalseSonBoss.matPrimeDevastatorChargeVFX2_mat)).WaitForCompletion());
+            electroTrailMaterial.SetTexture(remapTexKey, electroRamp);
             electroTrailMaterial.SetFloat(boostKey, 2f);
 
             darkElectricTrailMaterial = new Material(electroTrailMaterial);
             darkElectricTrailMaterial.SetColor(tintColorKey, Color.black);
             darkElectricTrailMaterial.SetInt("_DstBlend", 10);
 
-            Texture dendroRampTex = AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampOrbitalLaser_png)).WaitForCompletion();
+            Texture dendroRampTex = AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_ColorRamps.texRampOrbitalLaser_png)).WaitForCompletion();
             dendroElectricTrailMaterial = new Material(electroTrailMaterial);
             dendroElectricTrailMaterial.SetTexture(remapTexKey, dendroRampTex);
             dendroElectricTrailMaterial.SetColor(tintColorKey, new Color(0.5f, 1f, 0f));
             dendroElectricTrailMaterial.SetFloat(boostKey, 4f);
 
-            Material dendroLeafMat = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Seeker.matSeekerLotus_mat_bfd003ca)).WaitForCompletion();
+            Material distortionFaded = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matDistortionFaded_mat)).WaitForCompletion();
+
+            Material dendroLeafMat = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Seeker.matSeekerLotus_mat_bfd003ca)).WaitForCompletion();
             dendroLeafMat.SetColor(tintColorKey, Color.white);
-            Material bloomCoreExplosionMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matOmniRing1Generic_mat)).WaitForCompletion());
+            Material bloomCoreExplosionMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matOmniRing1Generic_mat)).WaitForCompletion());
             bloomCoreExplosionMat.SetTexture(mainTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.bloomTransparent).WaitForCompletion());
             bloomCoreExplosionMat.SetTexture(remapTexKey, dendroRampTex);
             bloomCoreExplosionMat.SetFloat(alphaBoostKey, 1f);
@@ -192,9 +196,9 @@ namespace ElementalReactionsMod
             bloomCoreExplosionMat.SetInt("_SrcBlend", 5);
             bloomCoreExplosionMat.SetInt("_DstBlend", 1);
 
-            Material genericRingMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BFG.matBeamSphereBeam_mat)).WaitForCompletion());
+            Material genericRingMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_BFG.matBeamSphereBeam_mat)).WaitForCompletion());
             genericRingMat.SetColor(tintColorKey, new Color(0.7f, 0.7f, 0.7f));
-            genericRingMat.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTritone_png)).WaitForCompletion());
+            genericRingMat.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_ColorRamps.texRampTritone_png)).WaitForCompletion());
             genericRingMat.SetFloat(alphaBoostKey, 2f);
             genericRingMat.EnableKeyword("VERTEXCOLOR");
             genericRingMat.SetVector("_CutoffScroll", new Vector4(25, 0, -10, 0));
@@ -257,21 +261,21 @@ namespace ElementalReactionsMod
                 };
                 x.Result.AddComponent<NetworkIdentity>();
                 ParticleSystemRenderer ringParticleRenderer = x.Result.transform.Find("OverloadRing").GetComponent<ParticleSystemRenderer>();
-                ringParticleRenderer.mesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.mdlVFXDonut1_fbx_donut1Mesh_)).WaitForCompletion();
-                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_SolusAmalgamator.matSolusAmalgamatorTrackingBombRing_mat)).Completed += y =>
+                ringParticleRenderer.mesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.mdlVFXDonut1_fbx_donut1Mesh_)).WaitForCompletion();
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC3_SolusAmalgamator.matSolusAmalgamatorTrackingBombRing_mat)).Completed += y =>
                 {
                     Material ringMat = new Material(y.Result);
-                    ringMat.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTeslaCoil_png)).WaitForCompletion());
+                    ringMat.SetTexture(remapTexKey, electroRamp);
                     ringParticleRenderer.sharedMaterial = ringMat;
                 };
-                var flash = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
+                var flash = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
                 x.Result.transform.Find("OverloadSmallFlash").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
                 x.Result.transform.Find("OverloadFlash").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
                 x.Result.transform.Find("OverloadSparks").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
-                x.Result.transform.Find("OverloadDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matDistortionFaded_mat)).WaitForCompletion();
+                x.Result.transform.Find("OverloadDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = distortionFaded;
                 x.Result.transform.Find("OverloadElectricity").GetComponent<ParticleSystemRenderer>().trailMaterial = electroTrailMaterial;
                 x.Result.transform.Find("OverloadElectricityDark").GetComponent<ParticleSystemRenderer>().trailMaterial = darkElectricTrailMaterial;
-                x.Result.transform.Find("OverloadFire").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Gravekeeper.matOmniExplosion1ArchWisp_mat)).WaitForCompletion();
+                x.Result.transform.Find("OverloadFire").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Gravekeeper.matOmniExplosion1ArchWisp_mat)).WaitForCompletion();
                 var light = x.Result.transform.Find("OverloadLight");
                 vfx.optionalLights = [light.GetComponent<Light>()];
                 var lightCurve = light.gameObject.AddComponent<LightIntensityCurve>();
@@ -294,9 +298,9 @@ namespace ElementalReactionsMod
                 x.Result.AddComponent<NetworkIdentity>();
                 x.Result.AddComponent<DestroyOnTimer>().duration = 0.7f;
 
-                x.Result.transform.Find("SuperconductSphere").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_EliteIce.matAffixWhiteSphereIndicator_mat)).WaitForCompletion();
-                x.Result.transform.Find("SuperconductMist").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.matChefSecondaryFrostVFX_mat)).WaitForCompletion();
-                x.Result.transform.Find("SuperconductSnowflakes").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.matChefSecondarySnowflakeVFX_mat)).WaitForCompletion();
+                x.Result.transform.Find("SuperconductSphere").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_EliteIce.matAffixWhiteSphereIndicator_mat)).WaitForCompletion();
+                x.Result.transform.Find("SuperconductMist").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Chef.matChefSecondaryFrostVFX_mat)).WaitForCompletion();
+                x.Result.transform.Find("SuperconductSnowflakes").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Chef.matChefSecondarySnowflakeVFX_mat)).WaitForCompletion();
 
                 AddNewEffectDef(x.Result, "Play_freezeDrone_impact");
             };
@@ -307,7 +311,7 @@ namespace ElementalReactionsMod
                 vfx.vfxIntensity = VFXAttributes.VFXIntensity.Low;
                 vfx.DoNotPool = false;
                 var vfxContainer = x.Result.transform.GetChild(0);
-                vfxContainer.GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.matChefSecondaryFrostVFX_mat)).WaitForCompletion();
+                vfxContainer.GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Chef.matChefSecondaryFrostVFX_mat)).WaitForCompletion();
                 var destroyOnTimer = x.Result.AddComponent<DestroyOnTimer>();
                 destroyOnTimer.duration = 0.6f;
                 TemporaryVisualEffect tempVisualEffect = x.Result.AddComponent<TemporaryVisualEffect>();
@@ -351,7 +355,7 @@ namespace ElementalReactionsMod
                 x.Result.SetEmission(0.25f);
             };
 
-            AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.HealthOrbEffect_prefab)).Completed += x =>
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.HealthOrbEffect_prefab)).Completed += x =>
             {
                 ElementalReactionManager.bloomSpawnOrb = PrefabAPI.InstantiateClone(x.Result, "BloomSpawnOrbEffect");
                 ElementalReactionManager.bloomSpawnOrb.AddComponent<Orbs.OrbEffectTargetPosition>();
@@ -391,7 +395,7 @@ namespace ElementalReactionsMod
                 startScaleCurve.timeMax = 0.2f;
                 startScaleCurve.overallCurve = AnimationCurve.EaseInOut(0f, 0.3f, 1f, 1f);
                 startScaleCurve.useOverallCurveOnly = true;
-                startScaleCurve.transform.Find("BloomStartDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matDistortionFaded_mat)).WaitForCompletion();
+                startScaleCurve.transform.Find("BloomStartDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = distortionFaded;
                 var specialObjectAttributes = x.Result.AddComponent<SpecialObjectAttributes>();
                 specialObjectAttributes.grabbable = true;
                 specialObjectAttributes.massOverride = 0;
@@ -430,11 +434,11 @@ namespace ElementalReactionsMod
                 x.Result.AddComponent<NetworkIdentity>();
                 ParticleSystemRenderer ringParticleRenderer = x.Result.transform.Find("BloomRing").GetComponent<ParticleSystemRenderer>();
                 ringParticleRenderer.mesh = ringMesh;
-                Material bloomRingMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BFG.matBeamSphereBeam_mat)).WaitForCompletion());
+                Material bloomRingMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_BFG.matBeamSphereBeam_mat)).WaitForCompletion());
                 bloomRingMat.SetTexture(remapTexKey, dendroRampTex);
                 bloomRingMat.SetVector("_CutoffScroll", new Vector4(40, 0, -20, 0));
                 ringParticleRenderer.sharedMaterial = bloomRingMat;
-                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_EliteEarth.matAffixEarthSphereIndicator_mat)).Completed += y =>
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_EliteEarth.matAffixEarthSphereIndicator_mat)).Completed += y =>
                 {
                     Material bloomSphereMat = new Material(y.Result);
                     bloomSphereMat.SetTexture(remapTexKey, dendroRampTex);
@@ -443,7 +447,7 @@ namespace ElementalReactionsMod
                     x.Result.transform.Find("BloomSphere").GetComponent<ParticleSystemRenderer>().sharedMaterial = bloomSphereMat;
                 };
                 x.Result.transform.Find("BloomExplosionCore").GetComponent<ParticleSystemRenderer>().sharedMaterial = bloomCoreExplosionMat;
-                var flash = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
+                var flash = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
                 x.Result.transform.Find("BloomSparks").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
                 x.Result.transform.Find("BloomPetals").GetComponent<ParticleSystemRenderer>().sharedMaterial = dendroLeafMat;
                 var light = x.Result.transform.Find("Light");
@@ -477,15 +481,15 @@ namespace ElementalReactionsMod
                     cycleOffset = 0f
                 };
                 x.Result.AddComponent<NetworkIdentity>();
-                Texture burgeonRamp = AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampWilloWispExplosion2_png)).WaitForCompletion();
+                Texture burgeonRamp = AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_ColorRamps.texRampWilloWispExplosion2_png)).WaitForCompletion();
                 ParticleSystemRenderer ringParticleRenderer = x.Result.transform.Find("BloomRing").GetComponent<ParticleSystemRenderer>();
                 ringParticleRenderer.mesh = ringMesh;
-                Material bloomRingMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BFG.matBeamSphereBeam_mat)).WaitForCompletion());
+                Material bloomRingMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_BFG.matBeamSphereBeam_mat)).WaitForCompletion());
                 bloomRingMat.SetTexture(remapTexKey, burgeonRamp);
                 bloomRingMat.SetInt("_SrcBlend", 5);
                 bloomRingMat.SetVector("_CutoffScroll", new Vector4(55, 0, -25, 0));
                 ringParticleRenderer.sharedMaterial = bloomRingMat;
-                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BurnNearby.matHelfireRangeIndicator_mat)).Completed += y =>
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_BurnNearby.matHelfireRangeIndicator_mat)).Completed += y =>
                 {
                     Material bloomSphereMat = new Material(y.Result);
                     bloomSphereMat.SetTexture(remapTexKey, burgeonRamp);
@@ -496,7 +500,7 @@ namespace ElementalReactionsMod
                 Material burgeonCoreExplosion = new Material(bloomCoreExplosionMat);
                 burgeonCoreExplosion.SetTexture(remapTexKey, burgeonRamp);
                 x.Result.transform.Find("BloomExplosionCore").GetComponent<ParticleSystemRenderer>().sharedMaterial = burgeonCoreExplosion;
-                var flash = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
+                var flash = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
                 x.Result.transform.Find("BloomSparks").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
                 x.Result.transform.Find("BloomPetals").GetComponent<ParticleSystemRenderer>().sharedMaterial = dendroLeafMat;
                 var light = x.Result.transform.Find("Light");
@@ -521,12 +525,12 @@ namespace ElementalReactionsMod
                 orb.startVelocity1 = new Vector3(-3, 20f, -3f);
                 orb.startVelocity2 = new Vector3(3, 25f, 3f);
                 orb.movementCurve = AnimationCurve.Linear(0, 0, 1, 1);
-                orb.endEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Treebot.OmniImpactVFXSlashSyringe_prefab)).WaitForCompletion();
+                orb.endEffect = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Treebot.OmniImpactVFXSlashSyringe_prefab)).WaitForCompletion();
                 orb.endEffectScale = 1.5f;
 
                 x.Result.AddComponent<NetworkIdentity>();
                 var core = x.Result.transform.Find("HyperbloomOrbCoreBillboard");
-                core.GetComponent<MeshRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
+                core.GetComponent<MeshRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
                 core.gameObject.AddComponent<Billboard>();
                 var leafContainer = x.Result.transform.Find("HyperbloomOrbCoreLeafContainer");
                 var rotate = leafContainer.gameObject.AddComponent<RotateAroundAxis>();
@@ -539,7 +543,7 @@ namespace ElementalReactionsMod
                 leafContainer.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().sharedMaterial = greenLeaf;
                 leafContainer.GetChild(1).GetChild(0).GetComponent<MeshRenderer>().sharedMaterial = greenLeaf;
                 leafContainer.GetChild(2).GetChild(0).GetComponent<MeshRenderer>().sharedMaterial = greenLeaf;
-                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_EliteEarth.matAffixEarthTrailBloblets_mat)).Completed += y =>
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_EliteEarth.matAffixEarthTrailBloblets_mat)).Completed += y =>
                 {
                     x.Result.transform.Find("HyperbloomOrbTrailOuter").GetComponent<TrailRenderer>().sharedMaterial = y.Result;
                 };
@@ -581,13 +585,13 @@ namespace ElementalReactionsMod
                 var model = vfxParent.GetChild(0).gameObject;
                 var crystallizeRings = model.transform.Find("CrystallizeRings");
                 var startVFX = model.transform.Find("CrystallizeStartGlow");
-                startVFX.Find("CrystallizeStartDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matDistortionFaded_mat)).WaitForCompletion();
-                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matOmniRing1Generic_mat)).Completed += x =>
+                startVFX.Find("CrystallizeStartDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = distortionFaded;
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matOmniRing1Generic_mat)).Completed += x =>
                 {
                     crystallizeRings.GetComponent<ParticleSystemRenderer>().sharedMaterial = x.Result;
                     startVFX.Find("CrystallizeStartRing").GetComponent<ParticleSystemRenderer>().sharedMaterial = x.Result;
                 };
-                model.transform.Find("CrystallizeRays").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser3_mat)).WaitForCompletion();
+                model.transform.Find("CrystallizeRays").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser3_mat)).WaitForCompletion();
                 model.gameObject.AddComponent<RotateItem>().spinSpeed = 120f;
                 var controller = x.Result.transform.Find("PickupTrigger").gameObject.AddComponent<CrystallizeController>();
                 controller.teamFilter = teamFilter;
@@ -597,11 +601,11 @@ namespace ElementalReactionsMod
                 x.Result.AddComponent<Deployable>();
                 //x.Result.AddComponent<ElementalReactionPooledObject>().gravitatePickup = gravitate;
 
-                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Elites_EliteAurelionite.matEliteAurelioniteAffixDisplay_mat)).Completed += x =>
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Elites_EliteAurelionite.matEliteAurelioniteAffixDisplay_mat)).Completed += x =>
                 {
                     Material crystallizeMat = new Material(x.Result);
                     crystallizeMat.SetNormal(0.1f);
-                    AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampGrandparent_png)).Completed += y =>
+                    AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_ColorRamps.texRampGrandparent_png)).Completed += y =>
                     {
                         crystallizeMat.SetTexture("_FresnelRamp", y.Result);
                     };
@@ -621,7 +625,7 @@ namespace ElementalReactionsMod
             visionMaterial.SetHopooMaterial().Specular(0.4f, 3f, false);
             visionMaterial.SetNormal(1.3f);
             visionMaterial.SetFloat("_RampInfo", 1);
-            Material glassVFXMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matShatteredGlass_mat)).WaitForCompletion());
+            Material glassVFXMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matShatteredGlass_mat)).WaitForCompletion());
             glassVFXMat.SetTexture(mainTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.glassVFXTexture).WaitForCompletion());
             glassVFXMat.SetTextureScale(mainTexKey, Vector2.one);
             glassVFXMat.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.stellarGlassRamp).WaitForCompletion());
@@ -630,8 +634,8 @@ namespace ElementalReactionsMod
             glassVFXMat.SetColor(tintColorKey, Color.white);
             glassVFXMat.SetFloat(alphaBoostKey, 1f);
             glassVFXMat.SetFloat(alphaBiasKey, 0f);
-            glassVFXMat.SetTexture(cloud1TexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_TiledTextures.texCloudCrackedIceInverted_png)).WaitForCompletion());
-            glassVFXMat.SetTexture(cloud2TexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_TiledTextures.texCloudDifferenceBW2_png)).WaitForCompletion());
+            glassVFXMat.SetTexture(cloud1TexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_TiledTextures.texCloudCrackedIceInverted_png)).WaitForCompletion());
+            glassVFXMat.SetTexture(cloud2TexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_TiledTextures.texCloudDifferenceBW2_png)).WaitForCompletion());
             #region Delusion
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.delusionHitEffect).Completed += x =>
             {
@@ -656,18 +660,18 @@ namespace ElementalReactionsMod
                 };
                 x.Result.AddComponent<NetworkIdentity>();
                 Texture delusionRamp = AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.delusionRamp).WaitForCompletion();
-                Material delusionHitspark = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matOmniHitspark3Generic_mat)).WaitForCompletion());
+                Material delusionHitspark = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matOmniHitspark3Generic_mat)).WaitForCompletion());
                 delusionHitspark.SetTexture(remapTexKey, delusionRamp);
                 delusionHitspark.SetFloat(alphaBoostKey, 1.2f);
-                x.Result.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBrightTransparent_mat)).WaitForCompletion();
+                x.Result.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matTracerBrightTransparent_mat)).WaitForCompletion();
                 x.Result.transform.GetChild(3).GetComponent<ParticleSystemRenderer>().sharedMaterial = delusionHitspark;
-                Material delusionOrb = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_VoidSurvivor.matVoidSurvivorBlasterSphereAreaIndicator_mat)).WaitForCompletion());
+                Material delusionOrb = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_VoidSurvivor.matVoidSurvivorBlasterSphereAreaIndicator_mat)).WaitForCompletion());
                 delusionOrb.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.delusionOrbRamp).WaitForCompletion());
                 delusionOrb.EnableKeyword("VERTEXCOLOR");
                 x.Result.transform.GetChild(4).GetComponent<ParticleSystemRenderer>().sharedMaterial = delusionOrb;
-                x.Result.transform.GetChild(5).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matOmniHitspark2Generic_mat)).WaitForCompletion();
-                x.Result.transform.GetChild(6).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matInverseDistortion_mat)).WaitForCompletion();
-                Material delusionSparkle = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matWideGlow_mat)).WaitForCompletion());
+                x.Result.transform.GetChild(5).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matOmniHitspark2Generic_mat)).WaitForCompletion();
+                x.Result.transform.GetChild(6).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matInverseDistortion_mat)).WaitForCompletion();
+                Material delusionSparkle = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matWideGlow_mat)).WaitForCompletion());
                 delusionSparkle.SetTexture(remapTexKey, delusionRamp);
                 delusionSparkle.SetFloat(invFadeKey, 0.25f);
                 delusionSparkle.SetFloat(boostKey, 2f);
@@ -700,7 +704,7 @@ namespace ElementalReactionsMod
                 AddNewEffectDef(x.Result, "Play_item_lunar_secondaryReplace_explode");
             };
 
-            AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Tonic.TonicBuffEffect_prefab)).Completed += x =>
+            AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Tonic.TonicBuffEffect_prefab)).Completed += x =>
             {
                 GameObject delusionActiveEffect = PrefabAPI.InstantiateClone(x.Result, "DelusionActiveEffect", false);
                 VFXAttributes vfx = delusionActiveEffect.AddComponent<VFXAttributes>();
@@ -718,7 +722,7 @@ namespace ElementalReactionsMod
                 temp.enterComponents = temp.enterComponents.Append(delusion).ToArray();
                 delusion.enabled = false;
 
-                AssetAsyncReferenceManager<PostProcessProfile>.LoadAsset(new AssetReferenceT<PostProcessProfile>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_title_PostProcessing.ppLocalDoppelganger_asset)).Completed += y =>
+                AssetAsyncReferenceManager<PostProcessProfile>.LoadAsset(new AssetReferenceT<PostProcessProfile>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_title_PostProcessing.ppLocalDoppelganger_asset)).Completed += y =>
                 {
                     PostProcessProfile ppProfile = ScriptableObject.Instantiate(y.Result);
                     ppProfile.RemoveSettings<ColorGrading>();
@@ -735,28 +739,28 @@ namespace ElementalReactionsMod
             #endregion
 
             #region Lunar Reactions
-            Material lunarVFXSymbol = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matOmniRing1Generic_mat)).WaitForCompletion());
+            Material lunarVFXSymbol = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matOmniRing1Generic_mat)).WaitForCompletion());
             lunarVFXSymbol.SetTexture(mainTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.lunarVFXSymbol).WaitForCompletion());
-            lunarVFXSymbol.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTritoneSmoothed_png)).WaitForCompletion());
+            lunarVFXSymbol.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_ColorRamps.texRampTritoneSmoothed_png)).WaitForCompletion());
             lunarVFXSymbol.SetFloat(alphaBoostKey, 4.5f);
             lunarVFXSymbol.SetFloat("_DepthOffset", -3f);
             lunarVFXSymbol.SetFloat(invFadeKey, 0.35f);
             lunarVFXSymbol.SetFloat("_ZTest", 8f);
-            Material kuuvahkiTrail = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Seeker.matSpiritPunchSoftRay_mat)).WaitForCompletion();
-            Material lunarLineMaterial = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Elites_EliteBead.matEliteBeadSpikeGrowthRing_mat)).WaitForCompletion());
+            Material kuuvahkiTrail = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Seeker.matSpiritPunchSoftRay_mat)).WaitForCompletion();
+            Material lunarLineMaterial = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Elites_EliteBead.matEliteBeadSpikeGrowthRing_mat)).WaitForCompletion());
             lunarLineMaterial.SetTexture(remapTexKey, lunarVFXSymbol.GetTexture(remapTexKey));
             lunarLineMaterial.SetTextureScale(mainTexKey, new Vector2(10f, -0.1f));
             lunarLineMaterial.EnableKeyword("VERTEXCOLOR");
-            Mesh lunarLineMesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.mdlVFXDonut1_fbx_donut1Mesh_)).WaitForCompletion();
+            Mesh lunarLineMesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.mdlVFXDonut1_fbx_donut1Mesh_)).WaitForCompletion();
 
-            Material lunarDecal = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_LunarExploder.matLunarExploderDeathDecal_mat)).WaitForCompletion());
+            Material lunarDecal = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_LunarExploder.matLunarExploderDeathDecal_mat)).WaitForCompletion());
             lunarDecal.name = "matLunarDecal";
             lunarDecal.SetColor("_Color", new Color(8f, 8f, 8f));
             lunarDecal.SetTexture("_MaskTex", AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.lunarDecal).WaitForCompletion());
-            lunarDecal.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampGalaxy_png)).WaitForCompletion());
+            lunarDecal.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_ColorRamps.texRampGalaxy_png)).WaitForCompletion());
             lunarDecal.SetFloat(alphaBoostKey, 0.5f);
             lunarDecal.SetTexture(cloud1TexKey, null);
-            lunarDecal.SetTexture(cloud2TexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common.texCloudWaterFoam3_tga)).WaitForCompletion());
+            lunarDecal.SetTexture(cloud2TexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common.texCloudWaterFoam3_tga)).WaitForCompletion());
 
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.lunarChargedLightningEffect).Completed += x =>
             {
@@ -780,26 +784,29 @@ namespace ElementalReactionsMod
                     cycleOffset = 0f
                 };
                 x.Result.AddComponent<NetworkIdentity>();
-                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matPrimeDevastatorChargeVFX1_mat)).Completed += y =>
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_FalseSonBoss.matPrimeDevastatorChargeVFX1_mat)).Completed += y =>
                 {
                     Material lightningMat = new Material(y.Result);
-                    lightningMat.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTeslaCoil_png)).WaitForCompletion());
+                    lightningMat.SetTexture(remapTexKey, electroRamp);
                     lightningMat.SetColor(tintColorKey, Color.white);
                     lightningMat.SetInt("_DstBlend", 10);
                     x.Result.transform.Find("LunarChargedLightning").GetComponent<ParticleSystemRenderer>().trailMaterial = lightningMat;
                 };
                 ParticleSystemRenderer donutParticleRenderer = x.Result.transform.Find("LunarChargedDonut5").GetComponent<ParticleSystemRenderer>();
-                donutParticleRenderer.mesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.mdlVFXDonut5_fbx_donut5Mesh_)).WaitForCompletion();
-                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_MealPrep.matMealPrepUIFlames2_mat)).Completed += y =>
+                donutParticleRenderer.mesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.mdlVFXDonut5_fbx_donut5Mesh_)).WaitForCompletion();
+                AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC3_MealPrep.matMealPrepUIFlames2_mat)).Completed += y =>
                 {
                     Material donutMat = new Material(y.Result);
-                    donutMat.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2.texRampTritoneHShrine_png)).WaitForCompletion());
+                    AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2.texRampTritoneHShrine_png)).Completed += z =>
+                    {
+                        donutMat.SetTexture(remapTexKey, z.Result);
+                    };
                     donutParticleRenderer.sharedMaterial = donutMat;
                 };
-                var flash = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
+                var flash = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
                 x.Result.transform.Find("LunarChargedFlash").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
                 x.Result.transform.Find("LunarChargedSparks").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
-                x.Result.transform.Find("LunarChargedDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matInverseDistortion_mat)).WaitForCompletion();
+                x.Result.transform.Find("LunarChargedDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matInverseDistortion_mat)).WaitForCompletion();
                 x.Result.transform.Find("LunarChargedElectricity").GetComponent<ParticleSystemRenderer>().trailMaterial = electroTrailMaterial;
                 x.Result.transform.Find("LunarChargedElectricityDark").GetComponent<ParticleSystemRenderer>().trailMaterial = darkElectricTrailMaterial;
                 x.Result.transform.Find("LunarChargedLunarSymbol").GetComponent<ParticleSystemRenderer>().sharedMaterial = lunarVFXSymbol;
@@ -826,51 +833,49 @@ namespace ElementalReactionsMod
             ElementalReactionManager.lunarChargeEnemyStrikePrefab = PrefabAPI.CreateEmptyPrefab("LunarChargeEnemyInstance");
             ElementalReactionManager.lunarChargeEnemyStrikePrefab.AddComponent<EnemyLunarChargeInstance>();
 
-            AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_meridian_DisableSkillsLightning.LightningStrikePredictionEffect_prefab)).Completed += x =>
-            {
-                EnemyLunarChargeInstance.warningPrefab = PrefabAPI.InstantiateClone(x.Result, "LunarChargeWarningEffect");
-                EnemyLunarChargeInstance.warningPrefab.AddComponent<NetworkIdentity>();
-                var retimer = EnemyLunarChargeInstance.warningPrefab.GetComponent<EffectRetimer>();
-                retimer.objectScaleCurves = null;
-                var light = EnemyLunarChargeInstance.warningPrefab.transform.GetChild(0).GetComponent<Light>();
-                light.color = new Color(0.6f, 0.3f, 1f);
-                light.intensity = 10f;
-                
-                var wall = EnemyLunarChargeInstance.warningPrefab.transform.GetChild(1);
-                GameObject.Destroy(wall.GetComponent<ObjectScaleCurve>());
-                var wallRenderer = wall.GetComponent<MeshRenderer>();
-                Material wallMat = new Material(wall.GetComponent<MeshRenderer>().sharedMaterial);
-                wallMat.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampTeslaCoil_png)).WaitForCompletion());
-                wallRenderer.sharedMaterial = wallMat;
-                var wallGlowRenderer = wall.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
-                Material wallGlowMat = new Material(wallGlowRenderer.sharedMaterial);
-                wallGlowMat.SetColor(tintColorKey, new Color(1f, 0.5f, 2f));
-                wallGlowRenderer.sharedMaterial = wallGlowMat;
-                
-                // don't get the decal from team indicator, there is no team
-                var decalObject = new GameObject("LunarChargeWarningDecal", typeof(MeshFilter), typeof(Decal), typeof(AnimateShaderAlpha), typeof(MeshRenderer));
-                decalObject.transform.SetParent(EnemyLunarChargeInstance.warningPrefab.transform);
-                decalObject.transform.localPosition = Vector3.zero;
-                decalObject.transform.localScale = new Vector3(1.6f, 1.6f, 1.6f);
-                decalObject.GetComponent<MeshFilter>().sharedMesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.Decalicious.DecalCube_asset)).WaitForCompletion();
+            EnemyLunarChargeInstance.warningPrefab = PrefabAPI.InstantiateClone(AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_meridian_DisableSkillsLightning.LightningStrikePredictionEffect_prefab)).WaitForCompletion(), "LunarChargeWarningEffect");
+            EnemyLunarChargeInstance.warningPrefab.AddComponent<NetworkIdentity>();
+            var retimer = EnemyLunarChargeInstance.warningPrefab.GetComponent<EffectRetimer>();
+            retimer.objectScaleCurves = null;
+            var light = EnemyLunarChargeInstance.warningPrefab.transform.GetChild(0).GetComponent<Light>();
+            light.color = new Color(0.6f, 0.3f, 1f);
+            light.intensity = 10f;
 
-                var decal = decalObject.GetComponent<Decal>();
-                decal.RenderMode = Decal.DecalRenderMode.Deferred;
-                decal.DrawAlbedo = true;
-                decal.DrawNormalAndGloss = false;
-                decal.Material = lunarDecal;
-                decal.Fade = 1f;
-                var decalAlpha = decal.gameObject.GetComponent<AnimateShaderAlpha>();
-                decalAlpha.decal = decal;
-                decalAlpha.alphaCurve = AnimationCurve.Linear(0, 0, 1f, 1f);
-                decalAlpha.timeMax = 0.75f;
-                retimer.animateShaderAlphas.Add(decalAlpha);
-                decal.GetComponent<MeshRenderer>().sharedMaterial = lunarDecal;
+            var wall = EnemyLunarChargeInstance.warningPrefab.transform.GetChild(1);
+            GameObject.Destroy(wall.GetComponent<ObjectScaleCurve>());
+            var wallRenderer = wall.GetComponent<MeshRenderer>();
+            Material wallMat = new Material(wall.GetComponent<MeshRenderer>().sharedMaterial);
+            wallMat.SetTexture(remapTexKey, electroRamp);
+            wallRenderer.sharedMaterial = wallMat;
+            var wallGlowRenderer = wall.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
+            Material wallGlowMat = new Material(wallGlowRenderer.sharedMaterial);
+            wallGlowMat.SetColor(tintColorKey, new Color(1f, 0.5f, 2f));
+            wallGlowRenderer.sharedMaterial = wallGlowMat;
 
-                EnemyLunarChargeInstance.warningPrefab.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().trailMaterial = electroTrailMaterial;
+            // don't get the decal from team indicator, there is no team
+            var decalObject = new GameObject("LunarChargeWarningDecal", typeof(MeshFilter), typeof(Decal), typeof(AnimateShaderAlpha), typeof(MeshRenderer));
+            decalObject.transform.SetParent(EnemyLunarChargeInstance.warningPrefab.transform);
+            decalObject.transform.localPosition = Vector3.zero;
+            decalObject.transform.localScale = new Vector3(1.6f, 1.6f, 1.6f);
+            decalObject.GetComponent<MeshFilter>().sharedMesh = AssetAsyncReferenceManager<Mesh>.LoadAsset(new AssetReferenceT<Mesh>(RoR2BepInExPack.GameAssetPathsBetter.Decalicious.DecalCube_asset)).WaitForCompletion();
 
-                AddNewEffectDef(EnemyLunarChargeInstance.warningPrefab);
-            };
+            var decal = decalObject.GetComponent<Decal>();
+            decal.RenderMode = Decal.DecalRenderMode.Deferred;
+            decal.DrawAlbedo = true;
+            decal.DrawNormalAndGloss = false;
+            decal.Material = lunarDecal;
+            decal.Fade = 1f;
+            var decalAlpha = decal.gameObject.GetComponent<AnimateShaderAlpha>();
+            decalAlpha.decal = decal;
+            decalAlpha.alphaCurve = AnimationCurve.Linear(0, 0, 1f, 1f);
+            decalAlpha.timeMax = 0.75f;
+            retimer.animateShaderAlphas.Add(decalAlpha);
+            decal.GetComponent<MeshRenderer>().sharedMaterial = lunarDecal;
+
+            EnemyLunarChargeInstance.warningPrefab.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().trailMaterial = electroTrailMaterial;
+
+            AddNewEffectDef(EnemyLunarChargeInstance.warningPrefab);
+
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.lunarBloomEffect).Completed += x =>
             {
                 EffectComponent effect = x.Result.AddComponent<EffectComponent>();
@@ -893,17 +898,17 @@ namespace ElementalReactionsMod
                     cycleOffset = 0f
                 };
                 x.Result.AddComponent<NetworkIdentity>();
-                var flash = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
+                var flash = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matTracerBright_mat)).WaitForCompletion();
                 x.Result.transform.Find("LunarBloomFlash").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
                 x.Result.transform.Find("LunarBloomSparks").GetComponent<ParticleSystemRenderer>().sharedMaterial = flash;
-                x.Result.transform.Find("LunarBloomDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_TeamWarCry.matTeamWarCryDistortion_mat)).WaitForCompletion();
+                x.Result.transform.Find("LunarBloomDistortion").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_TeamWarCry.matTeamWarCryDistortion_mat)).WaitForCompletion();
                 x.Result.transform.Find("LunarBloomLunarSymbol").GetComponent<ParticleSystemRenderer>().sharedMaterial = lunarVFXSymbol;
-                x.Result.transform.Find("LunarBloomSplash").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Seeker.matSpiritPunchSplashOpaque_mat)).WaitForCompletion();
+                x.Result.transform.Find("LunarBloomSplash").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Seeker.matSpiritPunchSplashOpaque_mat)).WaitForCompletion();
                 var ripple = x.Result.transform.Find("LunarBloomRipple").GetComponent<ParticleSystemRenderer>();
                 ripple.gameObject.AddComponent<Billboard>();
-                ripple.trailMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_AcidLarva.matAcidLarvaTrail_mat)).WaitForCompletion();
+                ripple.trailMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_AcidLarva.matAcidLarvaTrail_mat)).WaitForCompletion();
                 x.Result.transform.Find("LunarBloomOrbitTrails").GetComponent<ParticleSystemRenderer>().trailMaterial = ripple.trailMaterial;
-                x.Result.transform.Find("LunarBloomSplash").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_AcidLarva.matAcidLarvaBlood_mat)).WaitForCompletion();
+                x.Result.transform.Find("LunarBloomSplash").GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_AcidLarva.matAcidLarvaBlood_mat)).WaitForCompletion();
                 var lunarLines = x.Result.transform.Find("LunarBloomLunarLines").GetComponent<ParticleSystemRenderer>();
                 lunarLines.sharedMaterial = lunarLineMaterial;
                 lunarLines.mesh = lunarLineMesh;
@@ -926,14 +931,14 @@ namespace ElementalReactionsMod
 
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.lunarCrystallizeController).Completed += x =>
             {
-                Material moondrift = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Grandparent.matGrandParentSunCore_mat)).WaitForCompletion());
-                moondrift.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_Common_ColorRamps.texRampConstructLaserTypeB_png)).WaitForCompletion());
+                Material moondrift = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Grandparent.matGrandParentSunCore_mat)).WaitForCompletion());
+                moondrift.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_Common_ColorRamps.texRampConstructLaserTypeB_png)).WaitForCompletion());
                 moondrift.SetFloat(boostKey, 1.5f);
                 moondrift.SetFloat(alphaBoostKey, 7f);
                 moondrift.SetFloat(alphaBiasKey, 0.5f);
                 moondrift.SetFloat("_FresnelPower", -1f);
 
-                Material glow = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Items_ExtraStatsOnLevelUp.matBeadsEnlightenGlow_mat)).WaitForCompletion());
+                Material glow = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Items_ExtraStatsOnLevelUp.matBeadsEnlightenGlow_mat)).WaitForCompletion());
                 glow.SetColor(tintColorKey, new Color(1f, 0.5f, 0.3f));
                 glow.SetTextureScale(mainTexKey, new Vector2(1, 0.5f));
                 glow.SetTextureOffset(mainTexKey, new Vector2(0, 0.5f));
@@ -975,10 +980,10 @@ namespace ElementalReactionsMod
                 x.Result.AddComponent<NetworkIdentity>();
                 var distortion = x.Result.transform.Find("LunarCrystallizeSpinDistortion").GetComponent<ParticleSystemRenderer>();
                 distortion.mesh = ringMesh;
-                distortion.sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC1_ancientloft.matAncientLoft_WaterfallDistortion_mat)).WaitForCompletion();
+                distortion.sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_ancientloft.matAncientLoft_WaterfallDistortion_mat)).WaitForCompletion();
                 var spin = x.Result.transform.Find("LunarCrystallizeSpin").GetComponent<ParticleSystemRenderer>();
                 spin.mesh = ringMesh;
-                spin.sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2.matGeodeCleanseVFX1_mat)).WaitForCompletion();
+                spin.sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2.matGeodeCleanseVFX1_mat)).WaitForCompletion();
                 x.Result.transform.Find("LunarCrystallizeLunarSymbol").GetComponent<ParticleSystemRenderer>().sharedMaterial = lunarVFXSymbol;
                 var lunarLines = x.Result.transform.Find("LunarCrystallizeLunarLines").GetComponent<ParticleSystemRenderer>();
                 lunarLines.sharedMaterial = lunarLineMaterial;
@@ -999,17 +1004,17 @@ namespace ElementalReactionsMod
             #endregion
             #region Stellar Reactions
             // Use Frost Relic zone as reference for Stellar Conduct
-            Material stellarStarInteriorMat = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_ElementalRings.matIceRingGemstone_mat)).WaitForCompletion();
-            Material stellarStarExteriorMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Child.matChildStarCore_mat)).WaitForCompletion());
+            Material stellarStarInteriorMat = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_ElementalRings.matIceRingGemstone_mat)).WaitForCompletion();
+            Material stellarStarExteriorMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Child.matChildStarCore_mat)).WaitForCompletion());
             stellarStarExteriorMat.SetColor(tintColorKey, new Color(0.4f, 0.9f, 0.9f));
-            stellarStarExteriorMat.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Items_TeleportOnLowHealth.texRampUnstableTransmitter_png)).WaitForCompletion());
+            stellarStarExteriorMat.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Items_TeleportOnLowHealth.texRampUnstableTransmitter_png)).WaitForCompletion());
             stellarStarExteriorMat.SetFloat(boostKey, 1f);
             stellarStarExteriorMat.DisableKeyword("FRESNEL");
             stellarStarExteriorMat.SetFloat(alphaBoostKey, 0.3f);
             stellarStarExteriorMat.SetFloat(alphaBiasKey, 0.6f);
-            Material stellarSparkle = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser1_mat)).WaitForCompletion());
+            Material stellarSparkle = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser1_mat)).WaitForCompletion());
             stellarSparkle.SetColor(tintColorKey, new Color(0.45f, 0.5f, 1f));
-            Material stellarSparkleDark = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser1_mat)).WaitForCompletion());
+            Material stellarSparkleDark = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser1_mat)).WaitForCompletion());
             stellarSparkleDark.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(AssetReferences.delusionRamp).WaitForCompletion());
             stellarSparkleDark.SetColor(tintColorKey, new Color(0.45f, 0.5f, 1f));
             stellarSparkleDark.SetFloat(alphaBoostKey, 1.3f);
@@ -1036,8 +1041,8 @@ namespace ElementalReactionsMod
                 stellarConductLight.timeMax = 1f;
                 stellarConductLight.curve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
                 stellarConductController.radiusTransform = x.Result.transform.GetChild(1);
-                Material radiusAurora = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_ironalluvium2.matIA2Aurora_mat)).WaitForCompletion());
-                radiusAurora.SetTexture(mainTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX_ParticleMasks.texAlphaGradient2Mask_png)).WaitForCompletion());
+                Material radiusAurora = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC3_ironalluvium2.matIA2Aurora_mat)).WaitForCompletion());
+                radiusAurora.SetTexture(mainTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX_ParticleMasks.texAlphaGradient2Mask_png)).WaitForCompletion());
                 radiusAurora.SetTextureScale(mainTexKey, new Vector2(1f, 2f));
                 radiusAurora.SetTextureOffset(mainTexKey, new Vector2(0f, 0.5f));
                 radiusAurora.SetTextureScale(cloud2TexKey, new Vector2(2f, -1f));
@@ -1046,12 +1051,12 @@ namespace ElementalReactionsMod
                 radiusAurora.SetColor(tintColorKey, new Color(0.17f, 0.24f, 1f));
                 radiusAurora.EnableKeyword("FRESNEL");
                 radiusAurora.SetFloat("_FresnelPower", 0.3f);
-                stellarConductController.radiusTransform.GetComponent<MeshRenderer>().sharedMaterials = [AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_BurnNearby.matHelfireRangeIndicator_mat)).WaitForCompletion(), radiusAurora];
-                stellarConductController.starTransform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Golem.matShockwave1_mat)).WaitForCompletion();
-                stellarConductController.radiusTransform.GetChild(0).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matTracerBrightTransparent_mat)).WaitForCompletion();
+                stellarConductController.radiusTransform.GetComponent<MeshRenderer>().sharedMaterials = [AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_BurnNearby.matHelfireRangeIndicator_mat)).WaitForCompletion(), radiusAurora];
+                stellarConductController.starTransform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Golem.matShockwave1_mat)).WaitForCompletion();
+                stellarConductController.radiusTransform.GetChild(0).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matTracerBrightTransparent_mat)).WaitForCompletion();
 
                 stellarConductController.releaseParticle = x.Result.transform.GetChild(2).GetComponent<ParticleSystem>();
-                stellarConductController.releaseParticle.GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser3_mat)).WaitForCompletion();
+                stellarConductController.releaseParticle.GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_FalseSonBoss.matLunarGazeFireLaser3_mat)).WaitForCompletion();
                 var releaseRing = stellarConductController.releaseParticle.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
                 releaseRing.mesh = ringMesh;
                 releaseRing.sharedMaterial = stellarWind;
@@ -1069,7 +1074,7 @@ namespace ElementalReactionsMod
                 vfx.DoNotPool = false;
 
                 x.Result.transform.GetChild(0).GetComponent<ParticleSystemRenderer>().sharedMaterial = glassVFXMat;
-                x.Result.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matDistortionFaded_mat)).WaitForCompletion();
+                x.Result.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = distortionFaded;
                 x.Result.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = glassVFXMat;
                 x.Result.transform.GetChild(3).GetComponent<ParticleSystemRenderer>().sharedMaterial = stellarSparkle;
                 x.Result.AddComponent<DestroyOnTimer>().duration = 1f;
@@ -1081,7 +1086,7 @@ namespace ElementalReactionsMod
             ElementalReactionManager.stellarSwirlProjectilePrefab.AddComponent<StellarSwirlProjectile>();
             var stellarSwirlProjController = ElementalReactionManager.stellarSwirlProjectilePrefab.GetComponent<ProjectileController>();
             stellarSwirlProjController.allowPrediction = false;
-            stellarSwirlProjController.ghostPrefabReference = AssetReferences.stellarSwirlVortex1Effect;
+            stellarSwirlProjController.ghostPrefabAddress = AssetReferences.stellarSwirlVortex1Effect;
             var stellarSwirlExplosion = ElementalReactionManager.stellarSwirlProjectilePrefab.GetComponent<ProjectileExplosion>();
             stellarSwirlExplosion.blastRadius = StaticValues.stellarSwirlMinRadius;
             stellarSwirlExplosion.blastDamageCoefficient = 1f;
@@ -1095,7 +1100,6 @@ namespace ElementalReactionsMod
 
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.stellarSwirlVortex1Effect).Completed += x =>
             {
-                stellarSwirlProjController.ghostPrefab = x.Result;
                 EffectComponent effect = x.Result.AddComponent<EffectComponent>();
                 effect.positionAtReferencedTransform = true;
                 effect.parentToReferencedTransform = false;
@@ -1117,7 +1121,7 @@ namespace ElementalReactionsMod
                 ghostController.starScaleCurve.overallCurve = AnimationCurve.EaseInOut(0, 1f, 1f, 1.1f);
                 ghostController.starScaleCurve.enabled = false;
                 ghostController.starScaleCurve.resetOnDisable = true;
-                Material orbMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Mage.matMageIce_mat)).WaitForCompletion());
+                Material orbMat = new Material(AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Mage.matMageIce_mat)).WaitForCompletion());
                 orbMat.SetInt("_Cull", 0);
                 StellarSwirlProjectileGhost.upgradedOrbMaterial = new Material(orbMat);
                 orbMat.SetFloat("_FresnelBoost", 2f);
@@ -1136,7 +1140,7 @@ namespace ElementalReactionsMod
                 orbCurve.useOverallCurveOnly = true;
                 orbCurve.overallCurve = AnimationCurve.EaseInOut(0, 0.65f, 1f, 1f);
                 x.Result.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = glassVFXMat;
-                stellarSwirlOrb.GetChild(0).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Golem.matShockwave1_mat)).WaitForCompletion();
+                stellarSwirlOrb.GetChild(0).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Golem.matShockwave1_mat)).WaitForCompletion();
                 var stellarSwirlRing = x.Result.transform.GetChild(5).GetComponent<ParticleSystemRenderer>();
                 stellarSwirlRing.sharedMaterial = stellarWind;
                 stellarSwirlRing.mesh = ringMesh;
@@ -1156,7 +1160,7 @@ namespace ElementalReactionsMod
                 var stellarSwirlExplode1Ring = x.Result.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
                 stellarSwirlExplode1Ring.sharedMaterial = genericRingMat;
                 stellarSwirlExplode1Ring.mesh = ringMesh;
-                x.Result.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC3_Items_ShockDamageAura.matDroneShockDamageGlowBurst_mat)).WaitForCompletion();
+                x.Result.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC3_Items_ShockDamageAura.matDroneShockDamageGlowBurst_mat)).WaitForCompletion();
 
                 AddNewEffectDef(x.Result);
             };
@@ -1179,7 +1183,7 @@ namespace ElementalReactionsMod
             stellarSwirlExplode1RingSmall.mesh = ringMesh;
             stellarSwirlExplosion.explosionEffect.transform.GetChild(4).GetComponent<ParticleSystemRenderer>().sharedMaterial = glassVFXMat;
 
-            AddNewEffectDef(stellarSwirlExplosion.explosionEffect);
+            AddNewEffectDef(stellarSwirlExplosion.explosionEffect, "Play_bandit2_shift_exit");
 
             AssetAsyncReferenceManager<GameObject>.LoadAsset(AssetReferences.stellarSwirlExplosion2).Completed += x =>
             {
@@ -1202,7 +1206,7 @@ namespace ElementalReactionsMod
                 x.Result.transform.GetChild(4).GetComponent<ParticleSystemRenderer>().sharedMaterial = glassVFXMat;
                 x.Result.transform.GetChild(5).GetComponent<ParticleSystemRenderer>().sharedMaterial = glassVFXMat;
 
-                AddNewEffectDef(x.Result);
+                AddNewEffectDef(x.Result, "Play_bandit2_shift_exit");
             };
             #endregion
             #endregion
@@ -1217,13 +1221,13 @@ namespace ElementalReactionsMod
             var glowAlpha = moondrift.transform.GetChild(0).gameObject.AddComponent<AnimateShaderAlpha>();
             glowAlpha.timeMax = 0.4f;
             glowAlpha.alphaCurve = AnimationCurve.EaseInOut(0, 0, 1f, 1f);
-            moondrift.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX.matInverseDistortion_mat)).WaitForCompletion();
-            moondrift.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Child.matChildStarGlow_mat)).WaitForCompletion();
+            moondrift.transform.GetChild(1).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX.matInverseDistortion_mat)).WaitForCompletion();
+            moondrift.transform.GetChild(2).GetComponent<ParticleSystemRenderer>().sharedMaterial = AssetAsyncReferenceManager<Material>.LoadAsset(new AssetReferenceT<Material>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Child.matChildStarGlow_mat)).WaitForCompletion();
         }
 
         public static Material CreateVisionMaterial(AssetReferenceT<Texture> icon, AssetReferenceT<Texture> remapTex, float alphaBoost = 1f, bool smoothShading = true)
         {
-            Material vision = new Material(Addressables.LoadAssetAsync<Shader>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Shaders.HGOpaqueCloudRemap_shader).WaitForCompletion());
+            Material vision = new Material(Addressables.LoadAssetAsync<Shader>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Shaders.HGOpaqueCloudRemap_shader).WaitForCompletion());
             vision.name = "ElementalReactionsVision";
             vision.EnableKeyword("EMISSIONFROMALBEDO");
             vision.EnableKeyword("DITHER");
@@ -1234,12 +1238,12 @@ namespace ElementalReactionsMod
             {
                 vision.SetTexture(mainTexKey, x.Result);
             };
-            AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_DLC2_Chef.texChefOilDecalMask_png)).Completed += x =>
+            AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC2_Chef.texChefOilDecalMask_png)).Completed += x =>
             {
                 vision.SetTexture(cloud1TexKey, x.Result);
                 vision.SetTextureScale(cloud1TexKey, new Vector2(1, 0.3f));
             };
-            AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_VFX_ParticleMasks.texAlphaGradient2_png)).Completed += x =>
+            AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_VFX_ParticleMasks.texAlphaGradient2_png)).Completed += x =>
             {
                 vision.SetTexture(cloud2TexKey, x.Result);
                 vision.SetTextureScale(cloud2TexKey, new Vector2(1, -1));
@@ -1259,7 +1263,7 @@ namespace ElementalReactionsMod
         }
         private static void CreateGenericElementEffectMaterial()
         {
-            genericElementEffectMaterial = new Material(Addressables.LoadAssetAsync<Shader>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Shaders.HGCloudRemap_shader).WaitForCompletion());
+            genericElementEffectMaterial = new Material(Addressables.LoadAssetAsync<Shader>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Shaders.HGCloudRemap_shader).WaitForCompletion());
             genericElementEffectMaterial.name = "ElementalReactionsElementIconVFX";
             genericElementEffectMaterial.EnableKeyword("CLOUDOFFSET");
             genericElementEffectMaterial.EnableKeyword("USE_CLOUDS");
@@ -1268,11 +1272,11 @@ namespace ElementalReactionsMod
             genericElementEffectMaterial.EnableKeyword("_EMISSION");
             genericElementEffectMaterial.SetFloat(boostKey, 5f);
             genericElementEffectMaterial.SetFloat(alphaBoostKey, 3f);
-            genericElementEffectMaterial.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_ColorRamps.texRampDefault_png)).WaitForCompletion());
+            genericElementEffectMaterial.SetTexture(remapTexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_ColorRamps.texRampDefault_png)).WaitForCompletion());
             genericElementEffectMaterial.SetFloat("_DepthOffset", -5f);
             genericElementEffectMaterial.SetFloat("_ZTest", 8f);
-            genericElementEffectMaterial.SetTexture(cloud1TexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_TiledTextures.texCloudDifferenceBW2_png)).WaitForCompletion());
-            genericElementEffectMaterial.SetTexture(cloud2TexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_Common_TiledTextures.texCloudOrganicNormal_png)).WaitForCompletion());
+            genericElementEffectMaterial.SetTexture(cloud1TexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_TiledTextures.texCloudDifferenceBW2_png)).WaitForCompletion());
+            genericElementEffectMaterial.SetTexture(cloud2TexKey, AssetAsyncReferenceManager<Texture>.LoadAsset(new AssetReferenceT<Texture>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_Common_TiledTextures.texCloudOrganicNormal_png)).WaitForCompletion());
             genericElementEffectMaterial.SetVector("_CutoffScroll", new Vector4(10f, -25f, 0, -10));
         }
         public static Material CreateElementEffectMaterial(Texture icon)
@@ -1309,7 +1313,7 @@ namespace ElementalReactionsMod
         }
         private static void AddElementLoadoutMenu()
         {
-            GameObject characterSelectMenu = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_UI.CharacterSelectUIMain_prefab)).WaitForCompletion();
+            GameObject characterSelectMenu = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_UI.CharacterSelectUIMain_prefab)).WaitForCompletion();
             CharacterSelectController characterSelectController = characterSelectMenu.GetComponent<CharacterSelectController>();
             Array.Resize(ref characterSelectController.primaryColorImages, characterSelectController.primaryColorImages.Length + 1);
             Transform menu = characterSelectMenu.transform.Find("SafeArea/LeftHandPanel (Layer: Main)/SurvivorInfoPanel, Active (Layer: Secondary)");
@@ -1344,7 +1348,7 @@ namespace ElementalReactionsMod
                 isPrimaryPlayerOnly = false
             });
             // not enough vertical room in the menu for this to look good I guess
-            elementLoadoutRowUI = PrefabAPI.InstantiateClone(AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.Version_1_39_0.RoR2_Base_UI.Row_prefab)).WaitForCompletion(), "ElementLoadoutRow", false);
+            elementLoadoutRowUI = PrefabAPI.InstantiateClone(AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_Base_UI.Row_prefab)).WaitForCompletion(), "ElementLoadoutRow", false);
             elementLoadoutRowUI.GetComponent<LayoutElement>().preferredHeight = 116;
             var buttonContainer = elementLoadoutRowUI.transform.GetChild(0);
             GameObject.DestroyImmediate(buttonContainer.gameObject.GetComponent<HorizontalLayoutGroup>());

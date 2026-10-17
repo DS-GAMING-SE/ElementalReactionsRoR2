@@ -136,7 +136,7 @@ namespace ElementalReactionsMod.Items
             itemDisplay.rendererInfos = rendererInfos;
             return displayPrefab;
         }
-        internal static ItemDef AddNewItem(string itemName, string token, bool canRemove, ItemTierDef itemTierDef, Sprite icon, AssetReferenceT<GameObject> pickupModelReference, ItemDisplayRuleDict itemDisplay, params ItemTag[] tags)
+        internal static ItemDef AddNewItem(string itemName, string token, bool canRemove, ItemTierDef itemTierDef, AssetReferenceT<Sprite> icon, AssetReferenceT<GameObject> pickupModelReference, ItemDisplayRuleDict itemDisplay, params ItemTag[] tags)
         {
             string prefix = $"{ElementalReactionsPlugin.PREFIX}ITEM_";
             ItemDef itemDef = ScriptableObject.CreateInstance<ItemDef>();
@@ -144,7 +144,7 @@ namespace ElementalReactionsMod.Items
             itemDef._itemTierDef = itemTierDef;
             if (!itemTierDef) itemDef.deprecatedTier = ItemTier.NoTier;
             itemDef.pickupModelReference = pickupModelReference;
-            itemDef.pickupIconSprite = icon;
+            itemDef.pickupIconSpriteReference = icon;
             itemDef.canRemove = canRemove;
             itemDef.hidden = !canRemove;
             itemDef.requiredExpansion = Assets.elementalReactionExpansionDef;

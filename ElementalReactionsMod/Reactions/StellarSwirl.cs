@@ -35,6 +35,7 @@ namespace ElementalReactionsMod.Reactions
             InstanceTracker.Add(this);
             timer = StaticValues.stellarSwirlMaxDuration;
             stacks = ((float)projectileController.combo) / 10f;
+            RoR2.Util.PlaySound("Play_seeker_skill1_fire_orb", gameObject);
         }
 
         public void OnDestroy()
@@ -74,6 +75,7 @@ namespace ElementalReactionsMod.Reactions
         }
         public void Upgrade()
         {
+            RoR2.Util.PlaySound("Play_seeker_skill1_orb_explo", gameObject);
             upgraded = true;
             upgradedDirty = true;
             projectileExplosion.SetExplosionRadius(StaticValues.stellarSwirlMaxRadius);

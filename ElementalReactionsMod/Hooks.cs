@@ -30,7 +30,7 @@ namespace ElementalReactionsMod
             On.RoR2.UI.LogBook.LogBookController.CanSelectItemEntry += NoDelusionsWithElementInLogbook;
             On.RoR2.HealthComponent.Heal += HealingReceivedDebuff;
             On.RoR2.OverheatSystem.BodyOverheatInfo.AddChanneledBuff += AddOverheatPyro;
-            IL.RoR2.CharacterBody.AddTimedBuff_BuffDef_float += SolusWingCoolingCryo;
+            IL.RoR2.CharacterBody.AddTimedBuffInternal += SolusWingCoolingCryo;
             IL.RoR2.CharacterBody.InflictLavaDamage += LavaPyro;
             IL.RoR2.Projectile.ProjectileManager.InitializeProjectile += AddLoadoutElementToProjectile;
             On.EntityStates.RoboBallBoss.Weapon.FireSuperDelayKnockup.OnEnter += AlloyWorshipUnitShieldAnemo;
@@ -47,7 +47,7 @@ namespace ElementalReactionsMod
             IL.EntityStates.AffixEarthHealer.Heal.OnEnter += MendingHealingOrbDendro;
             IL.EntityStates.Destructible.ExplosivePotDeath.Explode += DestructibleObjectHydro;
             IL.EntityStates.Destructible.SulfurPodDeath.Explode += DestructibleObjectHydro;
-            IL.EntityStates.Destructible.FusionCellDeath.Explode += DestructibleObjectElectro;
+            IL.EntityStates.Destructible.FusionCellDeath.FireAttack += DestructibleObjectElectro;
             IL.EntityStates.Destructible.LunarRainDeathState.Explode += DestructibleObjectElectro;
             On.RoR2.CharacterBody.OnBuffFirstStackGained += CreateLunarCrystallize;
             On.RoR2.ScavengerItemGranter.Start += ScavengerRandomElement;
@@ -208,7 +208,7 @@ namespace ElementalReactionsMod
         {
             ILCursor c = new ILCursor(il);
             if (c.TryGotoNext(x => x.MatchLdsfld(typeof(DLC3Content.Buffs), nameof(DLC3Content.Buffs.Brittle))) &&
-                c.TryGotoNext(MoveType.After, x => x.MatchBrfalse(out ILLabel falseBranch)))
+                c.TryGotoNext(MoveType.After, x => x.MatchRet()))
             {
                 c.Emit(OpCodes.Ldarg_0); // characterBody
                 c.EmitDelegate<Action<CharacterBody>>((self) =>
@@ -623,7 +623,7 @@ namespace ElementalReactionsMod
             {
                 foreach (BuffDef aura in reactionAuras)
                 {
-                    if (self.HasBuff(aura))
+                    if (self.HasBuff(aura) && !(self.TryGetComponent<ElementLoadoutComponent>(out var elementLoadout) && buff == elementLoadout.permanentlyAppliedElement.buff))
                     {
                         if (aura.isDOT)
                         {
