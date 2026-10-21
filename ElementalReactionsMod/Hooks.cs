@@ -62,6 +62,7 @@ namespace ElementalReactionsMod
             IL.RoR2.Stats.StatManager.OnCharacterDeath += DeathByBurningIsFieryDeath;
             IL.RoR2.CharacterBody.RecalculateStats += BurningDisablesRegen;
             IL.RoR2.Orbs.VineOrb.OnArrival += NoxiousThornAppliesElements;
+            IL.RoR2.SporeCloudSpawnComponent.SpawnSporeCoat += MushSporeDendro;
         }
         // Right after IOnincomingDamageReceiver does its thing, since that's where many things (including bloom dendro cores) reject damage
         private static void TakeDamageIL(ILContext il)
@@ -372,7 +373,7 @@ namespace ElementalReactionsMod
         private static void DelusionsShareItemDisplay(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            if (c.TryGotoNext(MoveType.After, x => x.MatchCallOrCallvirt<Inventory>(nameof(Inventory.CalculateEffectiveItemStacks))))
+            if (c.TryGotoNext(MoveType.After, x => x.MatchCallOrCallvirt<Inventory>(nameof(Inventory.GetItemCountTotal))))
             {
                 // Item count comes from CalculateEffectiveItemStacks
                 c.Emit(OpCodes.Ldarg_1); // Inventory
@@ -623,7 +624,7 @@ namespace ElementalReactionsMod
             {
                 foreach (BuffDef aura in reactionAuras)
                 {
-                    if (self.HasBuff(aura) && !(self.TryGetComponent<ElementLoadoutComponent>(out var elementLoadout) && buff == elementLoadout.permanentlyAppliedElement.buff))
+                    if (self.HasBuff(aura) && !(self.TryGetComponent<ElementLoadoutComponent>(out var elementLoadout) && elementLoadout.permanentlyAppliedElement && buff == elementLoadout.permanentlyAppliedElement.buff))
                     {
                         if (aura.isDOT)
                         {
@@ -810,6 +811,52 @@ namespace ElementalReactionsMod
             if (c.TryGotoNext(x => x.MatchLdloc(out _), x => x.MatchLdcI4(1), x => x.MatchAdd(), x => x.MatchStloc(out _), x => x.MatchLdloc(out _), x => x.MatchLdloc(out _), x => x.MatchLdfld(out _), x => x.MatchBlt(out _)))
             {
 
+            }
+        }
+
+        private static void MushSporeDendro(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            int projectileControllerIndex = -1;
+            int projectileDamageIndex = -1;
+            if (c.TryGotoNext(x => x.MatchStfld(typeof(RoR2.Projectile.ProjectileController), nameof(RoR2.Projectile.ProjectileController.procCoefficient))) &&
+                c.TryGotoPrev(x => x.MatchLdloc(out projectileControllerIndex)))
+            {
+                c.Emit(OpCodes.Ldloc, projectileControllerIndex);
+                c.Emit(OpCodes.Ldarg_0);
+                c.Emit<SporeCloudSpawnComponent>(OpCodes.Ldfld, nameof(SporeCloudSpawnComponent._sporeCloudOwner));
+                c.EmitDelegate<Action<RoR2.Projectile.ProjectileController, GameObject>>((projectileController, owner) =>
+                {
+                    if (ElementalReactionManager.instance && owner && owner.TryGetComponent<ElementLoadoutComponent>(out var element))
+                    {
+                        if (projectileController.TryGetComponent<RoR2.Projectile.ProjectileSimple>(out var simple))
+                        {
+                            element.SetSpecialAppliedElement(DefaultElementDefs.dendroElement, simple.lifetime);
+                        }
+                        else if (projectileController.TryGetComponent<RoR2.Projectile.ProjectileDotZone>(out var dot))
+                        {
+                            element.SetSpecialAppliedElement(DefaultElementDefs.dendroElement, dot.lifetime);
+                        }
+                    }
+                });
+
+                if (c.TryGotoNext(MoveType.After, x => x.MatchStfld(typeof(RoR2.Projectile.ProjectileDamage), nameof(RoR2.Projectile.ProjectileDamage.damage)),
+                x => x.MatchLdloc(out projectileDamageIndex)))
+                {
+                    c.Emit(OpCodes.Ldloc, projectileDamageIndex);
+                    c.EmitDelegate<Action<RoR2.Projectile.ProjectileDamage>>((projectileDamage) =>
+                    {
+                        projectileDamage.damageType.SetElement(DefaultElementDefs.dendroElement.index);
+                    });
+                }
+                else
+                {
+                    Log.Error($"{il.Method.Name} IL FAILED");
+                }
+            }
+            else
+            {
+                Log.Error($"{il.Method.Name} IL FAILED");
             }
         }
     }

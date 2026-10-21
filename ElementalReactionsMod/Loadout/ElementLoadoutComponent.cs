@@ -205,7 +205,7 @@ namespace ElementalReactionsMod.Loadout
         }
         private void AppliedElementChanged(ElementDef previous, ElementDef current)
         {
-            if (specialObjectAttributes) specialObjectAttributes.damageTypeOverride.SetElement(current.index);
+            if (specialObjectAttributes) specialObjectAttributes.damageTypeOverride.SetElement(current ? current.index : DefaultElementDefs.physicalElement.index);
             if (previous && previous.buff && characterBody.HasBuff(previous.buff) && permanentElementWasApplied)
             {
                 characterBody.RemoveBuff(previous.buff);

@@ -851,6 +851,7 @@ namespace ElementalReactionsMod
             Material wallGlowMat = new Material(wallGlowRenderer.sharedMaterial);
             wallGlowMat.SetColor(tintColorKey, new Color(1f, 0.5f, 2f));
             wallGlowRenderer.sharedMaterial = wallGlowMat;
+            GameObject.Destroy(wall.transform.Find("Cube").gameObject); // getting rid of the super tall cylinder part
 
             // don't get the decal from team indicator, there is no team
             var decalObject = new GameObject("LunarChargeWarningDecal", typeof(MeshFilter), typeof(Decal), typeof(AnimateShaderAlpha), typeof(MeshRenderer));

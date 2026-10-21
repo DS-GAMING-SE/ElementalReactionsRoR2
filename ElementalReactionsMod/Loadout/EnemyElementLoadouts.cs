@@ -146,7 +146,13 @@ namespace ElementalReactionsMod.Loadout
             CreateLoadout("LynxArcherBody", dendroElement);
             CreateLoadout("Lynx2Body", physicalElement, dendroElement);
             CreateLoadout("LynxAmbusherBody", dendroElement);
-            // needs big mush and lynx totem and whatever the shadow lynx are
+            CreateLoadout("TotemBody", dendroElement, dendroElement);
+            CreateLoadout("TotemMergedBody", dendroElement, dendroElement);
+
+            CreateLoadout("BigMushBody", dendroElement, dendroElement, dendroElement, dendroElement);
+            CreateLoadout("WallShrumMainSection", dendroElement, dendroElement, dendroElement, dendroElement, dendroElement);
+            CreateLoadout("PlantMushBody", dendroElement, dendroElement, dendroElement, dendroElement);
+            // lynx totem and whatever the shadow lynx are
             // Add linchpin to anima harvester and prov? stellar swirl?
 
             // Enemies Returns
@@ -165,7 +171,7 @@ namespace ElementalReactionsMod.Loadout
                 CreateLoadout("ER_LynxShamanBody", dendroElement, dendroElement, dendroElement, dendroElement);
                 CreateLoadout("ER_LynxShamanAllyBody", dendroElement, dendroElement, dendroElement, dendroElement); // Ally
                 CreateLoadout("ER_SandCrabBody", physicalElement, hydroElement);
-                CreateLoadout("ER_SandCrabBubbleProjectile", hydroElement, hydroElement, hydroElement, hydroElement, hydroElement);
+                CreateLoadout("ER_ER_SandCrabBubbleProjectile", hydroElement, hydroElement, hydroElement, hydroElement, hydroElement);
                 CreateLoadout("ER_ColossusBody", geoElement, geoElement, electroElement, electroElement);
                 CreateLoadout("ER_IfritBody", physicalElement, pyroElement, pyroElement, pyroElement, pyroElement);
                 CreateLoadout("ER_IfritPylonEnemyBody", pyroElement, pyroElement, pyroElement, pyroElement, pyroElement);
