@@ -545,6 +545,11 @@ namespace ElementalReactionsMod
             bool showEffect = self.targetBody && self.targetBody.HasBuff(Buffs.elementalEnvironmentHiddenBuff);
             if (Environment.ElementalRain.camerasToScreenEffects.TryGetValue(self, out Environment.ElementalEnvironmentScreenEffect screenEffect))
             {
+                if (!screenEffect)
+                {
+                    Environment.ElementalRain.camerasToScreenEffects.Remove(self);
+                    return;
+                }
                 screenEffect.SetActive(showEffect);
             }
         }

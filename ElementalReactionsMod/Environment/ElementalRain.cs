@@ -31,6 +31,11 @@ namespace ElementalReactionsMod.Environment
             {
                 if (camerasToScreenEffects.TryGetValue(sceneCam.cameraRigController, out ElementalEnvironmentScreenEffect effect))
                 {
+                    if (!effect)
+                    {
+                        camerasToScreenEffects.Remove(sceneCam.cameraRigController);
+                        return;
+                    }
                     effect.gameObject.layer = LayerIndex.defaultLayer.intVal;
                 }
             };
@@ -38,6 +43,11 @@ namespace ElementalReactionsMod.Environment
             {
                 if (camerasToScreenEffects.TryGetValue(sceneCam.cameraRigController, out ElementalEnvironmentScreenEffect effect))
                 {
+                    if (!effect)
+                    {
+                        camerasToScreenEffects.Remove(sceneCam.cameraRigController);
+                        return;
+                    }
                     effect.gameObject.layer = LayerIndex.noDraw.intVal;
                 }
             };

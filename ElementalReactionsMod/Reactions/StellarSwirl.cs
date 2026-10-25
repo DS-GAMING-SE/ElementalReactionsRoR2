@@ -111,7 +111,6 @@ namespace ElementalReactionsMod.Reactions
             if (initialState)
             {
                 upgraded = reader.ReadBoolean();
-                Log.Message("Initial Upgraded " + upgraded);
                 if (upgraded)
                 {
                     Upgrade();
@@ -121,7 +120,6 @@ namespace ElementalReactionsMod.Reactions
             if (reader.ReadBoolean())
             {
                 upgraded = reader.ReadBoolean();
-                Log.Message("Upgraded " + upgraded);
                 if (upgraded)
                 {
                     Upgrade();

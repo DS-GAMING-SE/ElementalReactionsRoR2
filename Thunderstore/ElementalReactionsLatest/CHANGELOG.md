@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.0.1
+
+- (Bug Fix) Fixed a rare problem that would cause errors every frame forever. *I don't even know how this happened, what the trigger is, or why this has not happened before. This isn't even related to any of the new stuff in the update. I just null check harder*
+- (Logs) Removed some debug logs from Stellar Swirl
+
 ## v2.0.0
 Fixed for Hallowed Concepts
 
