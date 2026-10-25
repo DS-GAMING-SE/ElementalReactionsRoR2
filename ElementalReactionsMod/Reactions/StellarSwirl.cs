@@ -77,6 +77,7 @@ namespace ElementalReactionsMod.Reactions
         {
             RoR2.Util.PlaySound("Play_seeker_skill1_orb_explo", gameObject);
             upgraded = true;
+            SetDirtyBit(1U);
             upgradedDirty = true;
             projectileExplosion.SetExplosionRadius(StaticValues.stellarSwirlMaxRadius);
             if (projectileController.ghost && projectileController.ghost.TryGetComponent<StellarSwirlProjectileGhost>(out var ghost))
@@ -87,20 +88,44 @@ namespace ElementalReactionsMod.Reactions
         }
         public override bool OnSerialize(NetworkWriter writer, bool initialState)
         {
-            if (upgradedDirty)
+            if (initialState)
             {
                 writer.Write(upgraded);
-                upgradedDirty = false;
                 return true;
             }
-            return false;
+            if (upgradedDirty)
+            {
+                writer.Write(true);
+                writer.Write(upgraded);
+                ClearAllDirtyBits();
+                return true;
+            }
+            else
+            {
+                writer.Write(false);
+                return false;
+            }
         }
         public override void OnDeserialize(NetworkReader reader, bool initialState)
         {
-            upgraded = reader.ReadBoolean();
-            if (upgraded)
+            if (initialState)
             {
-                Upgrade();
+                upgraded = reader.ReadBoolean();
+                Log.Message("Initial Upgraded " + upgraded);
+                if (upgraded)
+                {
+                    Upgrade();
+                }
+                return;
+            }
+            if (reader.ReadBoolean())
+            {
+                upgraded = reader.ReadBoolean();
+                Log.Message("Upgraded " + upgraded);
+                if (upgraded)
+                {
+                    Upgrade();
+                }
             }
         }
     }
